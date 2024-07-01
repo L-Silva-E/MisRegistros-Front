@@ -1,27 +1,114 @@
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem, useDisclosure } from "@chakra-ui/react";
 import "./App.css";
 import Header from "./components/Header";
 import SideNav from "./components/SideNav";
 import MainContent from "./components/MainContent";
+import { Fragment, useState } from "react";
+import { API_BASE_URL, API_KEY } from "./constants/environment";
+import { Category, Recipe, SearchForm } from "./types";
+import useHttpData from "./hooks/useHttpData";
+import axios from "axios";
+import RecipeModal from "./components/RecipeModal";
+import useFetch from "./hooks/useFetch";
+
+const url = `${API_BASE_URL}/category`;
+const defaultCategory = { name: "Otro" };
+
+// const makeRecipeUrl = (id: number) =>
+//   `${REACT_APP_BACK_URL}/v1/recipe?idCategory=${id}`;
+
+const makeRecipeUrl = (id: number) => `${API_BASE_URL}/recipe`;
 
 function App() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [selectedCategory, setSelectedCategory] =
+    useState<Category>(defaultCategory);
+
+  const { loading, data } = useHttpData<Category>(url);
+
+  const {
+    data: dataRecipe,
+    setData: setRecipes,
+    loading: loadingRecipe,
+    setLoading: setLoadingRecipe,
+  } = useHttpData<Recipe>(makeRecipeUrl(2));
+
+  const searchApi = (searchForm: SearchForm) => {
+    const url = `${API_BASE_URL}/recipe?name=${searchForm.search}`;
+
+    setLoadingRecipe(true);
+
+    axios
+      .get<{ recipes: Recipe[] }>(url, { headers: { "api-key": API_KEY } })
+      .then(({ data }) => setRecipes(data.recipes))
+      .finally(() => setLoadingRecipe(false));
+  };
+
+  const {
+    fetch,
+    loading: loadingRecipeDetail,
+    data: dataRecipeDetail,
+  } = useFetch<Recipe>();
+
+  const searchRecipeDetails = (recipe: Recipe) => {
+    onOpen();
+    fetch(`${API_BASE_URL}/recipe?id=${recipe.id}`);
+  };
+
   return (
-    <Grid
-      templateAreas={`"header header"
-                    "nav main"`}
-      gridTemplateRows={"60px 1fr"}
-      gridTemplateColumns={{ sm: "0 1fr", md: "200px 1fr" }}
-    >
-      <GridItem pl="2" bg="orange.300" area={"header"}>
-        <Header />
-      </GridItem>
-      <GridItem pl="2" bg="pink.300" area={"nav"} height="calc(100vh - 60px)">
-        <SideNav />
-      </GridItem>
-      <GridItem pl="2" bg="green.300" area={"main"}>
-        <MainContent />
-      </GridItem>
-    </Grid>
+    <Fragment>
+      <Grid
+        templateAreas={`"header header" "nav main"`}
+        gridTemplateRows={"60px 1fr"}
+        gridTemplateColumns={{ sm: "0 1fr", md: "200px 1fr" }}
+        fontSize={14}
+      >
+        <GridItem
+          zIndex="1"
+          boxShadow="lg"
+          pos="sticky"
+          top="0px"
+          pt="7px"
+          bg="gray.800"
+          color="white"
+          area={"header"}
+        >
+          <Header onSubmit={searchApi} />
+        </GridItem>
+        <GridItem
+          pos="sticky"
+          top="60px"
+          left="0"
+          p="5"
+          area={"nav"}
+          bg="gray.700"
+          color="green.100"
+          height="calc(100vh - 60px)"
+          overflow="auto"
+        >
+          <SideNav
+            categories={data}
+            loading={loading}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </GridItem>
+        <GridItem p="5" bg="gray.700" color="white" area={"main"}>
+          <MainContent
+            openRecipe={searchRecipeDetails}
+            loading={loadingRecipe}
+            recipes={dataRecipe}
+          />
+        </GridItem>
+      </Grid>
+      <RecipeModal
+        data={dataRecipeDetail}
+        loading={loadingRecipeDetail}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
+    </Fragment>
   );
 }
 
