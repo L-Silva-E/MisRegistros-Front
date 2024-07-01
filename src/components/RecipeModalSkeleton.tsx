@@ -2,7 +2,7 @@ import { Container, SkeletonText } from "@chakra-ui/react";
 
 type Props = {};
 
-function RecipeModelSkeleton({}: Props) {
+function RecipeModalSkeleton({}: Props) {
   return (
     <Container>
       <SkeletonText
@@ -23,4 +23,4 @@ function RecipeModelSkeleton({}: Props) {
   );
 }
 
-export default RecipeModelSkeleton;
+export default RecipeModalSkeleton;

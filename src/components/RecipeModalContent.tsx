@@ -35,7 +35,7 @@ const joinSteps = (data: Recipe) => {
   return stepsList;
 };
 
-function RecipeModelContent({ data }: Props) {
+function RecipeModalContent({ data }: Props) {
   const ingredients = joinIngredients(data);
   const steps = joinSteps(data);
 
@@ -78,4 +78,4 @@ function RecipeModelContent({ data }: Props) {
   );
 }
 
-export default RecipeModelContent;
+export default RecipeModalContent;
