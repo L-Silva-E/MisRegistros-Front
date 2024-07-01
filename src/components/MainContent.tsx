@@ -11,6 +11,7 @@ type Props = {
 
 function MainContent({ recipes, loading, openRecipe }: Props) {
   const skeletons = Array.from({ length: 6 }, (_, i) => i);
+  // console.log(recipes)
   return (
     <SimpleGrid columns={[2, null, 3]} spacing="20px">
       {loading && skeletons.map((skeleton) => <SkeletonCard key={skeleton} />)}

@@ -15,7 +15,7 @@ const url = `${API_BASE_URL}/category`;
 const defaultCategory = { name: "Otro" };
 
 // const makeRecipeUrl = (id: number) =>
-//   `${REACT_APP_BACK_URL}/v1/recipe?idCategory=${id}`;
+//   `${API_BASE_URL}/recipe?idCategory=${id}`;
 
 const makeRecipeUrl = (id: number) => `${API_BASE_URL}/recipe`;
 
@@ -40,8 +40,8 @@ function App() {
     setLoadingRecipe(true);
 
     axios
-      .get<{ recipes: Recipe[] }>(url, { headers: { "api-key": API_KEY } })
-      .then(({ data }) => setRecipes(data.recipes))
+      .get<{ data: Recipe[] }>(url, { headers: { "api-key": API_KEY } })
+      .then(({ data }) => setRecipes(data.data))
       .finally(() => setLoadingRecipe(false));
   };
 
