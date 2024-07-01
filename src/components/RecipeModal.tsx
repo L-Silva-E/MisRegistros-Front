@@ -5,9 +5,9 @@ import {
   ModalFooter,
   ModalOverlay,
 } from "@chakra-ui/react";
-import RecipeModelSkeleton from "./RecipeModelSkeleton";
+import RecipeModelSkeleton from "./RecipeModalSkeleton";
 import { Recipe } from "../types";
-import RecipeModelContent from "./RecipeModelContent";
+import RecipeModelContent from "./RecipeModalContent";
 
 type Props = {
   isOpen: boolean;
