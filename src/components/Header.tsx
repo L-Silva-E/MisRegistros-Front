@@ -28,7 +28,6 @@ function Header({ onSubmit }: Props) {
               !!formState.errors.search ? "crimson" : "green.600"
             }
             isInvalid={!!formState.errors.search}
-            // errorBorderColor="red.600"
             {...register("search", { required: true })}
             type="text"
             placeholder="Nombre de la Receta"
