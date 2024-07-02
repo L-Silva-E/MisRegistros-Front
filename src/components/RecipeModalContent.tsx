@@ -6,23 +6,18 @@ import {
   ModalCloseButton,
   ModalHeader,
   List,
+  TableContainer,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
 } from "@chakra-ui/react";
 import { Recipe } from "../types";
 
 type Props = {
   data: Recipe;
-};
-
-const joinIngredients = (data: Recipe) => {
-  let ingredientsList = [];
-
-  for (let i = 0; i < data.ingredients.length; i++) {
-    ingredientsList.push(
-      `${data.ingredients[i].quantity} ${data.ingredients[i].ingredient.unit} - ${data.ingredients[i].ingredient.name}`
-    );
-  }
-
-  return ingredientsList;
 };
 
 const joinSteps = (data: Recipe) => {
@@ -36,7 +31,6 @@ const joinSteps = (data: Recipe) => {
 };
 
 function RecipeModalContent({ data }: Props) {
-  const ingredients = joinIngredients(data);
   const steps = joinSteps(data);
 
   return (
@@ -55,18 +49,32 @@ function RecipeModalContent({ data }: Props) {
           src={data.thumbnail}
         ></Image>
 
-        <Heading mt="4" mb="4" size="md" color="green.100">
+        <Heading mt="5" mb="3" size="md" color="green.100">
           ・Ingredientes
         </Heading>
         <List>
-          {ingredients.map((ingredient, index) => (
-            <ListItem color="green.100" key={index}>
-              {ingredient}
-            </ListItem>
-          ))}
+          <TableContainer>
+            <Table size="sm" variant="simple" colorScheme="green">
+              <Thead>
+                <Tr>
+                  <Th color="green.200">Cantidad</Th>
+                  <Th color="green.200">Ingrediente</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.ingredients.map((ingredient, index) => (
+                  <Tr key={index}>
+                    <Td width="100px" textAlign="right" color="green.100">
+                      {ingredient.quantity} {ingredient.ingredient.unit}
+                    </Td>
+                    <Td color="green.100">{ingredient.ingredient.name}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </List>
-
-        <Heading mt="4" mb="4" size="md" color="green.100">
+        <Heading mt="5" mb="3" size="md" color="green.100">
           ・Pasos
         </Heading>
         <List color="green.100">
