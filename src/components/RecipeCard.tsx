@@ -3,11 +3,16 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Flex,
   Heading,
   Image,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
   Text,
 } from "@chakra-ui/react";
 import { Recipe } from "../types";
+import { FaStar } from "react-icons/fa";
 
 type Props = {
   recipe: Recipe;
@@ -30,9 +35,15 @@ function RecipeCard({ recipe, openRecipe }: Props) {
         </Heading>
       </CardBody>
       <CardFooter pt="0">
-        <Button onClick={openRecipe} color="white" bgColor="green.500">
-          Ver Receta
-        </Button>
+        <Flex width="100%" justifyContent="space-between" alignItems="center">
+          <Button onClick={openRecipe} color="white" bgColor="green.500">
+            Ver Receta
+          </Button>
+          <Tag size="lg" key="lg" variant="solid" bgColor="yellow.500">
+            <TagLeftIcon boxSize="12px" as={FaStar} />
+            <TagLabel>{recipe.score}</TagLabel>
+          </Tag>
+        </Flex>
       </CardFooter>
     </Card>
   );
