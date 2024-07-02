@@ -50,6 +50,7 @@ function RecipeModalContent({ data }: Props) {
         <Image
           alt={data.name}
           width="100%"
+          height="300px"
           borderRadius="lg"
           src={data.thumbnail}
         ></Image>

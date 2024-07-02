@@ -18,7 +18,13 @@ function RecipeCard({ recipe, openRecipe }: Props) {
   return (
     <Card boxShadow="lg" bgColor="green.700">
       <CardBody>
-        <Image src={recipe.thumbnail} alt={recipe.name} borderRadius="lg" />
+        <Image
+          src={recipe.thumbnail}
+          alt={recipe.name}
+          width="100%"
+          height="300px"
+          borderRadius="lg"
+        />
         <Heading mt="4" size="md" color="green.100">
           <Text>{recipe.name}</Text>
         </Heading>
