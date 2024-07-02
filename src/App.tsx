@@ -14,10 +14,10 @@ import useFetch from "./hooks/useFetch";
 const url = `${API_BASE_URL}/category`;
 const defaultCategory = { name: "Otro" };
 
-// const makeRecipeUrl = (id: number) =>
-//   `${API_BASE_URL}/recipe?idCategory=${id}`;
-
-const makeRecipeUrl = (id: number) => `${API_BASE_URL}/recipe`;
+const makeRecipeUrl = (selectedCategory: Category) =>
+  selectedCategory.name === "Otro"
+    ? `${API_BASE_URL}/recipe?page=0&limit=100`
+    : `${API_BASE_URL}/recipe?idCategory=${selectedCategory.id}`;
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,7 +32,7 @@ function App() {
     setData: setRecipes,
     loading: loadingRecipe,
     setLoading: setLoadingRecipe,
-  } = useHttpData<Recipe>(makeRecipeUrl(2));
+  } = useHttpData<Recipe>(makeRecipeUrl(selectedCategory));
 
   const searchApi = (searchForm: SearchForm) => {
     const url = `${API_BASE_URL}/recipe?name=${searchForm.search}`;
