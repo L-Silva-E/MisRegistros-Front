@@ -35,7 +35,10 @@ function App() {
   } = useHttpData<Recipe>(makeRecipeUrl(selectedCategory));
 
   const searchApi = (searchForm: SearchForm) => {
-    const url = `${API_BASE_URL}/recipe?name=${searchForm.search}`;
+    const url =
+      searchForm.search === ""
+        ? `${API_BASE_URL}/recipe?page=0&limit=100`
+        : `${API_BASE_URL}/recipe?name=${searchForm.search}`;
 
     setLoadingRecipe(true);
 

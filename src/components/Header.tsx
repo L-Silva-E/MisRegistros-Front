@@ -24,11 +24,7 @@ function Header({ onSubmit }: Props) {
           </InputLeftElement>
           <Input
             mr="2"
-            focusBorderColor={
-              !!formState.errors.search ? "crimson" : "green.600"
-            }
-            isInvalid={!!formState.errors.search}
-            {...register("search", { required: true })}
+            {...register("search", { required: false })}
             type="text"
             placeholder="Nombre de la Receta"
             borderColor="gray.600"
