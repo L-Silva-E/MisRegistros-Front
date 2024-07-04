@@ -14,7 +14,7 @@ type Props = {
 };
 
 function Header({ onSubmit }: Props) {
-  const { register, formState, handleSubmit } = useForm<SearchForm>();
+  const { register, handleSubmit } = useForm<SearchForm>();
   return (
     <Container mt="1" maxW="3xl">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -28,8 +28,11 @@ function Header({ onSubmit }: Props) {
             type="text"
             placeholder="Nombre de la Receta"
             borderColor="gray.600"
+            color="gray.800"
+            _hover={{ borderColor: "green.500" }}
+            _focus={{ borderColor: "green.500" }}
           />
-          <Button type="submit" bgColor="green.600" color="green.100">
+          <Button type="submit" colorScheme="green">
             Buscar
           </Button>
         </InputGroup>

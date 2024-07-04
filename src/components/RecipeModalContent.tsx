@@ -35,7 +35,7 @@ function RecipeModalContent({ data }: Props) {
 
   return (
     <>
-      <ModalHeader color="green.100" fontWeight="bold">
+      <ModalHeader color="green.900" fontWeight="bold">
         {data.name}
       </ModalHeader>
       <ModalCloseButton />
@@ -49,35 +49,33 @@ function RecipeModalContent({ data }: Props) {
           src={data.thumbnail}
         ></Image>
 
-        <Heading mt="5" mb="3" size="md" color="green.100">
-          ・Ingredientes
+        <Heading mt="5" mb="3" size="md" color="green.900">
+          Ingredientes
         </Heading>
-        <List>
-          <TableContainer>
-            <Table size="sm" variant="simple" colorScheme="green">
-              <Thead>
-                <Tr>
-                  <Th color="green.200">Cantidad</Th>
-                  <Th color="green.200">Ingrediente</Th>
+        <TableContainer>
+          <Table size="sm" variant="simple" colorScheme="green">
+            <Thead>
+              <Tr>
+                <Th color="green.900">Cantidad</Th>
+                <Th color="green.900">Ingrediente</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.ingredients.map((ingredient, index) => (
+                <Tr key={index}>
+                  <Td width="100px" textAlign="right">
+                    {ingredient.quantity} {ingredient.ingredient.unit}
+                  </Td>
+                  <Td>{ingredient.ingredient.name}</Td>
                 </Tr>
-              </Thead>
-              <Tbody>
-                {data.ingredients.map((ingredient, index) => (
-                  <Tr key={index}>
-                    <Td width="100px" textAlign="right" color="green.100">
-                      {ingredient.quantity} {ingredient.ingredient.unit}
-                    </Td>
-                    <Td color="green.100">{ingredient.ingredient.name}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </List>
-        <Heading mt="5" mb="3" size="md" color="green.100">
-          ・Pasos
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+        <Heading mt="5" mb="3" size="md" color="green.900">
+          Pasos
         </Heading>
-        <List color="green.100">
+        <List color="green.800">
           {steps.map((step, index) => (
             <ListItem key={index}>{step}</ListItem>
           ))}

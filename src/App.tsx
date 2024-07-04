@@ -73,7 +73,7 @@ function App() {
           pos="sticky"
           top="0px"
           pt="7px"
-          bg="gray.800"
+          bg="gray.200"
           color="white"
           area={"header"}
         >
@@ -85,8 +85,8 @@ function App() {
           left="0"
           p="5"
           area={"nav"}
-          bg="gray.700"
-          color="green.100"
+          bg="gray.200"
+          color="green.700"
           height="calc(100vh - 60px)"
           overflow="auto"
         >
@@ -97,7 +97,7 @@ function App() {
             setSelectedCategory={setSelectedCategory}
           />
         </GridItem>
-        <GridItem p="5" bg="gray.700" color="white" area={"main"}>
+        <GridItem p="5" bg="gray.50" color="white" area={"main"}>
           <MainContent
             openRecipe={searchRecipeDetails}
             loading={loadingRecipe}

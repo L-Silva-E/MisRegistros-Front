@@ -21,7 +21,7 @@ type Props = {
 
 function RecipeCard({ recipe, openRecipe }: Props) {
   return (
-    <Card boxShadow="lg" bgColor="green.700">
+    <Card boxShadow="lg" bgColor="gray.50" border="2px solid" borderColor="gray.200">
       <CardBody>
         <Image
           src={recipe.thumbnail}
@@ -30,7 +30,7 @@ function RecipeCard({ recipe, openRecipe }: Props) {
           height="300px"
           borderRadius="lg"
         />
-        <Heading mt="4" size="md" color="green.100">
+        <Heading mt="4" size="md" color="green.900">
           <Text>{recipe.name}</Text>
         </Heading>
       </CardBody>

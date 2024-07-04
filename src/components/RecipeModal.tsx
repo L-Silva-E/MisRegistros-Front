@@ -19,9 +19,9 @@ type Props = {
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
         <ModalOverlay />
-        <ModalContent bgColor="green.900">
+        <ModalContent bgColor="gray.50">
           {loading ? (
             <RecipeModalSkeleton />
           ) : (
