@@ -35,12 +35,15 @@ function RecipeModalContent({ data }: Props) {
 
   return (
     <>
-      <ModalHeader color="green.900" fontWeight="bold">
+      <ModalHeader fontSize="3xl" mb={-4} fontWeight="bold">
         {data.name}
       </ModalHeader>
       <ModalCloseButton />
 
       <ModalBody>
+        <Heading size="sm" fontWeight="normal" mb={8}>
+          {data.description}
+        </Heading>
         <Image
           alt={data.name}
           width="100%"
@@ -49,15 +52,15 @@ function RecipeModalContent({ data }: Props) {
           src={data.thumbnail}
         ></Image>
 
-        <Heading mt="5" mb="3" size="md" color="green.900">
+        <Heading mt="5" mb="3" size="md">
           Ingredientes
         </Heading>
         <TableContainer>
-          <Table size="sm" variant="simple" colorScheme="green">
+          <Table size="sm" variant="simple">
             <Thead>
               <Tr>
-                <Th color="green.900">Cantidad</Th>
-                <Th color="green.900">Ingrediente</Th>
+                <Th>Cantidad</Th>
+                <Th>Ingrediente</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -72,10 +75,10 @@ function RecipeModalContent({ data }: Props) {
             </Tbody>
           </Table>
         </TableContainer>
-        <Heading mt="5" mb="3" size="md" color="green.900">
+        <Heading mt="5" mb="3" size="md">
           Pasos
         </Heading>
-        <List color="green.800">
+        <List>
           {steps.map((step, index) => (
             <ListItem key={index}>{step}</ListItem>
           ))}

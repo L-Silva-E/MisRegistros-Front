@@ -21,14 +21,14 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
     <>
       <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
         <ModalOverlay />
-        <ModalContent bgColor="gray.50">
+        <ModalContent>
           {loading ? (
             <RecipeModalSkeleton />
           ) : (
             data && <RecipeModalContent data={data} />
           )}
           <ModalFooter>
-            <Button colorScheme="green" mr={3} onClick={onClose}>
+            <Button mr={3} onClick={onClose} variant="greenButton">
               Cerrar
             </Button>
           </ModalFooter>

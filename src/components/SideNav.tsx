@@ -8,12 +8,6 @@ type Props = {
   setSelectedCategory: (i: Category) => void;
 };
 
-const selectedProps = {
-  bgColor: "green.600",
-  color: "green.50",
-  fontWeight: "bold",
-};
-
 function SideNav({
   loading,
   categories,
@@ -24,7 +18,7 @@ function SideNav({
     <SkeletonText mt="2" noOfLines={10} spacing="5" skeletonHeight="4" />
   ) : (
     <>
-      <Heading color="green.900" fontSize={14} fontWeight="bold" mb={4}>
+      <Heading fontSize={14} fontWeight="bold" mb={4}>
         Categories
       </Heading>
       <VStack align="stretch">
@@ -35,9 +29,7 @@ function SideNav({
             py={1}
             borderRadius={5}
             key={i.name}
-            color="green.700"
-            _hover={{ textDecoration: "none" }}
-            {...(selectedCategory.name === i.name && selectedProps)}
+            variant={selectedCategory.name === i.name ? "selected" : ""}
           >
             {i.name == "Otro" ? "Todas" : i.name}
           </Link>

@@ -1,12 +1,15 @@
 import {
+  Box,
   Button,
   Container,
+  Flex,
   Input,
   InputGroup,
   InputLeftElement,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { FaSearch } from "react-icons/fa";
+import { FaMoon, FaSearch, FaSun } from "react-icons/fa";
 import { SearchForm } from "../types";
 
 type Props = {
@@ -15,29 +18,39 @@ type Props = {
 
 function Header({ onSubmit }: Props) {
   const { register, handleSubmit } = useForm<SearchForm>();
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
-    <Container mt="1" maxW="3xl">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputGroup>
-          <InputLeftElement pointerEvents="none" color="gray.500">
-            <FaSearch />
-          </InputLeftElement>
-          <Input
-            mr="2"
-            {...register("search", { required: false })}
-            type="text"
-            placeholder="Nombre de la Receta"
-            borderColor="gray.600"
-            color="gray.800"
-            _hover={{ borderColor: "green.500" }}
-            _focus={{ borderColor: "green.500" }}
-          />
-          <Button type="submit" colorScheme="green">
-            Buscar
-          </Button>
-        </InputGroup>
-      </form>
-    </Container>
+    <Flex alignItems="center" position="relative">
+      <Button
+        onClick={toggleColorMode}
+        position="absolute"
+        right="4"
+        variant="themeToggle"
+      >
+        {colorMode === "light" ? <FaMoon /> : <FaSun />}
+      </Button>
+
+      <Box flex="1" textAlign="center">
+        <Container mt="1" maxW="3xl" display="inline-block">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" color="gray.500">
+                <FaSearch />
+              </InputLeftElement>
+              <Input
+                {...register("search", { required: false })}
+                type="text"
+                placeholder="Nombre de la Receta"
+              />
+              <Button type="submit" variant="greenButton" ml="2">
+                Buscar
+              </Button>
+            </InputGroup>
+          </form>
+        </Container>
+      </Box>
+    </Flex>
   );
 }
 
