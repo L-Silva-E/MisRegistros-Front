@@ -1,4 +1,9 @@
-import { Grid, GridItem, useDisclosure } from "@chakra-ui/react";
+import {
+  Grid,
+  GridItem,
+  useColorModeValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import "./App.css";
 import Header from "./components/Header";
 import SideNav from "./components/SideNav";
@@ -73,20 +78,19 @@ function App() {
           pos="sticky"
           top="0px"
           pt="7px"
-          bg="gray.200"
-          color="white"
           area={"header"}
+          bg={useColorModeValue("gray.200", "gray.900")}
         >
           <Header onSubmit={searchApi} />
         </GridItem>
         <GridItem
+          boxShadow="xl"
           pos="sticky"
           top="60px"
           left="0"
           p="5"
           area={"nav"}
-          bg="gray.200"
-          color="green.700"
+          bg={useColorModeValue("gray.200", "gray.900")}
           height="calc(100vh - 60px)"
           overflow="auto"
         >
@@ -97,7 +101,12 @@ function App() {
             setSelectedCategory={setSelectedCategory}
           />
         </GridItem>
-        <GridItem p="5" bg="gray.50" color="white" area={"main"}>
+        <GridItem
+          pt="5"
+          px="16"
+          bg={useColorModeValue("gray.50", "gray.800")}
+          area={"main"}
+        >
           <MainContent
             openRecipe={searchRecipeDetails}
             loading={loadingRecipe}

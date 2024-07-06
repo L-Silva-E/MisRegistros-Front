@@ -9,7 +9,6 @@ import {
   Tag,
   TagLabel,
   TagLeftIcon,
-  Text,
 } from "@chakra-ui/react";
 import { Recipe } from "../types";
 import { FaStar } from "react-icons/fa";
@@ -21,7 +20,7 @@ type Props = {
 
 function RecipeCard({ recipe, openRecipe }: Props) {
   return (
-    <Card boxShadow="lg" bgColor="gray.50" border="2px solid" borderColor="gray.200">
+    <Card p={2}>
       <CardBody>
         <Image
           src={recipe.thumbnail}
@@ -30,13 +29,13 @@ function RecipeCard({ recipe, openRecipe }: Props) {
           height="300px"
           borderRadius="lg"
         />
-        <Heading mt="4" size="md" color="green.900">
-          <Text>{recipe.name}</Text>
+        <Heading mt="4" size="md">
+          {recipe.name}
         </Heading>
       </CardBody>
       <CardFooter pt="0">
         <Flex width="100%" justifyContent="space-between" alignItems="center">
-          <Button onClick={openRecipe} color="white" bgColor="green.500">
+          <Button onClick={openRecipe} variant="greenButton">
             Ver Receta
           </Button>
           <Tag size="lg" key="lg" variant="solid" bgColor="yellow.500">

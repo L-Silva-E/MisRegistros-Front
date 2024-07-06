@@ -13,7 +13,7 @@ function MainContent({ recipes, loading, openRecipe }: Props) {
   const skeletons = Array.from({ length: 6 }, (_, i) => i);
 
   return (
-    <SimpleGrid columns={[2, null, 3]} spacing="20px">
+    <SimpleGrid columns={[2, null, 3]} spacing="40px">
       {loading && skeletons.map((skeleton) => <SkeletonCard key={skeleton} />)}
       {!loading &&
         recipes.map((recipe) => (
