@@ -1,37 +1,50 @@
+import { useState } from "react";
 import { Heading, Link, SkeletonText, VStack } from "@chakra-ui/react";
-import { Category } from "../types";
 
-type Props = {
-  categories: Category[];
-  loading: boolean;
-  selectedCategory: Category;
-  setSelectedCategory: (i: Category) => void;
-};
+import getDataAxios from "../hooks/getDataAxios";
 
-function SideNav({
-  loading,
-  categories,
-  selectedCategory,
-  setSelectedCategory,
-}: Props) {
-  return loading ? (
+import { API_BASE_URL } from "../constants/environment";
+import { Feature } from "../types";
+
+type Props = {};
+
+const dataFeaturesTemp = [
+  { id: 1, name: "Libro de Recetas" },
+  { id: 2, name: "Apuntes" },
+  { id: 3, name: "Recordatorios" },
+  { id: 4, name: "Ideas para Desarrollar" },
+];
+
+const url = `${API_BASE_URL}/feature`;
+
+function SideNav({}: Props) {
+  const [selectedFeature, setSelectedFeature] = useState<Feature>(
+    dataFeaturesTemp[0]
+  );
+
+  const {
+    loading: loadingFeatures,
+    // data: dataFeatures TODO: Uncomment this line, and use this instead of dataFeaturesTemp
+  } = getDataAxios<Feature>(url);
+
+  return loadingFeatures ? (
     <SkeletonText mt="2" noOfLines={10} spacing="5" skeletonHeight="4" />
   ) : (
     <>
       <Heading fontSize={14} fontWeight="bold" mb={4}>
-        Categories
+        Selección
       </Heading>
       <VStack align="stretch">
-        {categories.map((i) => (
+        {dataFeaturesTemp.map((feature) => (
           <Link
-            onClick={() => setSelectedCategory(i)}
+            onClick={() => setSelectedFeature(feature)}
             px={2}
             py={1}
             borderRadius={5}
-            key={i.name}
-            variant={selectedCategory.name === i.name ? "selected" : ""}
+            key={feature.id}
+            variant={selectedFeature.name === feature.name ? "selected" : ""}
           >
-            {i.name == "Otro" ? "Todas" : i.name}
+            {feature.name}
           </Link>
         ))}
       </VStack>

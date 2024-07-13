@@ -2,7 +2,19 @@ export type SearchForm = {
   search: string;
 };
 
+export type Feature = {
+  id: number;
+  name: string;
+};
+
 export type Category = {
+  id?: number;
+  name: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type Origin = {
   id?: number;
   name: string;
   created_at?: string;

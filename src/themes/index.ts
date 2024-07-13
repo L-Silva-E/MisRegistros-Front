@@ -7,6 +7,7 @@ import HeadingTheme from "./gridTheme";
 import LinkTheme from "./linkTheme";
 import ListTheme from "./listTheme";
 import ModalTheme from "./modalTheme";
+import SelectTheme from "./selectTheme";
 import TableTheme from "./tableTheme";
 
 const config: ThemeConfig = {
@@ -34,6 +35,7 @@ const customTheme = extendTheme({
     Link: LinkTheme,
     List: ListTheme,
     Modal: ModalTheme,
+    Select: SelectTheme,
     Table: TableTheme,
   },
 });

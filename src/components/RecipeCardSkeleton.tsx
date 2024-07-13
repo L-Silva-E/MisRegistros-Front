@@ -2,7 +2,7 @@ import { Card, CardBody, Skeleton, SkeletonText } from "@chakra-ui/react";
 
 type Props = {};
 
-function SkeletonCard({}: Props) {
+function RecipeCardSkeleton({}: Props) {
   return (
     <Card boxShadow="lg" bgColor="gray.500">
       <CardBody>
@@ -13,4 +13,4 @@ function SkeletonCard({}: Props) {
   );
 }
 
-export default SkeletonCard;
+export default RecipeCardSkeleton;
