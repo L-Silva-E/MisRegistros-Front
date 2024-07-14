@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import SideNav from "./components/SideNav";
 import MainContent from "./components/MainContent";
 import RecipeModal from "./components/RecipeModal";
+import RecipeModalCreate from "./components/RecipeModalCreate";
 
 import getDetailAxios from "./hooks/getDetailAxios";
 
@@ -22,6 +23,11 @@ function App() {
     isOpen: isOpenRecipeContent,
     onOpen: onOpenRecipeContent,
     onClose: onCloseRecipeContent,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenRecipeCreate,
+    onOpen: onOpenRecipeCreate,
+    onClose: onCloseRecipeCreate,
   } = useDisclosure();
 
   const {
@@ -73,7 +79,10 @@ function App() {
           bg={useColorModeValue("gray.50", "gray.800")}
           area={"main"}
         >
-          <MainContent openRecipe={searchRecipeDetails} />
+          <MainContent
+            openRecipe={searchRecipeDetails}
+            openRecipeCreate={onOpenRecipeCreate}
+          />
         </GridItem>
       </Grid>
       <RecipeModal
@@ -81,6 +90,10 @@ function App() {
         loading={loadingRecipeDetail}
         isOpen={isOpenRecipeContent}
         onClose={onCloseRecipeContent}
+      />
+      <RecipeModalCreate
+        isOpen={isOpenRecipeCreate}
+        onClose={onCloseRecipeCreate}
       />
     </Fragment>
   );

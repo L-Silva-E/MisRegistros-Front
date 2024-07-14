@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { FaSearch, FaSortAlphaDown } from "react-icons/fa";
 import {
   Button,
   HStack,
@@ -22,6 +22,7 @@ import { Category, Origin, Recipe, SearchForm } from "../types";
 
 type Props = {
   openRecipe: (recipe: Recipe) => void;
+  openRecipeCreate: () => void;
 };
 
 const defaultFilterRecipe = { search: "" };
@@ -48,7 +49,7 @@ const makeRecipeUrl = (
   return url;
 };
 
-function MainContent({ openRecipe }: Props) {
+function MainContent({ openRecipe, openRecipeCreate }: Props) {
   const skeletons = Array.from({ length: 6 }, (_, i) => i);
 
   const { register, handleSubmit } = useForm<SearchForm>();
@@ -138,7 +139,7 @@ function MainContent({ openRecipe }: Props) {
         <Spacer />
 
         <HStack mt="4" mb="8" gap="25px">
-          <Button variant="greenButton" ml="2">
+          <Button variant="greenButton" ml="2" onClick={openRecipeCreate}>
             Crear Receta
           </Button>
         </HStack>
