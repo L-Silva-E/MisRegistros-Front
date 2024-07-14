@@ -8,6 +8,8 @@ import { Feature } from "../types";
 
 type Props = {};
 
+// const dataFeatureDefault = { id: 0, name: "" };
+
 const dataFeaturesTemp = [
   { id: 1, name: "Libro de Recetas" },
   { id: 2, name: "Apuntes" },
@@ -19,12 +21,14 @@ const url = `${API_BASE_URL}/feature`;
 
 function SideNav({}: Props) {
   const [selectedFeature, setSelectedFeature] = useState<Feature>(
+    // dataFeatureDefault
     dataFeaturesTemp[0]
   );
 
   const {
     loading: loadingFeatures,
-    // data: dataFeatures TODO: Uncomment this line, and use this instead of dataFeaturesTemp
+    // TODO: Uncomment below line, use this instead of dataFeaturesTemp
+    // data: dataFeatures
   } = getDataAxios<Feature>(url);
 
   return loadingFeatures ? (
