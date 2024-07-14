@@ -18,7 +18,11 @@ import { API_BASE_URL } from "./constants/environment";
 import { Recipe } from "./types";
 
 function App() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenRecipeContent,
+    onOpen: onOpenRecipeContent,
+    onClose: onCloseRecipeContent,
+  } = useDisclosure();
 
   const {
     loading: loadingRecipeDetail,
@@ -27,7 +31,7 @@ function App() {
   } = getDetailAxios<Recipe>();
 
   const searchRecipeDetails = (recipe: Recipe) => {
-    onOpen();
+    onOpenRecipeContent();
     getAxios(`${API_BASE_URL}/recipe?id=${recipe.id}`);
   };
 
@@ -75,8 +79,8 @@ function App() {
       <RecipeModal
         data={dataRecipeDetail}
         loading={loadingRecipeDetail}
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isOpenRecipeContent}
+        onClose={onCloseRecipeContent}
       />
     </Fragment>
   );
