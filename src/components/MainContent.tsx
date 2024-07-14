@@ -88,6 +88,11 @@ function MainContent({ openRecipe }: Props) {
               />
             </InputGroup>
           </form>
+          <Select icon={<FaSortAlphaDown />} placeholder="Orden">
+            <option value="Id">Id</option>
+            <option value="Nombre">Nombre</option>
+            <option value="Score">Mejor Valoradas</option>
+          </Select>
           <Select
             placeholder="Categoría"
             onChange={(e) =>
