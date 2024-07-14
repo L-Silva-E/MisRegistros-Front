@@ -4,7 +4,7 @@ type Props = {};
 
 function RecipeCardSkeleton({}: Props) {
   return (
-    <Card boxShadow="lg" bgColor="gray.500">
+    <Card boxShadow="lg">
       <CardBody>
         <Skeleton height="200px" />
         <SkeletonText mt="4" noOfLines={2} spacing="4" skeletonHeight="4" />

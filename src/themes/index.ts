@@ -9,6 +9,7 @@ import ListTheme from "./listTheme";
 import ModalTheme from "./modalTheme";
 import SelectTheme from "./selectTheme";
 import TableTheme from "./tableTheme";
+import TextareaTheme from "./textareaTheme";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -37,6 +38,7 @@ const customTheme = extendTheme({
     Modal: ModalTheme,
     Select: SelectTheme,
     Table: TableTheme,
+    Textarea: TextareaTheme,
   },
 });
 
