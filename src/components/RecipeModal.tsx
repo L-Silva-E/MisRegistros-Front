@@ -23,7 +23,7 @@ type Props = {
 };
 
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(true);
 
   return (
     <>
