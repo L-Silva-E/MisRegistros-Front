@@ -3,7 +3,6 @@ import {
   Image,
   ListItem,
   ModalBody,
-  ModalCloseButton,
   ModalHeader,
   List,
   TableContainer,
@@ -41,7 +40,6 @@ function RecipeModalContent({ data }: Props) {
       <ModalHeader fontSize="3xl" mb={-4} fontWeight="bold">
         {data.name}
       </ModalHeader>
-      <ModalCloseButton />
 
       <ModalBody>
         <Heading size="sm" fontWeight="normal" mb={4}>
