@@ -8,38 +8,26 @@ import { Feature } from "../types";
 
 type Props = {};
 
-// const dataFeatureDefault = { id: 0, name: "" };
+const dataFeatureDefault = { id: 1, name: "Libro de Recetas" };
 
-const dataFeaturesTemp = [
-  { id: 1, name: "Libro de Recetas" },
-  { id: 2, name: "Apuntes" },
-  { id: 3, name: "Recordatorios" },
-  { id: 4, name: "Ideas para Desarrollar" },
-];
-
-const url = `${API_BASE_URL}/feature`;
+const url = `${API_BASE_URL}/feature?isActive=true`;
 
 function SideNav({}: Props) {
-  const [selectedFeature, setSelectedFeature] = useState<Feature>(
-    // dataFeatureDefault
-    dataFeaturesTemp[0]
-  );
+  const [selectedFeature, setSelectedFeature] =
+    useState<Feature>(dataFeatureDefault);
 
-  const {
-    loading: loadingFeatures,
-    // TODO: Uncomment below line, use this instead of dataFeaturesTemp
-    // data: dataFeatures
-  } = getDataAxios<Feature>(url);
+  const { loading: loadingFeatures, data: dataFeatures } =
+    getDataAxios<Feature>(url);
 
   return loadingFeatures ? (
     <SkeletonText mt="2" noOfLines={10} spacing="5" skeletonHeight="4" />
   ) : (
     <>
       <Heading fontSize={14} fontWeight="bold" mb={4}>
-        Selección
+        Módulo
       </Heading>
       <VStack align="stretch">
-        {dataFeaturesTemp.map((feature) => (
+        {dataFeatures.map((feature) => (
           <Link
             onClick={() => setSelectedFeature(feature)}
             px={2}
