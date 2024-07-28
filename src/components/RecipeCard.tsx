@@ -10,6 +10,7 @@ import {
   Tag,
   TagLabel,
   TagLeftIcon,
+  Text,
 } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
@@ -33,6 +34,9 @@ function RecipeCard({ recipe, openRecipe }: Props) {
         <Heading mt="4" size="md">
           {recipe.name}
         </Heading>
+        <Text mt={2} isTruncated>
+          {recipe.description}
+        </Text>
       </CardBody>
       <CardFooter pt="0">
         <Flex width="100%" justifyContent="space-between" alignItems="center">

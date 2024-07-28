@@ -145,7 +145,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
         </HStack>
       </HStack>
 
-      <SimpleGrid columns={[2, null, 3]} spacing="40px">
+      <SimpleGrid columns={[2, null, 3]} spacing="40px" mb={16}>
         {loadingRecipe &&
           skeletons.map((skeleton) => <RecipeCardSkeleton key={skeleton} />)}
         {!loadingRecipe &&
