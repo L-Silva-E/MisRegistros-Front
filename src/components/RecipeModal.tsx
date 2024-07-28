@@ -6,6 +6,7 @@ import {
   ModalOverlay,
   Spacer,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import RecipeModalSkeleton from "./RecipeModalSkeleton";
@@ -14,6 +15,7 @@ import RecipeModalContent from "./RecipeModalContent";
 import { Recipe } from "../types";
 import { useState } from "react";
 import { FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
+import ConfirmationDeleteModal from "./ConfirmationDeleteModal";
 
 type Props = {
   isOpen: boolean;
@@ -23,6 +25,11 @@ type Props = {
 };
 
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
+  const {
+    isOpen: isOpenDeleteConfirmation,
+    onOpen: onOpenDeleteConfirmation,
+    onClose: onCloseDeleteConfirmation,
+  } = useDisclosure();
   const [isUnlocked, setIsUnlocked] = useState(true);
 
   return (
@@ -41,15 +48,20 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
             data && <RecipeModalContent data={data} />
           )}
           <ModalFooter mt={4}>
-            <Button variant="deleteButton">
+            <Button
+              isDisabled={!isUnlocked}
+              variant="deleteButton"
+              onClick={onOpenDeleteConfirmation}
+            >
               <FaTrash color={useColorModeValue("#1A202C", "white")} />
             </Button>
 
             <Spacer />
 
-            <Button variant="editButton">
+            <Button isDisabled={!isUnlocked} variant="editButton">
               <FaPencilAlt color={useColorModeValue("#1A202C", "white")} />
             </Button>
+
             <Button
               mx={4}
               backgroundColor={
@@ -74,12 +86,23 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
                 color={useColorModeValue("#1A202C", "white")}
               />
             </Button>
-            <Button isDisabled={!isUnlocked} onClick={onClose} variant="greenButton">
+
+            <Button
+              isDisabled={!isUnlocked}
+              onClick={onClose}
+              variant="greenButton"
+            >
               Cerrar
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ConfirmationDeleteModal
+        isOpen={isOpenDeleteConfirmation}
+        onClose={onCloseDeleteConfirmation}
+        onCloseModal={onClose}
+        data={data}
+      />
     </>
   );
 }
