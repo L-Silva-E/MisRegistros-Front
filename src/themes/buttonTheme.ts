@@ -39,6 +39,20 @@ const ButtonTheme = {
         },
       },
     },
+    editButton: {
+      backgroundColor: "gray.300",
+      color: "white",
+      ":hover": {
+        backgroundColor: "blue.500",
+      },
+      _dark: {
+        backgroundColor: "gray.600",
+        color: "white",
+        ":hover": {
+          backgroundColor: "blue.500",
+        },
+      },
+    },
     addRowButton: {
       backgroundColor: "gray.300",
       color: "white",

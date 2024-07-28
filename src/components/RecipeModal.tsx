@@ -47,7 +47,7 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
 
             <Spacer />
 
-            <Button variant="deleteButton">
+            <Button variant="editButton">
               <FaPencilAlt color={useColorModeValue("#1A202C", "white")} />
             </Button>
             <Button
