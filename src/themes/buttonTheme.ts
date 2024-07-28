@@ -24,6 +24,18 @@ const ButtonTheme = {
       ":hover": {
         backgroundColor: "green.600",
       },
+      ":disabled": {
+        ":hover": {
+          backgroundColor: "green.600",
+        },
+      },
+    },
+    redButton: {
+      backgroundColor: "red.500",
+      color: "white",
+      ":hover": {
+        backgroundColor: "red.600",
+      },
     },
     deleteButton: {
       backgroundColor: "gray.300",
