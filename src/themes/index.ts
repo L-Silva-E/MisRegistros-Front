@@ -3,7 +3,7 @@ import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import ButtonTheme from "./buttonTheme";
 import CardTheme from "./cardTheme";
 import InputTheme from "./inputTheme";
-import HeadingTheme from "./gridTheme";
+import HeadingTheme from "./headingTheme";
 import LinkTheme from "./linkTheme";
 import ListTheme from "./listTheme";
 import ModalTheme from "./modalTheme";
