@@ -31,7 +31,7 @@ function ConfirmationDeleteModal({
 
   const { deleteData } = useDeleteDataAxios<any>();
 
-  const deleteRecipe = () => {
+  const deleteRecipe = async () => {
     try {
       if (!data) {
         console.error("No recipe data to delete.");
@@ -40,7 +40,7 @@ function ConfirmationDeleteModal({
           title: "Hubo un error.",
           description: `No se ha eliminado ninguna receta.`,
           status: "error",
-          duration: 10000,
+          duration: 3000,
           isClosable: true,
         });
         return;
@@ -48,18 +48,20 @@ function ConfirmationDeleteModal({
 
       const url = `${API_BASE_URL}/recipe/${data.id}`;
 
-      deleteData(url);
+      await deleteData(url);
       console.log("Recipe deleted successfully", data);
+      localStorage.setItem(
+        "toast",
+        JSON.stringify({
+          title: "Receta eliminada.",
+          description: `La receta "${data.name}" ha sido eliminada exitosamente.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        })
+      );
       onClose();
       onCloseModal();
-      toast({
-        position: "top",
-        title: "Receta eliminada.",
-        description: `La receta "${data.name}" ha sido eliminada exitosamente.`,
-        status: "success",
-        duration: 10000,
-        isClosable: true,
-      });
       refreshWindow();
     } catch (error) {
       console.error("Error deleting recipe: ", error);

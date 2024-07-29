@@ -23,6 +23,7 @@ import { API_BASE_URL } from "../constants/environment";
 import { Category, IngredientDetail, Origin } from "../types";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { refreshWindow } from "../utils/utilities";
 
 type Props = {
   isOpen: boolean;
@@ -103,9 +104,23 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
     };
 
     try {
-      await postData(`${API_BASE_URL}/recipe`, bodyRecipe);
+      postData(`${API_BASE_URL}/recipe`, bodyRecipe);
+
+      localStorage.setItem(
+        "toast",
+        JSON.stringify({
+          title: "Receta creada.",
+          description: `La receta "${dataForm.name}" ha sido creada exitosamente.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        })
+      );
+
+      onClose();
+      refreshWindow();
     } catch (error) {
-      console.error("Error creating recipe:", error);
+      console.error("Error creating recipe: ", error);
     }
   };
 

@@ -1,10 +1,11 @@
 import "./App.css";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import {
   Grid,
   GridItem,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
 import Header from "./components/Header";
@@ -19,6 +20,28 @@ import { API_BASE_URL } from "./constants/environment";
 import { Recipe } from "./types";
 
 function App() {
+  const toast = useToast();
+
+  useEffect(() => {
+    const toastData = localStorage.getItem("toast");
+
+    if (toastData) {
+      const { title, description, status, duration, isClosable } =
+        JSON.parse(toastData);
+
+      toast({
+        position: "top",
+        title,
+        description,
+        status,
+        duration,
+        isClosable,
+      });
+
+      localStorage.removeItem("toast");
+    }
+  }, [toast]);
+
   const {
     isOpen: isOpenRecipeContent,
     onOpen: onOpenRecipeContent,
