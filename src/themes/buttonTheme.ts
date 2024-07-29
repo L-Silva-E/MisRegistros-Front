@@ -24,6 +24,60 @@ const ButtonTheme = {
       ":hover": {
         backgroundColor: "green.600",
       },
+      ":disabled": {
+        ":hover": {
+          backgroundColor: "green.600",
+        },
+      },
+    },
+    redButton: {
+      backgroundColor: "red.500",
+      color: "white",
+      ":hover": {
+        backgroundColor: "red.600",
+      },
+    },
+    deleteButton: {
+      backgroundColor: "gray.300",
+      color: "white",
+      ":hover": {
+        backgroundColor: "red.500",
+      },
+      _dark: {
+        backgroundColor: "gray.600",
+        color: "white",
+        ":hover": {
+          backgroundColor: "red.500",
+        },
+      },
+    },
+    editButton: {
+      backgroundColor: "gray.300",
+      color: "white",
+      ":hover": {
+        backgroundColor: "blue.500",
+      },
+      _dark: {
+        backgroundColor: "gray.600",
+        color: "white",
+        ":hover": {
+          backgroundColor: "blue.500",
+        },
+      },
+    },
+    addRowButton: {
+      backgroundColor: "gray.300",
+      color: "white",
+      ":hover": {
+        backgroundColor: "gray.400",
+      },
+      _dark: {
+        backgroundColor: "gray.600",
+        color: "white",
+        ":hover": {
+          backgroundColor: "gray.500",
+        },
+      },
     },
   },
 };

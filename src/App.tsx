@@ -1,67 +1,67 @@
+import "./App.css";
+import { Fragment, useEffect } from "react";
 import {
   Grid,
   GridItem,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import "./App.css";
+
 import Header from "./components/Header";
 import SideNav from "./components/SideNav";
 import MainContent from "./components/MainContent";
-import { Fragment, useState } from "react";
-import { API_BASE_URL, API_KEY } from "./constants/environment";
-import { Category, Recipe, SearchForm } from "./types";
-import useHttpData from "./hooks/useHttpData";
-import axios from "axios";
 import RecipeModal from "./components/RecipeModal";
-import useFetch from "./hooks/useFetch";
+import RecipeModalCreate from "./components/RecipeModalCreate";
 
-const url = `${API_BASE_URL}/category`;
-const defaultCategory = { name: "Otro" };
+import getDetailAxios from "./hooks/getDetailAxios";
 
-const makeRecipeUrl = (selectedCategory: Category) =>
-  selectedCategory.name === "Otro"
-    ? `${API_BASE_URL}/recipe?page=0&limit=100`
-    : `${API_BASE_URL}/recipe?idCategory=${selectedCategory.id}`;
+import { API_BASE_URL } from "./constants/environment";
+import { Recipe } from "./types";
 
 function App() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
-  const [selectedCategory, setSelectedCategory] =
-    useState<Category>(defaultCategory);
+  useEffect(() => {
+    const toastData = localStorage.getItem("toast");
 
-  const { loading, data } = useHttpData<Category>(url);
+    if (toastData) {
+      const { title, description, status, duration, isClosable } =
+        JSON.parse(toastData);
 
-  const {
-    data: dataRecipe,
-    setData: setRecipes,
-    loading: loadingRecipe,
-    setLoading: setLoadingRecipe,
-  } = useHttpData<Recipe>(makeRecipeUrl(selectedCategory));
+      toast({
+        position: "top",
+        title,
+        description,
+        status,
+        duration,
+        isClosable,
+      });
 
-  const searchApi = (searchForm: SearchForm) => {
-    const url =
-      searchForm.search === ""
-        ? `${API_BASE_URL}/recipe?page=0&limit=100`
-        : `${API_BASE_URL}/recipe?name=${searchForm.search}`;
-
-    setLoadingRecipe(true);
-
-    axios
-      .get<{ data: Recipe[] }>(url, { headers: { "api-key": API_KEY } })
-      .then(({ data }) => setRecipes(data.data))
-      .finally(() => setLoadingRecipe(false));
-  };
+      localStorage.removeItem("toast");
+    }
+  }, [toast]);
 
   const {
-    fetch,
+    isOpen: isOpenRecipeContent,
+    onOpen: onOpenRecipeContent,
+    onClose: onCloseRecipeContent,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenRecipeCreate,
+    onOpen: onOpenRecipeCreate,
+    onClose: onCloseRecipeCreate,
+  } = useDisclosure();
+
+  const {
     loading: loadingRecipeDetail,
     data: dataRecipeDetail,
-  } = useFetch<Recipe>();
+    getAxios,
+  } = getDetailAxios<Recipe>();
 
   const searchRecipeDetails = (recipe: Recipe) => {
-    onOpen();
-    fetch(`${API_BASE_URL}/recipe?id=${recipe.id}`);
+    onOpenRecipeContent();
+    getAxios(`${API_BASE_URL}/recipe?id=${recipe.id}`);
   };
 
   return (
@@ -81,7 +81,7 @@ function App() {
           area={"header"}
           bg={useColorModeValue("gray.200", "gray.900")}
         >
-          <Header onSubmit={searchApi} />
+          <Header />
         </GridItem>
         <GridItem
           boxShadow="xl"
@@ -94,12 +94,7 @@ function App() {
           height="calc(100vh - 60px)"
           overflow="auto"
         >
-          <SideNav
-            categories={data}
-            loading={loading}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+          <SideNav />
         </GridItem>
         <GridItem
           pt="5"
@@ -109,16 +104,19 @@ function App() {
         >
           <MainContent
             openRecipe={searchRecipeDetails}
-            loading={loadingRecipe}
-            recipes={dataRecipe}
+            openRecipeCreate={onOpenRecipeCreate}
           />
         </GridItem>
       </Grid>
       <RecipeModal
         data={dataRecipeDetail}
         loading={loadingRecipeDetail}
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isOpenRecipeContent}
+        onClose={onCloseRecipeContent}
+      />
+      <RecipeModalCreate
+        isOpen={isOpenRecipeCreate}
+        onClose={onCloseRecipeCreate}
       />
     </Fragment>
   );

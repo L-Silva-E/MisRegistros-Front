@@ -1,10 +1,12 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+
+import axios from "axios";
+
 import { API_KEY } from "../constants/environment";
 
-export default function useHttpData<T>(url: string) {
-  const [data, setData] = useState<T[]>([]);
+export default function getDataAxios<T>(url: string) {
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<T[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -25,7 +27,7 @@ export default function useHttpData<T>(url: string) {
       })
       .catch((error) => {
         if (!ignore && error.name !== "CanceledError") {
-          console.error("Error fetching data:", error);
+          console.error("Error getting data with Axios:", error);
         }
       })
       .finally(() => {
@@ -40,5 +42,5 @@ export default function useHttpData<T>(url: string) {
     };
   }, [url]);
 
-  return { data, setData, loading, setLoading };
+  return { loading, setLoading, data, setData };
 }

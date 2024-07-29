@@ -3,7 +3,6 @@ import {
   Image,
   ListItem,
   ModalBody,
-  ModalCloseButton,
   ModalHeader,
   List,
   TableContainer,
@@ -13,7 +12,10 @@ import {
   Th,
   Tbody,
   Td,
+  HStack,
+  Tag,
 } from "@chakra-ui/react";
+
 import { Recipe } from "../types";
 
 type Props = {
@@ -38,12 +40,15 @@ function RecipeModalContent({ data }: Props) {
       <ModalHeader fontSize="3xl" mb={-4} fontWeight="bold">
         {data.name}
       </ModalHeader>
-      <ModalCloseButton />
 
       <ModalBody>
-        <Heading size="sm" fontWeight="normal" mb={8}>
+        <Heading size="sm" fontWeight="normal" mb={4}>
           {data.description}
         </Heading>
+        <HStack mb={4}>
+          <Tag colorScheme="green">{data.category?.name}</Tag>
+          <Tag colorScheme="green">{data.origin?.name}</Tag>
+        </HStack>
         <Image
           alt={data.name}
           width="100%"

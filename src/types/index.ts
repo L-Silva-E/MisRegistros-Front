@@ -2,11 +2,23 @@ export type SearchForm = {
   search: string;
 };
 
+export type Feature = {
+  id: number;
+  name: string;
+};
+
 export type Category = {
   id?: number;
   name: string;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type Origin = {
+  id?: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Ingredient = {
@@ -15,6 +27,14 @@ export type Ingredient = {
     name: string;
     unit: string;
   };
+};
+
+export type IngredientDetail = {
+  id: number;
+  name: string;
+  unit: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Step = {
@@ -30,8 +50,8 @@ export type Recipe = {
   description: string;
   score: number;
   thumbnail: string;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
   category?: Category;
   origin?: Category;
   ingredients: Ingredient[];

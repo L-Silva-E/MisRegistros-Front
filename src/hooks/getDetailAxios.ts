@@ -1,12 +1,14 @@
-import axios from "axios";
 import { useState } from "react";
+
+import axios from "axios";
+
 import { API_KEY } from "../constants/environment";
 
 export default <T>() => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T>();
 
-  const fetch = (url: string) => {
+  const getAxios = (url: string) => {
     setLoading(true);
 
     axios
@@ -15,5 +17,5 @@ export default <T>() => {
       .finally(() => setLoading(false));
   };
 
-  return { loading, setLoading, fetch, data };
+  return { loading, setLoading, data, getAxios };
 };
