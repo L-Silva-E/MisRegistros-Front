@@ -8,10 +8,9 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-
 import RecipeModalSkeleton from "./RecipeModalSkeleton";
 import RecipeModalContent from "./RecipeModalContent";
-
+import RecipeModalUpdate from "./RecipeModalUpdate"; // Importa el nuevo modal
 import { Recipe } from "../types";
 import { useState } from "react";
 import { FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
@@ -30,7 +29,19 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
     onOpen: onOpenDeleteConfirmation,
     onClose: onCloseDeleteConfirmation,
   } = useDisclosure();
+
+  const {
+    isOpen: isOpenEditModal,
+    onOpen: onOpenEditModal,
+    onClose: onCloseEditModal,
+  } = useDisclosure(); // Controla el modal de edición
+
   const [isUnlocked, setIsUnlocked] = useState(true);
+
+  const handleEdit = () => {
+    onOpenEditModal();
+    onClose();
+  };
 
   return (
     <>
@@ -58,7 +69,7 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
 
             <Spacer />
 
-            <Button isDisabled={!isUnlocked} variant="editButton">
+            <Button isDisabled={!isUnlocked} variant="editButton" onClick={handleEdit}>
               <FaPencilAlt color={useColorModeValue("#1A202C", "white")} />
             </Button>
 
@@ -97,6 +108,13 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <RecipeModalUpdate
+        isOpen={isOpenEditModal}
+        onClose={onCloseEditModal}
+        data={data}
+      />
+
       <ConfirmationDeleteModal
         isOpen={isOpenDeleteConfirmation}
         onClose={onCloseDeleteConfirmation}
