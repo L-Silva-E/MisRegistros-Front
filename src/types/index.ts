@@ -24,6 +24,7 @@ export type Origin = {
 export type Ingredient = {
   quantity: number;
   ingredient: {
+    id: string;
     name: string;
     unit: string;
   };
