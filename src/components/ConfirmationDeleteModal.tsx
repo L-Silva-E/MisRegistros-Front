@@ -13,6 +13,7 @@ import {
 import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Recipe } from "../types";
 import { refreshWindow } from "../utils/utilities";
 
@@ -50,7 +51,7 @@ function ConfirmationDeleteModal({
 
       const url = `${API_BASE_URL}/recipe/${data.id}`;
 
-      await axiosFetch("DELETE", url);
+      await axiosFetch(HTTP_METHODS.DELETE, url);
       console.log("Recipe deleted successfully", data);
       localStorage.setItem(
         "toast",

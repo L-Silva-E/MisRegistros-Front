@@ -1,15 +1,20 @@
 import { useState } from "react";
-import axios from "axios";
-import { API_KEY } from "../constants/environment";
 
-type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+import axios from "axios";
+
+import { API_KEY } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 
 const useAxios = <T>() => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | null>(null);
 
-  const axiosFetch = async (method: HttpMethod, url: string, body?: any) => {
+  const axiosFetch = async (
+    method: keyof typeof HTTP_METHODS,
+    url: string,
+    body?: any
+  ) => {
     setLoading(true);
     setError(null);
 
@@ -23,7 +28,7 @@ const useAxios = <T>() => {
 
       let responseData = responseAxios.data;
 
-      if (method === "GET") {
+      if (method === HTTP_METHODS.GET) {
         if (/[?&]id=/.test(url)) {
           responseData = responseAxios.data.data[0];
         } else {

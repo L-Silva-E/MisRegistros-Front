@@ -23,6 +23,7 @@ import {
 import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Category, IngredientDetail, Origin } from "../types";
 import { refreshWindow } from "../utils/utilities";
 
@@ -65,9 +66,18 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
   } = useAxios<IngredientDetail[]>();
 
   useEffect(() => {
-    axiosFetchCategories("GET", `${API_BASE_URL}/category?page=0&limit=100`);
-    axiosFetchOrigins("GET", `${API_BASE_URL}/origin?page=0&limit=100`);
-    axiosFetchIngredients("GET", `${API_BASE_URL}/ingredient?page=0&limit=250`);
+    axiosFetchCategories(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/category?page=0&limit=100`
+    );
+    axiosFetchOrigins(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/origin?page=0&limit=100`
+    );
+    axiosFetchIngredients(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/ingredient?page=0&limit=250`
+    );
   }, []);
 
   const addIngredientRow = () => {
@@ -119,7 +129,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
     };
 
     try {
-      await axiosFetch("POST", `${API_BASE_URL}/recipe`, bodyRecipe);
+      await axiosFetch(HTTP_METHODS.POST, `${API_BASE_URL}/recipe`, bodyRecipe);
 
       localStorage.setItem(
         "toast",

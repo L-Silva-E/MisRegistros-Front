@@ -4,6 +4,7 @@ import { Heading, Link, SkeletonText, VStack } from "@chakra-ui/react";
 import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Feature } from "../types";
 
 type Props = {};
@@ -23,7 +24,7 @@ function SideNav({}: Props) {
   } = useAxios<Feature[]>();
 
   useEffect(() => {
-    axiosFetchFeature("GET", url);
+    axiosFetchFeature(HTTP_METHODS.GET, url);
   }, []);
 
   return loadingFeatures ? (

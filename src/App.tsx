@@ -17,6 +17,7 @@ import RecipeModalCreate from "./components/RecipeModalCreate";
 import useAxios from "./hooks/axiosFetch";
 
 import { API_BASE_URL } from "./constants/environment";
+import { HTTP_METHODS } from "./constants/httpMethods";
 import { Recipe } from "./types";
 
 function App() {
@@ -61,7 +62,7 @@ function App() {
 
   const searchRecipeDetails = (recipe: Recipe) => {
     onOpenRecipeContent();
-    axiosFetch("GET", `${API_BASE_URL}/recipe/?id=${recipe.id}`);
+    axiosFetch(HTTP_METHODS.GET, `${API_BASE_URL}/recipe/?id=${recipe.id}`);
   };
 
   return (

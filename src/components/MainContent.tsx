@@ -18,6 +18,7 @@ import RecipeCardSkeleton from "./RecipeCardSkeleton";
 import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Category, Origin, Recipe, SearchForm } from "../types";
 
 type Props = {
@@ -80,11 +81,11 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
 
   useEffect(() => {
     axiosFetchRecipe(
-      "GET",
+      HTTP_METHODS.GET,
       makeRecipeUrl(filterRecipe, selectedCategory, selectedOrigin)
     );
-    axiosFetchCategories("GET", `${API_BASE_URL}/category`);
-    axiosFetchOrigins("GET", `${API_BASE_URL}/origin`);
+    axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
+    axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
   }, []);
 
   return (

@@ -23,6 +23,7 @@ import {
 import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Category, IngredientDetail, Origin, Recipe } from "../types";
 import { refreshWindow } from "../utils/utilities";
 
@@ -62,9 +63,18 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
   } = useAxios<IngredientDetail[]>();
 
   useEffect(() => {
-    axiosFetchCategories("GET", `${API_BASE_URL}/category?page=0&limit=100`);
-    axiosFetchOrigins("GET", `${API_BASE_URL}/origin?page=0&limit=100`);
-    axiosFetchIngredients("GET", `${API_BASE_URL}/ingredient?page=0&limit=250`);
+    axiosFetchCategories(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/category?page=0&limit=100`
+    );
+    axiosFetchOrigins(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/origin?page=0&limit=100`
+    );
+    axiosFetchIngredients(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/ingredient?page=0&limit=250`
+    );
   }, []);
 
   const { register, handleSubmit, setValue } = useForm();
@@ -140,7 +150,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
 
     try {
       await axiosFetch(
-        "PATCH",
+        HTTP_METHODS.PATCH,
         `${API_BASE_URL}/recipe/${data?.id}`,
         bodyRecipe
       );
