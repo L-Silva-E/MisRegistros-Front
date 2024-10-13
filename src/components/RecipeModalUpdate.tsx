@@ -15,10 +15,9 @@ import {
   ModalOverlay,
   Select,
   Textarea,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
-import getDataAxios from "../hooks/getDataAxios";
-import usePatchDataAxios from "../hooks/patchDataAxios";
+import useAxios from "../hooks/axiosFetch";
 import { API_BASE_URL } from "../constants/environment";
 import { Category, IngredientDetail, Origin, Recipe } from "../types";
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -39,26 +38,39 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
+  // ~ axiosFetch: Patch, Categories, Origins, Ingredients
+  const { axiosFetch } = useAxios();
+
+  const {
+    loading: loadingCategories,
+    data: dataCategories,
+    axiosFetch: axiosFetchCategories,
+  } = useAxios<Category[]>();
+
+  const {
+    loading: loadingOrigins,
+    data: dataOrigins,
+    axiosFetch: axiosFetchOrigins,
+  } = useAxios<Origin[]>();
+
+  const {
+    loading: loadingIngredients,
+    data: dataIngredients,
+    axiosFetch: axiosFetchIngredients,
+  } = useAxios<IngredientDetail[]>();
+
+  useEffect(() => {
+    axiosFetchCategories("GET", `${API_BASE_URL}/category?page=0&limit=100`);
+    axiosFetchOrigins("GET", `${API_BASE_URL}/origin?page=0&limit=100`);
+    axiosFetchIngredients("GET", `${API_BASE_URL}/ingredient?page=0&limit=250`);
+  }, []);
+
   const { register, handleSubmit, setValue } = useForm();
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(defaultCategory);
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
   const [ingredients, setIngredients] = useState([defaultIngredientState]);
 
-  // Cargar datos de categorías y orígenes
-  const { loading: loadingCategories, data: dataCategories } =
-    getDataAxios<Category>(`${API_BASE_URL}/category?page=0&limit=100`);
-  const { loading: loadingOrigins, data: dataOrigins } = getDataAxios<Origin>(
-    `${API_BASE_URL}/origin?page=0&limit=100`
-  );
-  const { loading: loadingIngredients, data: dataIngredients } =
-    getDataAxios<IngredientDetail>(
-      `${API_BASE_URL}/ingredient?page=0&limit=250`
-    );
-
-  const { patchData } = usePatchDataAxios<any>();
-
-  // Setear datos de la receta a editar en el formulario cuando se abra el modal
   useEffect(() => {
     if (data) {
       setValue("name", data.name);
@@ -66,11 +78,11 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
       setValue("thumbnail", data.thumbnail);
       setValue("score", data.score.toString());
       setSelectedCategory(
-        dataCategories.find((cat) => cat.id === data.idCategory) ||
+        dataCategories?.find((cat) => cat.id === data.idCategory) ||
           defaultCategory
       );
       setSelectedOrigin(
-        dataOrigins.find((orig) => orig.id === data.idOrigin) || defaultOrigin
+        dataOrigins?.find((orig) => orig.id === data.idOrigin) || defaultOrigin
       );
       setIngredients(
         data.ingredients.map((ingredient) => ({
@@ -125,7 +137,11 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
     };
 
     try {
-      await patchData(`${API_BASE_URL}/recipe/${data?.id}`, bodyRecipe);
+      await axiosFetch(
+        "PATCH",
+        `${API_BASE_URL}/recipe/${data?.id}`,
+        bodyRecipe
+      );
 
       localStorage.setItem(
         "toast",
@@ -201,7 +217,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                     value={selectedCategory.name}
                     onChange={(e) =>
                       setSelectedCategory(
-                        dataCategories.find(
+                        dataCategories?.find(
                           (category) => category.name === e.target.value
                         ) || defaultCategory
                       )
@@ -211,7 +227,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                       <option value="emptyCategory">Cargando...</option>
                     )}
                     {!loadingCategories &&
-                      dataCategories.map((category) => (
+                      dataCategories?.map((category) => (
                         <option key={category.id} value={category.name}>
                           {category.name}
                         </option>
@@ -226,7 +242,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                     value={selectedOrigin.name}
                     onChange={(e) =>
                       setSelectedOrigin(
-                        dataOrigins.find(
+                        dataOrigins?.find(
                           (origin) => origin.name === e.target.value
                         ) || defaultOrigin
                       )
@@ -236,7 +252,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                       <option value="emptyOrigin">Cargando...</option>
                     )}
                     {!loadingOrigins &&
-                      dataOrigins.map((origin) => (
+                      dataOrigins?.map((origin) => (
                         <option key={origin.id} value={origin.name}>
                           {origin.name}
                         </option>
@@ -260,7 +276,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                         <option value="emptyIngredient">Cargando...</option>
                       )}
                       {!loadingIngredients &&
-                        dataIngredients.map((ingredient) => (
+                        dataIngredients?.map((ingredient) => (
                           <option key={ingredient.id} value={ingredient.id}>
                             {ingredient.name}
                           </option>
@@ -291,7 +307,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                     >
                       {ingredients[index].id === "0"
                         ? "-"
-                        : dataIngredients.find(
+                        : dataIngredients?.find(
                             (item) =>
                               item.id === parseInt(ingredients[index].id)
                           )?.unit}

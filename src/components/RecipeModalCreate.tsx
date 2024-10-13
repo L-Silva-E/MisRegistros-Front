@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Center,
@@ -17,8 +17,7 @@ import {
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
-import getDataAxios from "../hooks/getDataAxios";
-import usePostDataAxios from "../hooks/postDataAxios";
+import useAxios from "../hooks/axiosFetch";
 import { API_BASE_URL } from "../constants/environment";
 import { Category, IngredientDetail, Origin } from "../types";
 import { FaPlus, FaTrash } from "react-icons/fa";
@@ -45,15 +44,29 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
   const [ingredients, setIngredients] = useState([defaultIngredientState]);
 
-  const { loading: loadingCategories, data: dataCategories } =
-    getDataAxios<Category>(`${API_BASE_URL}/category?page=0&limit=100`);
-  const { loading: loadingOrigins, data: dataOrigins } = getDataAxios<Origin>(
-    `${API_BASE_URL}/origin?page=0&limit=100`
-  );
-  const { loading: loadingIngredients, data: dataIngredients } =
-    getDataAxios<IngredientDetail>(
-      `${API_BASE_URL}/ingredient?page=0&limit=250`
-    );
+  const {
+    loading: loadingCategories,
+    data: dataCategories,
+    axiosFetch: axiosFetchCategories,
+  } = useAxios<Category[]>();
+
+  const {
+    loading: loadingOrigins,
+    data: dataOrigins,
+    axiosFetch: axiosFetchOrigins,
+  } = useAxios<Origin[]>();
+
+  const {
+    loading: loadingIngredients,
+    data: dataIngredients,
+    axiosFetch: axiosFetchIngredients,
+  } = useAxios<IngredientDetail[]>();
+
+  useEffect(() => {
+    axiosFetchCategories("GET", `${API_BASE_URL}/category?page=0&limit=100`);
+    axiosFetchOrigins("GET", `${API_BASE_URL}/origin?page=0&limit=100`);
+    axiosFetchIngredients("GET", `${API_BASE_URL}/ingredient?page=0&limit=250`);
+  }, []);
 
   const addIngredientRow = () => {
     setIngredients([...ingredients, defaultIngredientState]);
@@ -77,7 +90,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
     setIngredients(newIngredients);
   };
 
-  const { postData } = usePostDataAxios<any>();
+  const { axiosFetch } = useAxios();
 
   const onSubmit = async (dataForm: any) => {
     const bodyRecipe = {
@@ -104,7 +117,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
     };
 
     try {
-      postData(`${API_BASE_URL}/recipe`, bodyRecipe);
+      await axiosFetch("POST", `${API_BASE_URL}/recipe`, bodyRecipe);
 
       localStorage.setItem(
         "toast",
@@ -181,7 +194,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                     placeholder="-"
                     onChange={(e) =>
                       setSelectedCategory(
-                        dataCategories.find(
+                        dataCategories?.find(
                           (category) => category.name === e.target.value
                         ) || defaultCategory
                       )
@@ -191,7 +204,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                       <option value="emptyCategory">Cargando...</option>
                     )}
                     {!loadingCategories &&
-                      dataCategories.map((category) => (
+                      dataCategories?.map((category) => (
                         <option key={category.id} value={category.name}>
                           {category.name}
                         </option>
@@ -205,7 +218,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                     placeholder="-"
                     onChange={(e) =>
                       setSelectedOrigin(
-                        dataOrigins.find(
+                        dataOrigins?.find(
                           (origin) => origin.name === e.target.value
                         ) || defaultOrigin
                       )
@@ -215,7 +228,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                       <option value="emptyOrigin">Cargando...</option>
                     )}
                     {!loadingOrigins &&
-                      dataOrigins.map((origin) => (
+                      dataOrigins?.map((origin) => (
                         <option key={origin.id} value={origin.name}>
                           {origin.name}
                         </option>
@@ -239,7 +252,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                         <option value="emptyIngredient">Cargando...</option>
                       )}
                       {!loadingIngredients &&
-                        dataIngredients.map((ingredient) => (
+                        dataIngredients?.map((ingredient) => (
                           <option key={ingredient.id} value={ingredient.id}>
                             {ingredient.name}
                           </option>
@@ -270,7 +283,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
                     >
                       {ingredients[index].id === "0"
                         ? "-"
-                        : dataIngredients.find(
+                        : dataIngredients?.find(
                             (item) =>
                               item.id === parseInt(ingredients[index].id)
                           )?.unit}
