@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import {
   Button,
   Center,
@@ -17,11 +19,11 @@ import {
   Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
+
 import useAxios from "../hooks/axiosFetch";
+
 import { API_BASE_URL } from "../constants/environment";
 import { Category, IngredientDetail, Origin, Recipe } from "../types";
-import { FaPlus, FaTrash } from "react-icons/fa";
-import { useForm } from "react-hook-form";
 import { refreshWindow } from "../utils/utilities";
 
 type Props = {

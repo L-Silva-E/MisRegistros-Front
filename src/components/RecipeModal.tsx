@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
 import {
   Button,
   Modal,
@@ -8,13 +10,13 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
+
 import RecipeModalSkeleton from "./RecipeModalSkeleton";
 import RecipeModalContent from "./RecipeModalContent";
-import RecipeModalUpdate from "./RecipeModalUpdate"; // Importa el nuevo modal
-import { Recipe } from "../types";
-import { useState } from "react";
-import { FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
+import RecipeModalUpdate from "./RecipeModalUpdate";
 import ConfirmationDeleteModal from "./ConfirmationDeleteModal";
+
+import { Recipe } from "../types";
 
 type Props = {
   isOpen: boolean;
@@ -69,7 +71,11 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
 
             <Spacer />
 
-            <Button isDisabled={!isUnlocked} variant="editButton" onClick={handleEdit}>
+            <Button
+              isDisabled={!isUnlocked}
+              variant="editButton"
+              onClick={handleEdit}
+            >
               <FaPencilAlt color={useColorModeValue("#1A202C", "white")} />
             </Button>
 
