@@ -33,8 +33,8 @@ type Props = {
   data: Recipe | undefined; // Recibe los datos de la receta a editar
 };
 
-const defaultCategory = { id: 0, name: "" };
-const defaultOrigin = { id: 0, name: "" };
+const defaultCategory = { id: 0, name: "", createdAt: "", updatedAt: "" };
+const defaultOrigin = { id: 0, name: "", createdAt: "", updatedAt: "" };
 const defaultIngredientState = { id: "0", quantity: "" };
 
 function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
