@@ -14,9 +14,10 @@ import MainContent from "./components/MainContent";
 import RecipeModal from "./components/RecipeModal";
 import RecipeModalCreate from "./components/RecipeModalCreate";
 
-import getDetailAxios from "./hooks/getDetailAxios";
+import useAxios from "./hooks/axiosFetch";
 
 import { API_BASE_URL } from "./constants/environment";
+import { HTTP_METHODS } from "./constants/httpMethods";
 import { Recipe } from "./types";
 
 function App() {
@@ -54,14 +55,14 @@ function App() {
   } = useDisclosure();
 
   const {
+    axiosFetch,
     loading: loadingRecipeDetail,
     data: dataRecipeDetail,
-    getAxios,
-  } = getDetailAxios<Recipe>();
+  } = useAxios<Recipe>();
 
   const searchRecipeDetails = (recipe: Recipe) => {
     onOpenRecipeContent();
-    getAxios(`${API_BASE_URL}/recipe?id=${recipe.id}`);
+    axiosFetch(HTTP_METHODS.GET, `${API_BASE_URL}/recipe/?id=${recipe.id}`);
   };
 
   return (

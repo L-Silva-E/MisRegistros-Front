@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heading, Link, SkeletonText, VStack } from "@chakra-ui/react";
 
-import getDataAxios from "../hooks/getDataAxios";
+import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Feature } from "../types";
 
 type Props = {};
@@ -16,8 +17,15 @@ function SideNav({}: Props) {
   const [selectedFeature, setSelectedFeature] =
     useState<Feature>(dataFeatureDefault);
 
-  const { loading: loadingFeatures, data: dataFeatures } =
-    getDataAxios<Feature>(url);
+  const {
+    loading: loadingFeatures,
+    data: dataFeatures,
+    axiosFetch: axiosFetchFeature,
+  } = useAxios<Feature[]>();
+
+  useEffect(() => {
+    axiosFetchFeature(HTTP_METHODS.GET, url);
+  }, []);
 
   return loadingFeatures ? (
     <SkeletonText mt="2" noOfLines={10} spacing="5" skeletonHeight="4" />
@@ -27,7 +35,7 @@ function SideNav({}: Props) {
         Módulo
       </Heading>
       <VStack align="stretch">
-        {dataFeatures.map((feature) => (
+        {dataFeatures?.map((feature) => (
           <Link
             onClick={() => setSelectedFeature(feature)}
             px={2}

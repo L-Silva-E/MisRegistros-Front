@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch, FaSortAlphaDown } from "react-icons/fa";
 import {
@@ -15,9 +15,10 @@ import {
 import RecipeCard from "./RecipeCard";
 import RecipeCardSkeleton from "./RecipeCardSkeleton";
 
-import getDataAxios from "../hooks/getDataAxios";
+import useAxios from "../hooks/axiosFetch";
 
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Category, Origin, Recipe, SearchForm } from "../types";
 
 type Props = {
@@ -61,15 +62,31 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
     useState<Category>(defaultCategory);
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
 
-  // ~ GetDataAxios: Recipe, Category, Origin
-  const { loading: loadingCategories, data: dataCategories } =
-    getDataAxios<Category>(`${API_BASE_URL}/category?page=0&limit=100`);
-  const { loading: loadingOrigins, data: dataOrigins } = getDataAxios<Origin>(
-    `${API_BASE_URL}/origin?page=0&limit=100`
-  );
-  const { loading: loadingRecipe, data: dataRecipe } = getDataAxios<Recipe>(
-    makeRecipeUrl(filterRecipe, selectedCategory, selectedOrigin)
-  );
+  // ~ axiosFetch: Recipe, Category, Origin
+  const {
+    loading: loadingRecipe,
+    data: dataRecipe,
+    axiosFetch: axiosFetchRecipe,
+  } = useAxios<Recipe[]>();
+  const {
+    loading: loadingCategories,
+    data: dataCategories,
+    axiosFetch: axiosFetchCategories,
+  } = useAxios<Category[]>();
+  const {
+    loading: loadingOrigins,
+    data: dataOrigins,
+    axiosFetch: axiosFetchOrigins,
+  } = useAxios<Origin[]>();
+
+  useEffect(() => {
+    axiosFetchRecipe(
+      HTTP_METHODS.GET,
+      makeRecipeUrl(filterRecipe, selectedCategory, selectedOrigin)
+    );
+    axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
+    axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
+  }, []);
 
   return (
     <>
@@ -98,7 +115,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
             placeholder="Categoría"
             onChange={(e) =>
               setSelectedCategory(
-                dataCategories.find(
+                dataCategories?.find(
                   (category) => category.name === e.target.value
                 ) || defaultCategory
               )
@@ -109,7 +126,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
               <option value="emptyCategory">Cargando...</option>
             )}
             {!loadingCategories &&
-              dataCategories.map((category) => (
+              dataCategories?.map((category) => (
                 <option key={category.id} value={category.name}>
                   {category.name}
                 </option>
@@ -120,7 +137,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
             placeholder="Origen"
             onChange={(e) =>
               setSelectedOrigin(
-                dataOrigins.find((origin) => origin.name === e.target.value) ||
+                dataOrigins?.find((origin) => origin.name === e.target.value) ||
                   defaultOrigin
               )
             }
@@ -128,7 +145,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
           >
             {loadingOrigins && <option value="emptyOrigin">Cargando...</option>}
             {!loadingOrigins &&
-              dataOrigins.map((origin) => (
+              dataOrigins?.map((origin) => (
                 <option key={origin.id} value={origin.name}>
                   {origin.name}
                 </option>
@@ -149,7 +166,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
         {loadingRecipe &&
           skeletons.map((skeleton) => <RecipeCardSkeleton key={skeleton} />)}
         {!loadingRecipe &&
-          dataRecipe.map((recipe) => (
+          dataRecipe?.map((recipe) => (
             <RecipeCard
               openRecipe={() => openRecipe(recipe)}
               key={recipe.id}

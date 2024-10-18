@@ -9,8 +9,11 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import useDeleteDataAxios from "../hooks/deleteDataAxios";
+
+import useAxios from "../hooks/axiosFetch";
+
 import { API_BASE_URL } from "../constants/environment";
+import { HTTP_METHODS } from "../constants/httpMethods";
 import { Recipe } from "../types";
 import { refreshWindow } from "../utils/utilities";
 
@@ -29,7 +32,7 @@ function ConfirmationDeleteModal({
 }: Props) {
   const toast = useToast();
 
-  const { deleteData } = useDeleteDataAxios<any>();
+  const { axiosFetch } = useAxios();
 
   const deleteRecipe = async () => {
     try {
@@ -48,7 +51,7 @@ function ConfirmationDeleteModal({
 
       const url = `${API_BASE_URL}/recipe/${data.id}`;
 
-      await deleteData(url);
+      await axiosFetch(HTTP_METHODS.DELETE, url);
       console.log("Recipe deleted successfully", data);
       localStorage.setItem(
         "toast",
