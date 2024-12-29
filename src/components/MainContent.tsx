@@ -26,9 +26,9 @@ type Props = {
   openRecipeCreate: () => void;
 };
 
-const defaultFilterRecipe = { search: "" };
-const defaultCategory = { id: 0, name: "" };
-const defaultOrigin = { id: 0, name: "" };
+const defaultFilterRecipe = { searchText: "" };
+const defaultCategory = { id: 0, name: "", createdAt: "", updatedAt: "" };
+const defaultOrigin = { id: 0, name: "", createdAt: "", updatedAt: "" };
 
 const makeRecipeUrl = (
   filterRecipe: SearchForm,
@@ -37,8 +37,8 @@ const makeRecipeUrl = (
 ) => {
   let url = `${API_BASE_URL}/recipe?page=0&limit=100`;
 
-  if (filterRecipe.search !== "") {
-    url += `&name=${filterRecipe.search}`;
+  if (filterRecipe.searchText !== "") {
+    url += `&name=${filterRecipe.searchText}`;
   }
   if (selectedCategory.id !== 0) {
     url += `&idCategory=${selectedCategory.id}`;
@@ -102,7 +102,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
                 width="250px"
                 placeholder="Nombre de la Receta"
                 autoComplete="off"
-                {...register("search", { required: false })}
+                {...register("searchText", { required: false })}
               />
             </InputGroup>
           </form>

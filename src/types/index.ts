@@ -1,64 +1,12 @@
-export type SearchForm = {
-  search: string;
-};
+//~ Search ~//
+export * from "./search";
 
-export type Feature = {
-  id: number;
-  name: string;
-};
+//~ Feature ~//
+export * from "./feature";
 
-export type Category = {
-  id?: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-export type Origin = {
-  id?: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-export type Ingredient = {
-  quantity: number;
-  ingredient: {
-    id: string;
-    name: string;
-    unit: string;
-  };
-};
-
-export type IngredientDetail = {
-  id: number;
-  name: string;
-  unit: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-export type Step = {
-  number: number;
-  instruction: string;
-};
-
-export type Recipe = {
-  id?: number;
-  idCategory: number;
-  idOrigin: number;
-  name: string;
-  description: string;
-  score: number;
-  thumbnail: string;
-  createdAt?: string;
-  updatedAt?: string;
-  category?: Category;
-  origin?: Category;
-  ingredients: Ingredient[];
-  steps: Step[];
-};
-
-export type RecipeDetail = {
-  [key: string]: string;
-};
+//~ RecipeBook ~//
+export * from "./recipeBook/category";
+export * from "./recipeBook/origin";
+export * from "./recipeBook/ingredient";
+export * from "./recipeBook/step";
+export * from "./recipeBook/recipe";
