@@ -13,10 +13,10 @@ import {
 
 import RecipeModalSkeleton from "./RecipeModalSkeleton";
 import RecipeModalContent from "./RecipeModalContent";
-import RecipeModalUpdate from "./RecipeModalUpdate";
 import ConfirmationDeleteModal from "./ConfirmationDeleteModal";
 
 import { Recipe } from "../types";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   isOpen: boolean;
@@ -26,28 +26,25 @@ type Props = {
 };
 
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
+  const navigate = useNavigate();
+
   const {
     isOpen: isOpenDeleteConfirmation,
     onOpen: onOpenDeleteConfirmation,
     onClose: onCloseDeleteConfirmation,
   } = useDisclosure();
 
-  const {
-    isOpen: isOpenEditModal,
-    onOpen: onOpenEditModal,
-    onClose: onCloseEditModal,
-  } = useDisclosure(); // Controla el modal de edición
-
   const [isUnlocked, setIsUnlocked] = useState(true);
 
   const handleEdit = () => {
-    onOpenEditModal();
+    navigate(`/recipes/update/${data?.id}`);
     onClose();
   };
 
   return (
     <>
       <Modal
+        scrollBehavior="inside"
         size={"xl"}
         closeOnOverlayClick={isUnlocked}
         isOpen={isOpen}
@@ -114,12 +111,6 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      <RecipeModalUpdate
-        isOpen={isOpenEditModal}
-        onClose={onCloseEditModal}
-        data={data}
-      />
 
       <ConfirmationDeleteModal
         isOpen={isOpenDeleteConfirmation}

@@ -1,81 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaPlus, FaTrash } from "react-icons/fa";
 import {
-  Button,
-  Center,
-  Flex,
+  Box,
+  Grid,
+  GridItem,
+  Heading,
+  VStack,
   FormControl,
   FormLabel,
-  HStack,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Select,
   Textarea,
+  Select,
+  HStack,
+  Center,
   useColorModeValue,
+  Button,
+  Flex,
+  useToast,
 } from "@chakra-ui/react";
-
+import { useForm } from "react-hook-form";
 import useAxios from "../hooks/axiosFetch";
-
 import { API_BASE_URL } from "../constants/environment";
 import { HTTP_METHODS } from "../constants/httpMethods";
+import { useState, useEffect } from "react";
 import { Category, IngredientDetail, Origin, Recipe } from "../types";
-import { refreshWindow } from "../utils/utilities";
-
-type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  data: Recipe | undefined; // Recibe los datos de la receta a editar
-};
+import { FaPlus, FaTrash } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 
 const defaultCategory = { id: 0, name: "", createdAt: "", updatedAt: "" };
 const defaultOrigin = { id: 0, name: "", createdAt: "", updatedAt: "" };
 const defaultIngredientState = { id: "0", quantity: "" };
 
-function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
-  const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
-
-  // ~ axiosFetch: Patch, Categories, Origins, Ingredients
+const UpdateRecipePage = () => {
+  const navigate = useNavigate();
+  const toast = useToast();
+  const { id } = useParams();
   const { axiosFetch } = useAxios();
-
-  const {
-    loading: loadingCategories,
-    data: dataCategories,
-    axiosFetch: axiosFetchCategories,
-  } = useAxios<Category[]>();
-
-  const {
-    loading: loadingOrigins,
-    data: dataOrigins,
-    axiosFetch: axiosFetchOrigins,
-  } = useAxios<Origin[]>();
-
-  const {
-    loading: loadingIngredients,
-    data: dataIngredients,
-    axiosFetch: axiosFetchIngredients,
-  } = useAxios<IngredientDetail[]>();
-
-  useEffect(() => {
-    axiosFetchCategories(
-      HTTP_METHODS.GET,
-      `${API_BASE_URL}/category?page=0&limit=100`
-    );
-    axiosFetchOrigins(
-      HTTP_METHODS.GET,
-      `${API_BASE_URL}/origin?page=0&limit=100`
-    );
-    axiosFetchIngredients(
-      HTTP_METHODS.GET,
-      `${API_BASE_URL}/ingredient?page=0&limit=250`
-    );
-  }, []);
 
   const { register, handleSubmit, setValue } = useForm();
   const [selectedCategory, setSelectedCategory] =
@@ -83,28 +41,41 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
   const [ingredients, setIngredients] = useState([defaultIngredientState]);
 
+  const { data: dataCategories, axiosFetch: axiosFetchCategories } =
+    useAxios<Category[]>();
+  const { data: dataOrigins, axiosFetch: axiosFetchOrigins } =
+    useAxios<Origin[]>();
+  const { data: dataIngredients, axiosFetch: axiosFetchIngredients } =
+    useAxios<IngredientDetail[]>();
+  const { data: recipe, axiosFetch: axiosFetchRecipe } = useAxios<Recipe>();
+
   useEffect(() => {
-    if (data) {
-      setValue("name", data.name);
-      setValue("description", data.description);
-      setValue("thumbnail", data.thumbnail);
-      setValue("score", data.score.toString());
-      setSelectedCategory(
-        dataCategories?.find((cat) => cat.id === data.idCategory) ||
-          defaultCategory
-      );
-      setSelectedOrigin(
-        dataOrigins?.find((orig) => orig.id === data.idOrigin) || defaultOrigin
-      );
+    axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
+    axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
+    axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
+    axiosFetchRecipe(HTTP_METHODS.GET, `${API_BASE_URL}/recipe/?id=${id}`);
+  }, []);
+
+  useEffect(() => {
+    if (recipe) {
+      setValue("name", recipe.name);
+      setValue("description", recipe.description);
+      setValue("thumbnail", recipe.thumbnail);
+      setValue("score", recipe.score.toString());
+      setSelectedCategory(recipe.category);
+      setSelectedOrigin(recipe.origin);
       setIngredients(
-        data.ingredients.map((ingredient) => ({
+        recipe.ingredients.map((ingredient) => ({
           id: ingredient.ingredient.id.toString(),
           quantity: ingredient.quantity.toString(),
         }))
       );
-      setValue("steps", data.steps.map((step) => step.instruction).join("\n"));
+      setValue(
+        "steps",
+        recipe.steps.map((step) => step.instruction).join("\n")
+      );
     }
-  }, [data, dataCategories, dataOrigins, setValue]);
+  }, [recipe]);
 
   const addIngredientRow = () => {
     setIngredients([...ingredients, defaultIngredientState]);
@@ -124,8 +95,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
   };
 
   const removeIngredientRow = (index: number) => {
-    const newIngredients = ingredients.filter((_, i) => i !== index);
-    setIngredients(newIngredients);
+    setIngredients(ingredients.filter((_, i) => i !== index));
   };
 
   const onSubmit = async (dataForm: any) => {
@@ -151,49 +121,49 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
     try {
       await axiosFetch(
         HTTP_METHODS.PATCH,
-        `${API_BASE_URL}/recipe/${data?.id}`,
+        `${API_BASE_URL}/recipe/${id}`,
         bodyRecipe
       );
-
-      localStorage.setItem(
-        "toast",
-        JSON.stringify({
-          title: "Receta actualizada.",
-          description: `La receta "${dataForm.name}" ha sido actualizada exitosamente.`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        })
-      );
-
-      onClose();
-      refreshWindow();
+      toast({
+        position: "top",
+        title: "Receta editada.",
+        description: `La receta "${dataForm.name}" ha sido editada exitosamente.`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/recipes");
     } catch (error) {
+      toast({
+        position: "top",
+        title: "Error al actualizar receta",
+        description:
+          "Ocurrió un error al actualizar la receta. Por favor, inténtalo de nuevo.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+
       console.error("Error updating recipe: ", error);
     }
   };
 
   return (
-    <>
-      <Modal
-        size={"xl"}
-        initialFocusRef={initialRef}
-        finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Editar Receta</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+    <Box p={8}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Heading size="lg" mb={6}>
+          Editar Receta
+        </Heading>
+
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+          <GridItem>
+            <VStack align="stretch" spacing={4}>
               <FormControl isRequired>
                 <FormLabel>Nombre</FormLabel>
                 <Input {...register("name")} autoComplete="off" />
               </FormControl>
 
-              <FormControl mt={4}>
+              <FormControl isRequired>
                 <FormLabel>Descripción</FormLabel>
                 <Textarea
                   size="sm"
@@ -202,7 +172,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                 />
               </FormControl>
 
-              <FormControl mt={4}>
+              <FormControl>
                 <FormLabel>Imagen</FormLabel>
                 <Input
                   placeholder="Link de la imagen"
@@ -210,8 +180,8 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                 />
               </FormControl>
 
-              <Flex mt={4}>
-                <FormControl isRequired width="60%">
+              <Flex gap={4}>
+                <FormControl isRequired>
                   <FormLabel>Puntuación</FormLabel>
                   <Select placeholder="-" {...register("score")}>
                     <option value="5">5 - ★★★★★</option>
@@ -222,7 +192,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                   </Select>
                 </FormControl>
 
-                <FormControl isRequired mx={2}>
+                <FormControl isRequired>
                   <FormLabel>Categoría</FormLabel>
                   <Select
                     placeholder="-"
@@ -235,15 +205,11 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                       )
                     }
                   >
-                    {loadingCategories && (
-                      <option value="emptyCategory">Cargando...</option>
-                    )}
-                    {!loadingCategories &&
-                      dataCategories?.map((category) => (
-                        <option key={category.id} value={category.name}>
-                          {category.name}
-                        </option>
-                      ))}
+                    {dataCategories?.map((category) => (
+                      <option key={category.id} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
                   </Select>
                 </FormControl>
 
@@ -260,21 +226,32 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                       )
                     }
                   >
-                    {loadingOrigins && (
-                      <option value="emptyOrigin">Cargando...</option>
-                    )}
-                    {!loadingOrigins &&
-                      dataOrigins?.map((origin) => (
-                        <option key={origin.id} value={origin.name}>
-                          {origin.name}
-                        </option>
-                      ))}
+                    {dataOrigins?.map((origin) => (
+                      <option key={origin.id} value={origin.name}>
+                        {origin.name}
+                      </option>
+                    ))}
                   </Select>
                 </FormControl>
               </Flex>
 
               <FormControl isRequired mt={4}>
-                <FormLabel>Ingredientes</FormLabel>
+                <FormLabel>Pasos</FormLabel>
+                <Textarea
+                  rows={7}
+                  size="sm"
+                  resize="none"
+                  placeholder="Separar cada paso con un 'Enter' o 'Salto de línea'"
+                  {...register("steps")}
+                />
+              </FormControl>
+            </VStack>
+          </GridItem>
+
+          <GridItem>
+            <FormControl isRequired mt={4}>
+              <FormLabel>Ingredientes</FormLabel>
+              <Box maxH="515px" mt={-2} overflowY="auto">
                 {ingredients.map((ingredient, index) => (
                   <HStack key={index} mt={2}>
                     <Select
@@ -284,15 +261,11 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                         handleIngredientChange(index, "id", e.target.value)
                       }
                     >
-                      {loadingIngredients && (
-                        <option value="emptyIngredient">Cargando...</option>
-                      )}
-                      {!loadingIngredients &&
-                        dataIngredients?.map((ingredient) => (
-                          <option key={ingredient.id} value={ingredient.id}>
-                            {ingredient.name}
-                          </option>
-                        ))}
+                      {dataIngredients?.map((ingredient) => (
+                        <option key={ingredient.id} value={ingredient.id}>
+                          {ingredient.name}
+                        </option>
+                      ))}
                     </Select>
                     <Input
                       width="30%"
@@ -309,7 +282,7 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                     />
                     <Center
                       h={10}
-                      width="15%"
+                      width="10%"
                       color={useColorModeValue("gray.800", "white")}
                       backgroundColor={useColorModeValue(
                         "gray.300",
@@ -330,43 +303,39 @@ function RecipeModalUpdate({ isOpen, onClose, data }: Props) {
                       width="10%"
                       onClick={() => removeIngredientRow(index)}
                     >
-                      <FaTrash />
+                      <FaTrash color={useColorModeValue("#1A202C", "white")} />
                     </Button>
                   </HStack>
                 ))}
-                <Button
-                  h={8}
-                  width="100%"
-                  mt={2}
-                  variant="addRowButton"
-                  onClick={addIngredientRow}
-                >
-                  <FaPlus color={useColorModeValue("#1A202C", "white")} />
-                </Button>
-              </FormControl>
+              </Box>
+              <Button
+                h={8}
+                width="100%"
+                mt={2}
+                variant="addRowButton"
+                onClick={addIngredientRow}
+              >
+                <FaPlus color={useColorModeValue("#1A202C", "white")} />
+              </Button>
+            </FormControl>
+          </GridItem>
+        </Grid>
 
-              <FormControl mt={4}>
-                <FormLabel>Paso a paso</FormLabel>
-                <Textarea
-                  placeholder="Escribe cada paso en una línea separada"
-                  {...register("steps")}
-                />
-              </FormControl>
-
-              <Flex justifyContent="end" mt={6}>
-                <Button onClick={onClose} mr={3}>
-                  Cancelar
-                </Button>
-                <Button type="submit" variant="greenButton">
-                  Guardar Cambios
-                </Button>
-              </Flex>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+        <Flex justify="flex-end">
+          <Button
+            mt={6}
+            onClick={() => navigate("/recipes")}
+            variant="redButton"
+          >
+            Cancelar
+          </Button>
+          <Button mt={6} ml={4} type="submit" variant="greenButton">
+            Guardar Cambios
+          </Button>
+        </Flex>
+      </form>
+    </Box>
   );
-}
+};
 
-export default RecipeModalUpdate;
+export default UpdateRecipePage;

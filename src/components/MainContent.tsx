@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaSearch, FaSortAlphaDown } from "react-icons/fa";
+import { FaSearch, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import {
+  Box,
   Button,
   HStack,
+  IconButton,
   Input,
   InputGroup,
   InputLeftElement,
   Select,
   SimpleGrid,
   Spacer,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 import RecipeCard from "./RecipeCard";
@@ -33,19 +36,32 @@ const defaultOrigin = { id: 0, name: "", createdAt: "", updatedAt: "" };
 const makeRecipeUrl = (
   filterRecipe: SearchForm,
   selectedCategory: Category,
-  selectedOrigin: Origin
+  selectedOrigin: Origin,
+  sortBy: string,
+  sortDirection: string
 ) => {
-  let url = `${API_BASE_URL}/recipe?page=0&limit=100`;
+  let url = `${API_BASE_URL}/recipe`;
+  let params = [];
 
   if (filterRecipe.searchText !== "") {
-    url += `&name=${filterRecipe.searchText}`;
+    params.push(`name=${filterRecipe.searchText}`);
   }
   if (selectedCategory.id !== 0) {
-    url += `&idCategory=${selectedCategory.id}`;
+    params.push(`idCategory=${selectedCategory.id}`);
   }
   if (selectedOrigin.id !== 0) {
-    url += `&idOrigin=${selectedOrigin.id}`;
+    params.push(`idOrigin=${selectedOrigin.id}`);
   }
+  if (sortBy !== "") {
+    params.push(`orderByField=${sortBy}`);
+    params.push(`orderBy=${sortDirection}`);
+  }
+
+  if (params.length > 0) {
+    url += `?${params.join("&")}`;
+  }
+
+  console.log(url);
 
   return url;
 };
@@ -61,6 +77,8 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(defaultCategory);
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   // ~ axiosFetch: Recipe, Category, Origin
   const {
@@ -82,18 +100,42 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
   useEffect(() => {
     axiosFetchRecipe(
       HTTP_METHODS.GET,
-      makeRecipeUrl(filterRecipe, selectedCategory, selectedOrigin)
+      makeRecipeUrl(
+        filterRecipe,
+        selectedCategory,
+        selectedOrigin,
+        sortBy,
+        sortDirection
+      )
     );
     axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
     axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-  }, []);
+  }, [filterRecipe, selectedCategory, selectedOrigin, sortBy, sortDirection]);
+
+  const onSubmit = (data: SearchForm) => {
+    setFilterRecipe(data);
+    axiosFetchRecipe(
+      HTTP_METHODS.GET,
+      makeRecipeUrl(
+        data,
+        selectedCategory,
+        selectedOrigin,
+        sortBy,
+        sortDirection
+      )
+    );
+  };
 
   return (
     <>
       <HStack align="center" justify="flex-start" gap="10px">
         <HStack mt="4" mb="8" gap="25px">
-          <form onSubmit={handleSubmit(setFilterRecipe)}>
-            <InputGroup>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <InputGroup
+              backgroundColor={
+                filterRecipe.searchText ? "green.800" : "inherit"
+              }
+            >
               <InputLeftElement pointerEvents="none" color="gray.500">
                 <FaSearch />
               </InputLeftElement>
@@ -106,13 +148,9 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
               />
             </InputGroup>
           </form>
-          <Select icon={<FaSortAlphaDown />} placeholder="Orden">
-            <option value="Id">Id</option>
-            <option value="Nombre">Nombre</option>
-            <option value="Score">Mejor Valoradas</option>
-          </Select>
           <Select
             placeholder="Categoría"
+            value={selectedCategory.name || ""}
             onChange={(e) =>
               setSelectedCategory(
                 dataCategories?.find(
@@ -135,6 +173,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
 
           <Select
             placeholder="Origen"
+            value={selectedOrigin.name || ""}
             onChange={(e) =>
               setSelectedOrigin(
                 dataOrigins?.find((origin) => origin.name === e.target.value) ||
@@ -151,6 +190,68 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
                 </option>
               ))}
           </Select>
+
+          <Select
+            placeholder="Orden"
+            value={sortBy}
+            variant={sortBy === "" ? "" : "selected"}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              axiosFetchRecipe(
+                HTTP_METHODS.GET,
+                makeRecipeUrl(
+                  filterRecipe,
+                  selectedCategory,
+                  selectedOrigin,
+                  e.target.value,
+                  sortDirection
+                )
+              );
+            }}
+          >
+            <option value="id">Id</option>
+            <option value="name">Nombre</option>
+            <option value="score">Mejor Valoradas</option>
+            <option value="createdAt">Fecha Creación</option>
+          </Select>
+          <IconButton
+            aria-label="Toggle sort direction"
+            ml={-5}
+            backgroundColor={
+              sortDirection === "asc"
+                ? useColorModeValue("#c0c0c0", "inherit")
+                : useColorModeValue("#c0c0c0", "green.800")
+            }
+            borderColor={
+              sortDirection === "asc"
+                ? useColorModeValue("#c0c0c0", "#51555e")
+                : useColorModeValue("#c0c0c0", "green.700")
+            }
+            borderWidth={2}
+            icon={
+              sortDirection === "asc" ? (
+                <FaSortAlphaDown color="#38A169" size={24} />
+              ) : (
+                <FaSortAlphaDownAlt color="#9AE6B4" size={24} />
+              )
+            }
+            _hover={{
+              borderColor: useColorModeValue("#c0c0c0", "green.400"),
+            }}
+            onClick={() => {
+              setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+              axiosFetchRecipe(
+                HTTP_METHODS.GET,
+                makeRecipeUrl(
+                  filterRecipe,
+                  selectedCategory,
+                  selectedOrigin,
+                  sortBy,
+                  sortDirection === "asc" ? "desc" : "asc"
+                )
+              );
+            }}
+          />
         </HStack>
 
         <Spacer />
@@ -161,17 +262,20 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
           </Button>
         </HStack>
       </HStack>
-
       <SimpleGrid columns={[2, null, 3]} spacing="40px" mb={16}>
         {loadingRecipe &&
           skeletons.map((skeleton) => <RecipeCardSkeleton key={skeleton} />)}
         {!loadingRecipe &&
           dataRecipe?.map((recipe) => (
-            <RecipeCard
-              openRecipe={() => openRecipe(recipe)}
+            <Box
               key={recipe.id}
-              recipe={recipe}
-            />
+              onDoubleClick={() => openRecipe(recipe)}
+              cursor="pointer"
+              transition="transform 0.2s"
+              _hover={{ transform: "scale(1.02)" }}
+            >
+              <RecipeCard recipe={recipe} />
+            </Box>
           ))}
       </SimpleGrid>
     </>

@@ -14,9 +14,12 @@ import {
   Td,
   HStack,
   Tag,
+  TagLabel,
+  TagRightIcon,
 } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
+import { FaClock, FaStar, FaUsers } from "react-icons/fa";
 
 type Props = {
   data: Recipe;
@@ -37,7 +40,7 @@ function RecipeModalContent({ data }: Props) {
 
   return (
     <>
-      <ModalHeader fontSize="3xl" mb={-4} fontWeight="bold">
+      <ModalHeader fontSize="3xl" fontWeight="bold">
         {data.name}
       </ModalHeader>
 
@@ -45,10 +48,28 @@ function RecipeModalContent({ data }: Props) {
         <Heading size="sm" fontWeight="normal" mb={4}>
           {data.description}
         </Heading>
+
         <HStack mb={4}>
-          <Tag colorScheme="green">{data.category?.name}</Tag>
-          <Tag colorScheme="green">{data.origin?.name}</Tag>
+          <Tag colorScheme="yellow">
+            <TagLabel>{data.score}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaStar} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{data.category?.name}</TagLabel>
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{data.origin?.name}</TagLabel>
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>1 hr 30 min</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>4</TagLabel>
+            <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
+          </Tag>
         </HStack>
+
         <Image
           alt={data.name}
           width="100%"
@@ -60,8 +81,12 @@ function RecipeModalContent({ data }: Props) {
         <Heading mt="5" mb="3" size="md">
           Ingredientes
         </Heading>
-        <TableContainer>
-          <Table size="sm" variant="simple">
+        <TableContainer
+          borderRadius={"md"}
+          borderWidth={"2px"}
+          borderColor={"green.800"}
+        >
+          <Table size="sm" variant="unstyled">
             <Thead>
               <Tr>
                 <Th>Cantidad</Th>
@@ -80,6 +105,7 @@ function RecipeModalContent({ data }: Props) {
             </Tbody>
           </Table>
         </TableContainer>
+
         <Heading mt="5" mb="3" size="md">
           Pasos
         </Heading>

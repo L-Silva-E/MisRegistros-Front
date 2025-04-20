@@ -1,4 +1,4 @@
-import { FaFileImport, FaMoon, FaSun } from "react-icons/fa";
+import { FaMoon, FaSun } from "react-icons/fa";
 import {
   Avatar,
   Box,
@@ -6,7 +6,7 @@ import {
   Flex,
   HStack,
   Heading,
-  Icon,
+  Image,
   Spacer,
   useColorMode,
   useColorModeValue,
@@ -20,14 +20,28 @@ function Header({}: Props) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Flex alignItems="center">
-      <Box p="2">
+    <Flex
+      alignItems="center"
+      bg={useColorModeValue("gray.200", "gray.900")}
+      py={2}
+      boxShadow="xl"
+    >
+      <Box p={2}>
         <HStack ml="4">
-          <Icon
-            as={FaFileImport}
-            color={useColorModeValue("green.800", "green.200")}
-            boxSize={6}
-          />
+          <Box
+            bg={useColorModeValue("gray.300", "gray.700")}
+            borderRadius="full"
+            borderWidth={2}
+            borderColor={useColorModeValue("gray.400", "gray.600")}
+            p={2}
+            mr={-2}
+            my={-2}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Image src="/icon.png" alt="MisRegistros Icon" boxSize={8} />
+          </Box>
           <Heading ml="2" size="md">
             MisRegistros
           </Heading>

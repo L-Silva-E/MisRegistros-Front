@@ -52,7 +52,6 @@ function ConfirmationDeleteModal({
       const url = `${API_BASE_URL}/recipe/${data.id}`;
 
       await axiosFetch(HTTP_METHODS.DELETE, url);
-      console.log("Recipe deleted successfully", data);
       localStorage.setItem(
         "toast",
         JSON.stringify({

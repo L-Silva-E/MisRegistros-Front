@@ -5,6 +5,14 @@ const TextTheme = {
       color: "green.200",
     },
   },
+  variants: {
+    buttonText: {
+      color: "white",
+      _dark: {
+        color: "white",
+      },
+    },
+  },
 };
 
 export default TextTheme;
