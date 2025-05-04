@@ -113,7 +113,7 @@ function RecipeModalContent({ data }: Props) {
                   <Td width={"10px"} textAlign="center">
                     {step.number}
                   </Td>
-                  <Td>{step.instruction}</Td>
+                  <Td whiteSpace="normal">{step.instruction}</Td>
                 </Tr>
               ))}
             </Tbody>
