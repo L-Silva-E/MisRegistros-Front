@@ -1,10 +1,8 @@
 import {
   Heading,
   Image,
-  ListItem,
   ModalBody,
   ModalHeader,
-  List,
   TableContainer,
   Table,
   Thead,
@@ -25,19 +23,7 @@ type Props = {
   data: Recipe;
 };
 
-const joinSteps = (data: Recipe) => {
-  let stepsList = [];
-
-  for (let i = 0; i < data.steps.length; i++) {
-    stepsList.push(`${data.steps[i].number}. ${data.steps[i].instruction}`);
-  }
-
-  return stepsList;
-};
-
 function RecipeModalContent({ data }: Props) {
-  const steps = joinSteps(data);
-
   return (
     <>
       <ModalHeader fontSize="3xl" fontWeight="bold">
@@ -109,11 +95,30 @@ function RecipeModalContent({ data }: Props) {
         <Heading mt="5" mb="3" size="md">
           Pasos
         </Heading>
-        <List>
-          {steps.map((step, index) => (
-            <ListItem key={index}>{step}</ListItem>
-          ))}
-        </List>
+        <TableContainer
+          borderRadius={"md"}
+          borderWidth={"2px"}
+          borderColor={"green.800"}
+        >
+          <Table size="sm" variant="unstyled">
+            <Thead>
+              <Tr>
+                <Th>Paso</Th>
+                <Th>Instrucción</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.steps.map((step, index) => (
+                <Tr key={index}>
+                  <Td width={"10px"} textAlign="center">
+                    {step.number}
+                  </Td>
+                  <Td>{step.instruction}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </ModalBody>
     </>
   );
