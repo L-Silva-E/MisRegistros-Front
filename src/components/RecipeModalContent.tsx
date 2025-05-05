@@ -67,11 +67,7 @@ function RecipeModalContent({ data }: Props) {
         <Heading mt="5" mb="3" size="md">
           Ingredientes
         </Heading>
-        <TableContainer
-          borderRadius={"md"}
-          borderWidth={"2px"}
-          borderColor={"green.800"}
-        >
+        <TableContainer borderRadius="md">
           <Table size="sm" variant="unstyled">
             <Thead>
               <Tr>
@@ -93,14 +89,10 @@ function RecipeModalContent({ data }: Props) {
         </TableContainer>
 
         <Heading mt="5" mb="3" size="md">
-          Pasos
+          Pasos de la Receta
         </Heading>
-        <TableContainer
-          borderRadius={"md"}
-          borderWidth={"2px"}
-          borderColor={"green.800"}
-        >
-          <Table size="sm" variant="unstyled">
+        <TableContainer borderRadius="md">
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th>Paso</Th>

@@ -4,7 +4,6 @@ import {
   GridItem,
   Heading,
   VStack,
-  Input,
   HStack,
   Center,
   Button,
@@ -22,6 +21,7 @@ import {
   Th,
   Tbody,
   Td,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import useAxios from "../hooks/axiosFetch";
 import { API_BASE_URL } from "../constants/environment";
@@ -149,151 +149,105 @@ const ViewRecipePage = () => {
                 maxW="xl"
               />
             </Center>
-            <Heading mt={4}>Pasos de la Receta</Heading>
-            <TableContainer
-              borderRadius="md"
-              borderWidth="2px"
-              borderColor="green.800"
-            >
-              <Table variant="unstyled" size="sm">
-                <Thead>
-                  <Tr>
-                    <Th width={12}>
-                      <HStack justify="center">
-                        <FaCheckSquare />
-                      </HStack>
-                    </Th>
-                    <Th width={12} textAlign="center">
-                      Paso
-                    </Th>
-                    <Th>Instrucción</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {recipe?.steps.map((step) => (
-                    <Tr
-                      key={step.number}
-                      color={
-                        completedSteps.has(step.number)
-                          ? "green.500"
-                          : "inherit"
-                      }
-                      textDecoration={
-                        completedSteps.has(step.number)
-                          ? "line-through"
-                          : "none"
-                      }
-                    >
-                      <Td>
-                        <Checkbox
-                          colorScheme="green"
-                          isChecked={completedSteps.has(step.number)}
-                          onChange={() => toggleStep(step.number)}
-                        ></Checkbox>
-                      </Td>
-                      <Td textAlign="center">{step.number}</Td>
-                      <Td>{step.instruction}</Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
           </VStack>
         </GridItem>
 
         <GridItem>
           <Heading mb={4}>Ingredientes</Heading>
-          <Box maxH="515px" mt={-2} overflowY="auto">
-            {ingredients.map((ingredient, index) => (
-              <HStack key={index} mt={2}>
-                <Checkbox
-                  size="lg"
-                  isChecked={checkedIngredients.has(ingredient.id)}
-                  onChange={() => toggleIngredient(ingredient.id)}
-                  colorScheme="green"
-                />
-                <Input
-                  value={
-                    dataIngredients?.find(
-                      (item) => item.id === parseInt(ingredient.id)
-                    )?.name
-                  }
-                  isReadOnly
-                  bg={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.200"
-                      : "gray.100"
-                  }
-                  borderColor={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.400"
-                      : "gray.300"
-                  }
-                  _dark={{
-                    bg: checkedIngredients.has(ingredient.id)
-                      ? "green.900"
-                      : "gray.700",
-                    borderColor: checkedIngredients.has(ingredient.id)
-                      ? "green.700"
-                      : "gray.600",
-                  }}
-                />
-                <Input
-                  width="30%"
-                  value={ingredient.quantity}
-                  bg={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.200"
-                      : "gray.100"
-                  }
-                  borderColor={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.400"
-                      : "gray.300"
-                  }
-                  _dark={{
-                    bg: checkedIngredients.has(ingredient.id)
-                      ? "green.900"
-                      : "gray.700",
-                    borderColor: checkedIngredients.has(ingredient.id)
-                      ? "green.700"
-                      : "gray.600",
-                  }}
-                />
-                <Center
-                  h={10}
-                  width="10%"
-                  borderRadius={5}
-                  border="2px"
-                  bg={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.200"
-                      : "gray.300"
-                  }
-                  borderColor={
-                    checkedIngredients.has(ingredient.id)
-                      ? "green.400"
-                      : "gray.400"
-                  }
-                  _dark={{
-                    bg: checkedIngredients.has(ingredient.id)
-                      ? "green.900"
-                      : "gray.600",
-                    borderColor: checkedIngredients.has(ingredient.id)
-                      ? "green.700"
-                      : "gray.500",
-                  }}
-                  transition={"all 0.2s"}
-                >
-                  {
-                    dataIngredients?.find(
-                      (item) => item.id === parseInt(ingredient.id)
-                    )?.unit
-                  }
-                </Center>
-              </HStack>
-            ))}
-          </Box>
+          <TableContainer borderRadius="md">
+            <Table size="sm">
+              <Thead>
+                <Tr>
+                  <Th width={12}>
+                    <HStack justify="center">
+                      <FaCheckSquare />
+                    </HStack>
+                  </Th>
+                  <Th width="10%">Cantidad</Th>
+                  <Th>Ingrediente</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {ingredients.map((ingredient, index) => (
+                  <Tr
+                    key={index}
+                    color={
+                      checkedIngredients.has(ingredient.id)
+                        ? "green.500"
+                        : "inherit"
+                    }
+                  >
+                    <Td>
+                      <Checkbox
+                        colorScheme="green"
+                        borderColor={useColorModeValue("gray.400", "gray.500")}
+                        isChecked={checkedIngredients.has(ingredient.id)}
+                        onChange={() => toggleIngredient(ingredient.id)}
+                        size="lg"
+                      />
+                    </Td>
+                    <Td textAlign="right">
+                      {ingredient.quantity + " "}
+                      {
+                        dataIngredients?.find(
+                          (item) => item.id === parseInt(ingredient.id)
+                        )?.unit
+                      }
+                    </Td>
+                    <Td>
+                      {
+                        dataIngredients?.find(
+                          (item) => item.id === parseInt(ingredient.id)
+                        )?.name
+                      }
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <Heading my={4}>Pasos de la Receta</Heading>
+          <TableContainer borderRadius="md">
+            <Table size="sm">
+              <Thead>
+                <Tr>
+                  <Th width={12}>
+                    <HStack justify="center">
+                      <FaCheckSquare />
+                    </HStack>
+                  </Th>
+                  <Th width={12} textAlign="center">
+                    Paso
+                  </Th>
+                  <Th>Instrucción</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {recipe?.steps.map((step) => (
+                  <Tr
+                    key={step.number}
+                    color={
+                      completedSteps.has(step.number) ? "green.500" : "inherit"
+                    }
+                    textDecoration={
+                      completedSteps.has(step.number) ? "line-through" : "none"
+                    }
+                  >
+                    <Td>
+                      <Checkbox
+                        colorScheme="green"
+                        borderColor={useColorModeValue("gray.400", "gray.500")}
+                        isChecked={completedSteps.has(step.number)}
+                        onChange={() => toggleStep(step.number)}
+                      ></Checkbox>
+                    </Td>
+                    <Td textAlign="center">{step.number}</Td>
+                    <Td>{step.instruction}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </GridItem>
       </Grid>
 
