@@ -17,6 +17,7 @@ import {
 import { Recipe } from "../types";
 import { FaKitchenSet } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { setTimeText } from "../utils/utilities";
 
 type Props = {
   recipe: Recipe;
@@ -57,13 +58,13 @@ function RecipeCard({ recipe }: Props) {
           <HStack>
             <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
               <TagLabel ml={1} fontSize={16}>
-                {"1 hr 30 min"}
+                {setTimeText(recipe.time)}
               </TagLabel>
               <TagRightIcon mr={1} boxSize="18px" as={FaClock} />
             </Tag>
             <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
               <TagLabel ml={1} fontSize={20}>
-                {"4"}
+                {recipe.servings}
               </TagLabel>
               <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
             </Tag>

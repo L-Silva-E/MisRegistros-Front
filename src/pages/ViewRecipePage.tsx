@@ -37,6 +37,7 @@ import {
   FaUsers,
   FaUtensils,
 } from "react-icons/fa";
+import { setTimeText } from "../utils/utilities";
 
 const defaultIngredientState = { id: "0", quantity: "" };
 
@@ -44,12 +45,16 @@ const ViewRecipePage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const borderColor = useColorModeValue("gray.400", "gray.600");
+
   const [ingredients, setIngredients] = useState([defaultIngredientState]);
   const [recipeData, setRecipeData] = useState({
     name: "",
     description: "",
     thumbnail: "",
     score: "",
+    time: "",
+    servings: "",
     steps: "",
     category: "",
     origin: "",
@@ -59,20 +64,16 @@ const ViewRecipePage = () => {
     useAxios<IngredientDetail[]>();
   const { data: recipe, axiosFetch: axiosFetchRecipe } = useAxios<Recipe>();
 
-  // Add state for checked ingredients
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
     new Set()
   );
 
-  // Add toggle handler
   const toggleIngredient = (ingredientId: string) => {
     setCheckedIngredients((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(ingredientId)) {
-        newSet.delete(ingredientId);
-      } else {
-        newSet.add(ingredientId);
-      }
+      newSet.has(ingredientId)
+        ? newSet.delete(ingredientId)
+        : newSet.add(ingredientId);
       return newSet;
     });
   };
@@ -89,6 +90,8 @@ const ViewRecipePage = () => {
         description: recipe.description,
         thumbnail: recipe.thumbnail,
         score: recipe.score.toString(),
+        time: setTimeText(recipe.time),
+        servings: recipe.servings.toString(),
         steps: recipe.steps.map((step) => step.instruction).join("\n"),
         category: recipe.category.name,
         origin: recipe.origin.name,
@@ -116,8 +119,6 @@ const ViewRecipePage = () => {
     });
   };
 
-  const borderColor = useColorModeValue("gray.400", "gray.600");
-
   return (
     <Box p={8}>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
@@ -139,11 +140,11 @@ const ViewRecipePage = () => {
                 <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
               </Tag>
               <Tag colorScheme="gray" size="lg">
-                <TagLabel>1 hr 30 min</TagLabel>
+                <TagLabel>{recipeData.time}</TagLabel>
                 <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
               </Tag>
               <Tag colorScheme="gray" size="lg">
-                <TagLabel>4</TagLabel>
+                <TagLabel>{recipeData.servings}</TagLabel>
                 <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
               </Tag>
             </HStack>

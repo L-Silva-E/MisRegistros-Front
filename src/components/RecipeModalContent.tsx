@@ -24,6 +24,7 @@ import {
   FaUsers,
   FaUtensils,
 } from "react-icons/fa";
+import { setTimeText } from "../utils/utilities";
 
 type Props = {
   data: Recipe;
@@ -55,11 +56,11 @@ function RecipeModalContent({ data }: Props) {
             <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
           </Tag>
           <Tag colorScheme="gray">
-            <TagLabel>1 hr 30 min</TagLabel>
+            <TagLabel>{setTimeText(data.time)}</TagLabel>
             <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
           </Tag>
           <Tag colorScheme="gray">
-            <TagLabel>4</TagLabel>
+            <TagLabel>{data.servings}</TagLabel>
             <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
           </Tag>
         </HStack>

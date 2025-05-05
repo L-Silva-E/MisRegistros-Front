@@ -8,8 +8,10 @@ export type Recipe = {
   idOrigin: number;
   name: string;
   description: string;
-  score: number;
   thumbnail: string;
+  score: number;
+  time: number;
+  servings: number;
   createdAt: string;
   updatedAt: string;
   category: Category;
