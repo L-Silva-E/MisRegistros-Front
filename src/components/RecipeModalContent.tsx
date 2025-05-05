@@ -17,7 +17,13 @@ import {
 } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
-import { FaClock, FaStar, FaUsers } from "react-icons/fa";
+import {
+  FaClock,
+  FaGlobeAmericas,
+  FaStar,
+  FaUsers,
+  FaUtensils,
+} from "react-icons/fa";
 
 type Props = {
   data: Recipe;
@@ -42,9 +48,11 @@ function RecipeModalContent({ data }: Props) {
           </Tag>
           <Tag colorScheme="gray">
             <TagLabel>{data.category?.name}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaUtensils} />
           </Tag>
           <Tag colorScheme="gray">
             <TagLabel>{data.origin?.name}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
           </Tag>
           <Tag colorScheme="gray">
             <TagLabel>1 hr 30 min</TagLabel>

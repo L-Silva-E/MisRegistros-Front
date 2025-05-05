@@ -29,7 +29,14 @@ import { HTTP_METHODS } from "../constants/httpMethods";
 import { useEffect, useState } from "react";
 import { IngredientDetail, Recipe } from "../types";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaCheckSquare, FaClock, FaStar, FaUsers } from "react-icons/fa";
+import {
+  FaCheckSquare,
+  FaClock,
+  FaGlobeAmericas,
+  FaStar,
+  FaUsers,
+  FaUtensils,
+} from "react-icons/fa";
 
 const defaultIngredientState = { id: "0", quantity: "" };
 
@@ -109,31 +116,33 @@ const ViewRecipePage = () => {
     });
   };
 
+  const borderColor = useColorModeValue("gray.400", "gray.600");
+
   return (
     <Box p={8}>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <GridItem>
-          <Heading size="lg" mb={6}>
-            {recipeData.name}
-          </Heading>
           <VStack align="stretch" spacing={4}>
+            <Heading size="lg">{recipeData.name}</Heading>
             <Text>{recipeData.description}</Text>
-            <HStack>
-              <Tag colorScheme="yellow">
+            <HStack my={4} spacing={3}>
+              <Tag colorScheme="yellow" size="lg">
                 <TagLabel>{recipeData.score}</TagLabel>
                 <TagRightIcon mr={1} boxSize="16px" as={FaStar} />
               </Tag>
-              <Tag colorScheme="gray">
+              <Tag colorScheme="gray" size="lg">
                 <TagLabel>{recipeData.category}</TagLabel>
+                <TagRightIcon mr={1} boxSize="16px" as={FaUtensils} />
               </Tag>
-              <Tag colorScheme="gray">
+              <Tag colorScheme="gray" size="lg">
                 <TagLabel>{recipeData.origin}</TagLabel>
+                <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
               </Tag>
-              <Tag colorScheme="gray">
+              <Tag colorScheme="gray" size="lg">
                 <TagLabel>1 hr 30 min</TagLabel>
                 <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
               </Tag>
-              <Tag colorScheme="gray">
+              <Tag colorScheme="gray" size="lg">
                 <TagLabel>4</TagLabel>
                 <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
               </Tag>
@@ -143,9 +152,11 @@ const ViewRecipePage = () => {
                 src={recipeData.thumbnail}
                 alt={recipeData.name}
                 width="100%"
-                height="300px"
+                maxHeight="400px"
+                border="3px solid"
                 borderRadius="lg"
-                objectFit="cover"
+                borderColor={borderColor}
+                objectFit="contain"
                 maxW="xl"
               />
             </Center>
@@ -239,6 +250,7 @@ const ViewRecipePage = () => {
                         borderColor={useColorModeValue("gray.400", "gray.500")}
                         isChecked={completedSteps.has(step.number)}
                         onChange={() => toggleStep(step.number)}
+                        size="lg"
                       ></Checkbox>
                     </Td>
                     <Td textAlign="center">{step.number}</Td>
