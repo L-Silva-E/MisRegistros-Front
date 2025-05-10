@@ -6,6 +6,7 @@ import InputTheme from "./inputTheme";
 import HeadingTheme from "./headingTheme";
 import LinkTheme from "./linkTheme";
 import ListTheme from "./listTheme";
+import NumberInputTheme from "./inputNumberTheme";
 import ModalTheme from "./modalTheme";
 import SelectTheme from "./selectTheme";
 import TableTheme from "./tableTheme";
@@ -36,6 +37,7 @@ const customTheme = extendTheme({
     Heading: HeadingTheme,
     Link: LinkTheme,
     List: ListTheme,
+    NumberInput: NumberInputTheme,
     Modal: ModalTheme,
     Select: SelectTheme,
     Table: TableTheme,
