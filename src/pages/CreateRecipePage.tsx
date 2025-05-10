@@ -1,20 +1,25 @@
 import {
   Box,
+  Button,
+  Center,
+  Flex,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
   Heading,
-  VStack,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  Select,
   HStack,
-  Center,
+  Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Select,
+  Textarea,
   useColorModeValue,
-  Button,
-  Flex,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import useAxios from "../hooks/axiosFetch";
@@ -86,6 +91,8 @@ const CreateRecipePage = () => {
       name: dataForm.name,
       description: dataForm.description,
       score: parseInt(dataForm.score),
+      time: parseInt(dataForm.time),
+      servings: parseInt(dataForm.servings),
       thumbnail: dataForm.thumbnail
         ? dataForm.thumbnail
         : "https://placehold.co/800x600/1C4532/C6F6D5",
@@ -213,6 +220,26 @@ const CreateRecipePage = () => {
                       </option>
                     ))}
                   </Select>
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel>Tiempo</FormLabel>
+                  <Input
+                    {...register("time")}
+                    autoComplete="off"
+                    placeholder="Minutos"
+                  />
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel>Porciones</FormLabel>
+                  <NumberInput defaultValue={1} min={1} max={100}>
+                    <NumberInputField {...register("servings")} />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
                 </FormControl>
               </Flex>
 

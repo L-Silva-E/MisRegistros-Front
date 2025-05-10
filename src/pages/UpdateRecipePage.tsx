@@ -15,6 +15,11 @@ import {
   Button,
   Flex,
   useToast,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import useAxios from "../hooks/axiosFetch";
@@ -35,7 +40,7 @@ const UpdateRecipePage = () => {
   const { id } = useParams();
   const { axiosFetch } = useAxios();
 
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, watch } = useForm();
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(defaultCategory);
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
@@ -62,6 +67,8 @@ const UpdateRecipePage = () => {
       setValue("description", recipe.description);
       setValue("thumbnail", recipe.thumbnail);
       setValue("score", recipe.score.toString());
+      setValue("time", recipe.time.toString());
+      setValue("servings", recipe.servings);
       setSelectedCategory(recipe.category);
       setSelectedOrigin(recipe.origin);
       setIngredients(
@@ -105,6 +112,8 @@ const UpdateRecipePage = () => {
       name: dataForm.name,
       description: dataForm.description,
       score: parseInt(dataForm.score),
+      time: parseInt(dataForm.time),
+      servings: parseInt(dataForm.servings),
       thumbnail: dataForm.thumbnail
         ? dataForm.thumbnail
         : "https://placehold.co/800x600/1C4532/C6F6D5",
@@ -232,6 +241,33 @@ const UpdateRecipePage = () => {
                       </option>
                     ))}
                   </Select>
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel>Tiempo</FormLabel>
+                  <Input
+                    {...register("time")}
+                    autoComplete="off"
+                    placeholder="Minutos"
+                  />
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormLabel>Porciones</FormLabel>
+                  <NumberInput
+                    min={1}
+                    max={100}
+                    value={watch("servings") || 1}
+                    onChange={(valueString) =>
+                      setValue("servings", valueString)
+                    }
+                  >
+                    <NumberInputField {...register("servings")} />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
                 </FormControl>
               </Flex>
 
