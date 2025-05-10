@@ -1,7 +1,5 @@
-import { useState } from "react";
-
+import { useState, useRef } from "react";
 import axios from "axios";
-
 import { API_KEY } from "../constants/environment";
 import { HTTP_METHODS } from "../constants/httpMethods";
 
@@ -9,12 +7,21 @@ const useAxios = <T>() => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | undefined>(undefined);
   const [error, setError] = useState<Error | null>(null);
+  const requestInProgressRef = useRef<Record<string, boolean>>({});
 
   const axiosFetch = async (
     method: keyof typeof HTTP_METHODS,
     url: string,
     body?: any
   ) => {
+    const requestKey = `${method}-${url}-${JSON.stringify(body || {})}`;
+
+    if (requestInProgressRef.current[requestKey]) {
+      return;
+    }
+
+    requestInProgressRef.current[requestKey] = true;
+
     setLoading(true);
     setError(null);
 
@@ -42,6 +49,7 @@ const useAxios = <T>() => {
       console.error(`Error with ${method} request:`, err);
     } finally {
       setLoading(false);
+      requestInProgressRef.current[requestKey] = false;
     }
   };
 
