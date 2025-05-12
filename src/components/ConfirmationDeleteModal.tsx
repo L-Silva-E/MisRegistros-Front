@@ -78,6 +78,7 @@ function ConfirmationDeleteModal({
           <ModalHeader>Eliminar Receta</ModalHeader>
           <ModalBody>
             <Text>¿Estás seguro de que quieres realizar esta acción?</Text>
+            <Text>Esta acción no se puede deshacer.</Text>
           </ModalBody>
 
           <ModalFooter mt={4}>
