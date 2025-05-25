@@ -29,6 +29,7 @@ import useAxios from "../hooks/axiosFetch";
 import { API_BASE_URL } from "../constants/environment";
 import { HTTP_METHODS } from "../constants/httpMethods";
 import { Category, Origin, Recipe, SearchForm } from "../types";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   openRecipe: (recipe: Recipe) => void;
@@ -73,6 +74,8 @@ const makeRecipeUrl = (
 };
 
 function MainContent({ openRecipe, openRecipeCreate }: Props) {
+  const navigate = useNavigate();
+
   const skeletons = Array.from({ length: 6 }, (_, i) => i);
 
   const { register, handleSubmit } = useForm<SearchForm>();
@@ -130,6 +133,10 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
         sortDirection
       )
     );
+  };
+
+  const navigateToMetaPage = () => {
+    navigate("/recipe/meta");
   };
 
   return (

@@ -8,6 +8,7 @@ import RecipesPage from "../pages/RecipesPage";
 import ViewRecipePage from "../pages/ViewRecipePage";
 import CreateRecipePage from "../pages/CreateRecipePage";
 import UpdateRecipePage from "../pages/UpdateRecipePage";
+import RecipeMetaPage from "../pages/RecipeMetaPage";
 
 // import EventPage from "../pages/EventPage";
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/recipes/update/:id",
         element: <UpdateRecipePage />,
+      },
+      {
+        path: "/recipe/meta",
+        element: <RecipeMetaPage />,
       },
       {
         path: "/events",
