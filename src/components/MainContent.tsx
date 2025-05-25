@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaSearch, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
+import {
+  FaCog,
+  FaPlusSquare,
+  FaSearch,
+  FaSortAlphaDown,
+  FaSortAlphaDownAlt,
+} from "react-icons/fa";
 import {
   Box,
   Button,
@@ -257,7 +263,20 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
         <Spacer />
 
         <HStack mt="4" mb="8" gap="25px">
-          <Button variant="greenButton" ml="2" onClick={openRecipeCreate}>
+          <Button
+            leftIcon={<FaCog />}
+            onClick={navigateToMetaPage}
+            variant="greenButton"
+          >
+            Administrar
+          </Button>
+
+          <Button
+            leftIcon={<FaPlusSquare />}
+            variant="greenButton"
+            ml="2"
+            onClick={openRecipeCreate}
+          >
             Crear Receta
           </Button>
         </HStack>

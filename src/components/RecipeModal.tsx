@@ -80,17 +80,14 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
               mx={4}
               backgroundColor={
                 isUnlocked
-                  ? useColorModeValue("gray.300", "gray.600")
+                  ? useColorModeValue("gray.300", "#3C4658")
                   : "yellow.500"
               }
               _hover={
                 isUnlocked
                   ? { backgroundColor: "yellow.500" }
                   : {
-                      backgroundColor: useColorModeValue(
-                        "gray.300",
-                        "gray.600"
-                      ),
+                      backgroundColor: useColorModeValue("gray.300", "#3C4658"),
                     }
               }
               onClick={() => setIsUnlocked(!isUnlocked)}
