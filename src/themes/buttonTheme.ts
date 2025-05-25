@@ -44,7 +44,7 @@ const ButtonTheme = {
         backgroundColor: "red.500",
       },
       _dark: {
-        backgroundColor: "gray.600",
+        backgroundColor: "#3C4658",
         color: "white",
         ":hover": {
           backgroundColor: "red.500",
@@ -58,7 +58,7 @@ const ButtonTheme = {
         backgroundColor: "blue.500",
       },
       _dark: {
-        backgroundColor: "gray.600",
+        backgroundColor: "#3C4658",
         color: "white",
         ":hover": {
           backgroundColor: "blue.500",
@@ -72,7 +72,7 @@ const ButtonTheme = {
         backgroundColor: "gray.400",
       },
       _dark: {
-        backgroundColor: "gray.600",
+        backgroundColor: "#3C4658",
         color: "white",
         ":hover": {
           backgroundColor: "gray.500",

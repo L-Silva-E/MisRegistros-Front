@@ -1,4 +1,4 @@
-import { FaStar } from "react-icons/fa";
+import { FaClock, FaStar, FaUsers } from "react-icons/fa";
 import {
   Button,
   Card,
@@ -6,23 +6,28 @@ import {
   CardFooter,
   Flex,
   Heading,
+  HStack,
   Image,
   Tag,
   TagLabel,
-  TagLeftIcon,
+  TagRightIcon,
   Text,
 } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
+import { FaKitchenSet } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+import { setTimeText } from "../utils/utilities";
 
 type Props = {
   recipe: Recipe;
-  openRecipe: () => void;
 };
 
-function RecipeCard({ recipe, openRecipe }: Props) {
+function RecipeCard({ recipe }: Props) {
+  const navigate = useNavigate();
+
   return (
-    <Card p={2}>
+    <Card p={2} userSelect="none">
       <CardBody>
         <Image
           src={recipe.thumbnail}
@@ -40,13 +45,36 @@ function RecipeCard({ recipe, openRecipe }: Props) {
       </CardBody>
       <CardFooter pt="0">
         <Flex width="100%" justifyContent="space-between" alignItems="center">
-          <Button onClick={openRecipe} variant="greenButton">
-            Ver Receta
+          <Button
+            variant="greenButton"
+            onClick={() => navigate(`/recipes/${recipe.id}`)}
+          >
+            <HStack spacing={2}>
+              <FaKitchenSet size={20} />
+              <Text variant="buttonText">Preparar</Text>
+            </HStack>
           </Button>
-          <Tag h={10} key="lg" variant="solid" bgColor="yellow.500">
-            <TagLeftIcon boxSize="20px" as={FaStar} />
-            <TagLabel fontSize={20}>{recipe.score}</TagLabel>
-          </Tag>
+
+          <HStack>
+            <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
+              <TagLabel ml={1} fontSize={16}>
+                {setTimeText(recipe.time)}
+              </TagLabel>
+              <TagRightIcon mr={1} boxSize="18px" as={FaClock} />
+            </Tag>
+            <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
+              <TagLabel ml={1} fontSize={20}>
+                {recipe.servings}
+              </TagLabel>
+              <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
+            </Tag>
+            <Tag h={10} key="lg" variant="solid" bgColor="yellow.500">
+              <TagLabel ml={1} fontSize={20}>
+                {recipe.score}
+              </TagLabel>
+              <TagRightIcon mr={1} boxSize="18px" as={FaStar} />
+            </Tag>
+          </HStack>
         </Flex>
       </CardFooter>
     </Card>

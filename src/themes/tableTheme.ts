@@ -1,15 +1,13 @@
 const TableTheme = {
   baseStyle: {
     table: {
-      border: "2px solid",
+      border: "3px solid",
       borderColor: "green.200",
-      backgroundColor: "green.50",
-      color: "green.700",
+      backgroundColor: "green.200",
       _dark: {
-        border: "1px solid",
+        border: "3px solid",
         borderColor: "green.800",
-        backgroundColor: "green.900",
-        color: "green.200",
+        backgroundColor: "green.800",
       },
     },
     thead: {
@@ -18,30 +16,24 @@ const TableTheme = {
         borderColor: "green.200",
         color: "green.900",
         _dark: {
-          backgroundColor: "green.900",
-          borderColor: "green.900",
+          backgroundColor: "green.800",
+          borderColor: "green.800",
           color: "green.100",
         },
       },
     },
     tbody: {
-      td: {
-        borderColor: "green.200",
-        _dark: {
-          borderColor: "green.800",
-        },
-      },
       tr: {
         _even: {
-          backgroundColor: "green.100",
+          backgroundColor: "gray.50",
           _dark: {
-            backgroundColor: "green.700",
+            backgroundColor: "gray.600",
           },
         },
         _odd: {
-          backgroundColor: "green.50",
+          backgroundColor: "gray.200",
           _dark: {
-            backgroundColor: "green.800",
+            backgroundColor: "gray.700",
           },
         },
       },

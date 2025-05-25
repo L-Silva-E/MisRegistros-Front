@@ -52,7 +52,6 @@ function ConfirmationDeleteModal({
       const url = `${API_BASE_URL}/recipe/${data.id}`;
 
       await axiosFetch(HTTP_METHODS.DELETE, url);
-      console.log("Recipe deleted successfully", data);
       localStorage.setItem(
         "toast",
         JSON.stringify({
@@ -79,6 +78,7 @@ function ConfirmationDeleteModal({
           <ModalHeader>Eliminar Receta</ModalHeader>
           <ModalBody>
             <Text>¿Estás seguro de que quieres realizar esta acción?</Text>
+            <Text>Esta acción no se puede deshacer.</Text>
           </ModalBody>
 
           <ModalFooter mt={4}>

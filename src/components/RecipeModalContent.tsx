@@ -1,10 +1,8 @@
 import {
   Heading,
   Image,
-  ListItem,
   ModalBody,
   ModalHeader,
-  List,
   TableContainer,
   Table,
   Thead,
@@ -14,30 +12,28 @@ import {
   Td,
   HStack,
   Tag,
+  TagLabel,
+  TagRightIcon,
 } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
+import {
+  FaClock,
+  FaGlobeAmericas,
+  FaStar,
+  FaUsers,
+  FaUtensils,
+} from "react-icons/fa";
+import { setTimeText } from "../utils/utilities";
 
 type Props = {
   data: Recipe;
 };
 
-const joinSteps = (data: Recipe) => {
-  let stepsList = [];
-
-  for (let i = 0; i < data.steps.length; i++) {
-    stepsList.push(`${data.steps[i].number}. ${data.steps[i].instruction}`);
-  }
-
-  return stepsList;
-};
-
 function RecipeModalContent({ data }: Props) {
-  const steps = joinSteps(data);
-
   return (
     <>
-      <ModalHeader fontSize="3xl" mb={-4} fontWeight="bold">
+      <ModalHeader fontSize="3xl" fontWeight="bold">
         {data.name}
       </ModalHeader>
 
@@ -45,10 +41,30 @@ function RecipeModalContent({ data }: Props) {
         <Heading size="sm" fontWeight="normal" mb={4}>
           {data.description}
         </Heading>
+
         <HStack mb={4}>
-          <Tag colorScheme="green">{data.category?.name}</Tag>
-          <Tag colorScheme="green">{data.origin?.name}</Tag>
+          <Tag colorScheme="yellow">
+            <TagLabel>{data.score}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaStar} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{data.category?.name}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaUtensils} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{data.origin?.name}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{setTimeText(data.time)}</TagLabel>
+            <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
+          </Tag>
+          <Tag colorScheme="gray">
+            <TagLabel>{data.servings}</TagLabel>
+            <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
+          </Tag>
         </HStack>
+
         <Image
           alt={data.name}
           width="100%"
@@ -60,8 +76,8 @@ function RecipeModalContent({ data }: Props) {
         <Heading mt="5" mb="3" size="md">
           Ingredientes
         </Heading>
-        <TableContainer>
-          <Table size="sm" variant="simple">
+        <TableContainer borderRadius="md">
+          <Table size="sm" variant="unstyled">
             <Thead>
               <Tr>
                 <Th>Cantidad</Th>
@@ -80,14 +96,30 @@ function RecipeModalContent({ data }: Props) {
             </Tbody>
           </Table>
         </TableContainer>
+
         <Heading mt="5" mb="3" size="md">
-          Pasos
+          Pasos de la Receta
         </Heading>
-        <List>
-          {steps.map((step, index) => (
-            <ListItem key={index}>{step}</ListItem>
-          ))}
-        </List>
+        <TableContainer borderRadius="md">
+          <Table size="sm">
+            <Thead>
+              <Tr>
+                <Th>Paso</Th>
+                <Th>Instrucción</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.steps.map((step, index) => (
+                <Tr key={index}>
+                  <Td width={"10px"} textAlign="center">
+                    {step.number}
+                  </Td>
+                  <Td whiteSpace="normal">{step.instruction}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
       </ModalBody>
     </>
   );
