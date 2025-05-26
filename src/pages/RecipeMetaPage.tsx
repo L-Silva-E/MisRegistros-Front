@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 import {
   Box,
@@ -53,19 +53,152 @@ interface Ingredient {
   unit: string;
 }
 
+// Tipo union para los items
+type MetaDataItem = Category | Origin | Ingredient;
+type MetaDataType = "category" | "origin" | "ingredient";
+
+// Componente optimizado para cada tabla
+const DataTable = React.memo<{
+  data: MetaDataItem[];
+  type: MetaDataType;
+  loading: boolean;
+  onEdit: (item: MetaDataItem, type: MetaDataType) => void;
+  onDelete: (id: number, type: MetaDataType) => void;
+  loadingCrud: boolean;
+}>(({ data, type, loading, onEdit, onDelete, loadingCrud }) => {
+  const bgColor = useColorModeValue("green.200", "green.800");
+  const iconColor = useColorModeValue("#1A202C", "white");
+
+  if (loading) {
+    return (
+      <Text>
+        Cargando{" "}
+        {type === "ingredient"
+          ? "ingredientes"
+          : type === "category"
+          ? "categorías"
+          : "orígenes"}
+        ...
+      </Text>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Text>
+        No se encontraron{" "}
+        {type === "ingredient"
+          ? "ingredientes"
+          : type === "category"
+          ? "categorías"
+          : "orígenes"}
+      </Text>
+    );
+  }
+
+  return (
+    <TableContainer
+      borderRadius="md"
+      width="100%"
+      overflowY="auto"
+      maxHeight="100%"
+      // position="relative"
+    >
+      <Table size="sm">
+        <Thead
+          position="sticky"
+          top={0}
+          zIndex={10}
+          bg={bgColor}
+          minHeight="60px"
+        >
+          <Tr>
+            <Th>Nombre</Th>
+            {type === "ingredient" && (
+              <Th width="100px" textAlign="center">
+                Unidad
+              </Th>
+            )}
+            <Th width="100px" textAlign="center">
+              Acción
+            </Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {data.map((item) => (
+            <TableRow
+              key={item.id}
+              item={item}
+              type={type}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              loadingCrud={loadingCrud}
+              iconColor={iconColor}
+            />
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
+  );
+});
+
+// Componente optimizado para cada fila
+const TableRow = React.memo<{
+  item: MetaDataItem;
+  type: MetaDataType;
+  onEdit: (item: MetaDataItem, type: MetaDataType) => void;
+  onDelete: (id: number, type: MetaDataType) => void;
+  loadingCrud: boolean;
+  iconColor: string;
+}>(({ item, type, onEdit, onDelete, loadingCrud, iconColor }) => {
+  const handleEdit = useCallback(() => {
+    onEdit(item, type);
+  }, [item, type, onEdit]);
+
+  const handleDelete = useCallback(() => {
+    onDelete(item.id, type);
+  }, [item.id, type, onDelete]);
+
+  return (
+    <Tr>
+      <Td>{item.name}</Td>
+      {type === "ingredient" && "unit" in item && (
+        <Td textAlign="center">{item.unit}</Td>
+      )}
+      <Td>
+        <Flex gap={2} justifyContent="right">
+          <Button
+            variant="editButton"
+            size="sm"
+            height="25px"
+            onClick={handleEdit}
+          >
+            <FaPencilAlt color={iconColor} />
+          </Button>
+          <Button
+            variant="deleteButton"
+            size="sm"
+            height="25px"
+            onClick={handleDelete}
+            isLoading={loadingCrud}
+          >
+            <FaTrash color={iconColor} />
+          </Button>
+        </Flex>
+      </Td>
+    </Tr>
+  );
+});
+
 const RecipeMetaPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [origins, setOrigins] = useState<Origin[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [currentItem, setCurrentItem] = useState<Category | Origin | null>(
-    null
-  );
-  const [currentType, setCurrentType] = useState<
-    "category" | "origin" | "ingredient"
-  >("category");
+  const [currentItem, setCurrentItem] = useState<MetaDataItem | null>(null);
+  const [currentType, setCurrentType] = useState<MetaDataType>("category");
 
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [itemUnit, setItemUnit] = useState("kg");
   const availableUnits = [
     "kg",
@@ -183,73 +316,83 @@ const RecipeMetaPage: React.FC = () => {
     }
   }, [crudError, toast]);
 
-  const handleAddNew = (type: "category" | "origin" | "ingredient") => {
-    setIsEditing(false);
-    setCurrentType(type);
-    setCurrentItem(null);
-    setItemName("");
+  const handleAddNew = useCallback(
+    (type: MetaDataType) => {
+      setIsEditing(false);
+      setCurrentType(type);
+      setCurrentItem(null);
+      setItemName("");
 
-    if (type === "ingredient") {
-      setItemUnit("kg");
-    }
+      if (type === "ingredient") {
+        setItemUnit("kg");
+      }
 
-    onOpen();
-  };
+      onOpen();
+    },
+    [onOpen]
+  );
 
-  const handleEdit = (
-    item: Category | Origin | Ingredient,
-    type: "category" | "origin" | "ingredient"
-  ) => {
-    setIsEditing(true);
-    setCurrentType(type);
-    setCurrentItem(item);
-    setItemName(item.name);
+  const handleEdit = useCallback(
+    (item: MetaDataItem, type: MetaDataType) => {
+      setIsEditing(true);
+      setCurrentType(type);
+      setCurrentItem(item);
+      setItemName(item.name);
 
-    if (type === "ingredient" && "unit" in item) {
-      setItemUnit(item.unit);
-    }
+      if (type === "ingredient" && "unit" in item) {
+        setItemUnit(item.unit);
+      }
 
-    onOpen();
-  };
+      onOpen();
+    },
+    [onOpen]
+  );
 
-  const handleDelete = async (
-    id: number,
-    type: "category" | "origin" | "ingredient"
-  ) => {
-    const endpoint =
-      type === "category"
-        ? "category"
-        : type === "origin"
-        ? "origin"
-        : "ingredient";
-
-    await performCrudOperation(
-      HTTP_METHODS.DELETE,
-      `${API_BASE_URL}/${endpoint}/${id}`
-    );
-
-    if (type === "category") {
-      axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
-    } else if (type === "origin") {
-      axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-    } else {
-      axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
-    }
-
-    toast({
-      title: "Éxito",
-      description: `${
+  const handleDelete = useCallback(
+    async (id: number, type: MetaDataType) => {
+      const endpoint =
         type === "category"
-          ? "Categoría"
+          ? "category"
           : type === "origin"
-          ? "Origen"
-          : "Ingrediente"
-      } eliminado correctamente`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+          ? "origin"
+          : "ingredient";
+
+      await performCrudOperation(
+        HTTP_METHODS.DELETE,
+        `${API_BASE_URL}/${endpoint}/${id}`
+      );
+
+      // Refrescar datos
+      if (type === "category") {
+        axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
+      } else if (type === "origin") {
+        axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
+      } else {
+        axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
+      }
+
+      toast({
+        title: "Éxito",
+        description: `${
+          type === "category"
+            ? "Categoría"
+            : type === "origin"
+            ? "Origen"
+            : "Ingrediente"
+        } eliminado correctamente`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    [
+      performCrudOperation,
+      axiosFetchCategories,
+      axiosFetchOrigins,
+      axiosFetchIngredients,
+      toast,
+    ]
+  );
 
   const handleSave = async () => {
     if (!itemName.trim()) {
@@ -308,6 +451,17 @@ const RecipeMetaPage: React.FC = () => {
     onClose();
   };
 
+  const modalTitle = useMemo(() => {
+    const action = isEditing ? "Editar" : "Crear";
+    const entityType =
+      currentType === "category"
+        ? "Categoría"
+        : currentType === "origin"
+        ? "Origen"
+        : "Ingrediente";
+    return `${action} ${entityType}`;
+  }, [isEditing, currentType]);
+
   return (
     <Box p={5} height="100%">
       <Heading mb={4} ml={2}>
@@ -315,6 +469,7 @@ const RecipeMetaPage: React.FC = () => {
       </Heading>
 
       <Grid templateColumns="repeat(3, 1fr)" gap={6} height="calc(100% - 60px)">
+        {/* Ingredientes */}
         <GridItem height="100%" overflow="hidden">
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
@@ -332,79 +487,19 @@ const RecipeMetaPage: React.FC = () => {
               </Flex>
             </CardHeader>
             <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
-              {loadingIngredients ? (
-                <Text>Cargando ingredientes...</Text>
-              ) : ingredients.length === 0 ? (
-                <Text>No se encontraron ingredientes</Text>
-              ) : (
-                <TableContainer
-                  borderRadius="md"
-                  width="100%"
-                  overflowY="auto"
-                  maxHeight="100%"
-                  position="relative"
-                >
-                  <Table size="sm">
-                    <Thead
-                      position="sticky"
-                      top={0}
-                      zIndex={1}
-                      bg={useColorModeValue("green.200", "green.800")}
-                    >
-                      <Tr>
-                        <Th>Nombre</Th>
-                        <Th width="100px" textAlign="center">
-                          Unidad
-                        </Th>
-                        <Th width="100px" textAlign="center">
-                          Acción
-                        </Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {ingredients.map((ingredient) => (
-                        <Tr key={ingredient.id}>
-                          <Td>{ingredient.name}</Td>
-                          <Td textAlign="center">{ingredient.unit}</Td>
-                          <Td>
-                            <Flex gap={2} justifyContent="right">
-                              <Button
-                                variant="editButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() =>
-                                  handleEdit(ingredient, "ingredient")
-                                }
-                              >
-                                <FaPencilAlt
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                              <Button
-                                variant="deleteButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() =>
-                                  handleDelete(ingredient.id, "ingredient")
-                                }
-                                isLoading={loadingCrud}
-                              >
-                                <FaTrash
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                            </Flex>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              )}
+              <DataTable
+                data={ingredients}
+                type="ingredient"
+                loading={loadingIngredients}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                loadingCrud={loadingCrud}
+              />
             </CardBody>
           </Card>
         </GridItem>
 
+        {/* Categorías */}
         <GridItem height="100%" mb={7} overflow="hidden">
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
@@ -421,67 +516,20 @@ const RecipeMetaPage: React.FC = () => {
                 </Button>
               </Flex>
             </CardHeader>
-            <CardBody
-              overflowY="auto"
-              height="calc(100% - 60px)" // Resta la altura aproximada del CardHeader
-              px={2}
-            >
-              {loadingCategories ? (
-                <Text>Cargando categorías...</Text>
-              ) : categories.length === 0 ? (
-                <Text>No se encontraron categorías</Text>
-              ) : (
-                <TableContainer borderRadius="md" width="100%">
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Nombre</Th>
-                        <Th width="100px" textAlign="center">
-                          Acción
-                        </Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {categories.map((category) => (
-                        <Tr key={category.id}>
-                          <Td>{category.name}</Td>
-                          <Td>
-                            <Flex gap={2} justifyContent="right">
-                              <Button
-                                variant="editButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() => handleEdit(category, "category")}
-                              >
-                                <FaPencilAlt
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                              <Button
-                                variant="deleteButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() =>
-                                  handleDelete(category.id, "category")
-                                }
-                                isLoading={loadingCrud}
-                              >
-                                <FaTrash
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                            </Flex>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              )}
+            <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
+              <DataTable
+                data={categories}
+                type="category"
+                loading={loadingCategories}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                loadingCrud={loadingCrud}
+              />
             </CardBody>
           </Card>
         </GridItem>
 
+        {/* Orígenes */}
         <GridItem height="100%" overflow="hidden">
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
@@ -498,79 +546,25 @@ const RecipeMetaPage: React.FC = () => {
                 </Button>
               </Flex>
             </CardHeader>
-            <CardBody
-              overflowY="auto"
-              height="calc(100% - 60px)" // Resta la altura aproximada del CardHeader
-              px={2}
-            >
-              {loadingOrigins ? (
-                <Text>Cargando orígenes...</Text>
-              ) : origins.length === 0 ? (
-                <Text>No se encontraron orígenes</Text>
-              ) : (
-                <TableContainer borderRadius="md" width="100%">
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Nombre</Th>
-                        <Th width="100px" textAlign="center">
-                          Acción
-                        </Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {origins.map((origin) => (
-                        <Tr key={origin.id}>
-                          <Td>{origin.name}</Td>
-                          <Td>
-                            <Flex gap={2} justifyContent="right">
-                              <Button
-                                variant="editButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() => handleEdit(origin, "origin")}
-                              >
-                                <FaPencilAlt
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                              <Button
-                                variant="deleteButton"
-                                size="sm"
-                                height={"25px"}
-                                onClick={() =>
-                                  handleDelete(origin.id, "origin")
-                                }
-                                isLoading={loadingCrud}
-                              >
-                                <FaTrash
-                                  color={useColorModeValue("#1A202C", "white")}
-                                />
-                              </Button>
-                            </Flex>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              )}
+            <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
+              <DataTable
+                data={origins}
+                type="origin"
+                loading={loadingOrigins}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                loadingCrud={loadingCrud}
+              />
             </CardBody>
           </Card>
         </GridItem>
       </Grid>
 
+      {/* Modal optimizado */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {isEditing ? "Editar" : "Crear"}{" "}
-            {currentType === "category"
-              ? "Categoría"
-              : currentType === "origin"
-              ? "Origen"
-              : "Ingrediente"}
-          </ModalHeader>
+          <ModalHeader>{modalTitle}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl mb={currentType === "ingredient" ? 4 : 0}>
