@@ -18,7 +18,7 @@ Descripción
 
 ### 🔗 Relacionado
 
-- Issue: `#<número>`
+- Issue: #
 
 ---
 
