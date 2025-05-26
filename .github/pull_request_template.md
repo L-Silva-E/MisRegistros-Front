@@ -1,6 +1,6 @@
 ### 📋 Resumen
 
-Describe brevemente qué hace este Pull Request. ¿Qué problema soluciona o qué funcionalidad agrega?
+Descripción
 
 ---
 
