@@ -93,9 +93,7 @@ const CreateRecipePage = () => {
       score: parseInt(dataForm.score),
       time: parseInt(dataForm.time),
       servings: parseInt(dataForm.servings),
-      thumbnail: dataForm.thumbnail
-        ? dataForm.thumbnail
-        : "https://placehold.co/900x600/1C4532/C6F6D5?text=Imagen+de\\nla+Receta",
+      ...(dataForm.thumbnail && dataForm.thumbnail.trim() !== "" && { thumbnail: dataForm.thumbnail }),
       ingredients: ingredients.map((ingredient) => {
         return {
           id: parseInt(ingredient.id),
@@ -109,6 +107,8 @@ const CreateRecipePage = () => {
         };
       }),
     };
+
+    console.log(bodyRecipe);
 
     try {
       await axiosFetch(HTTP_METHODS.POST, `${API_BASE_URL}/recipe`, bodyRecipe);

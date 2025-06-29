@@ -111,9 +111,7 @@ function RecipeModalCreate({ isOpen, onClose }: Props) {
       name: dataForm.name,
       description: dataForm.description,
       score: parseInt(dataForm.score),
-      thumbnail: dataForm.thumbnail
-        ? dataForm.thumbnail
-        : "https://placehold.co/900x600/1C4532/C6F6D5?text=Imagen+de\nla+Receta",
+      thumbnail: dataForm.thumbnail,
       ingredients: ingredients.map((ingredient) => {
         return {
           id: parseInt(ingredient.id),
