@@ -56,19 +56,19 @@ function RecipeCard({ recipe }: Props) {
           </Button>
 
           <HStack>
-            <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
+            <Tag h={10} variant="solid" bgColor="gray.500">
               <TagLabel ml={1} fontSize={16}>
                 {setTimeText(recipe.time)}
               </TagLabel>
               <TagRightIcon mr={1} boxSize="18px" as={FaClock} />
             </Tag>
-            <Tag h={10} key="lg" variant="solid" bgColor="gray.500">
+            <Tag h={10} variant="solid" bgColor="gray.500">
               <TagLabel ml={1} fontSize={20}>
                 {recipe.servings}
               </TagLabel>
               <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
             </Tag>
-            <Tag h={10} key="lg" variant="solid" bgColor="yellow.500">
+            <Tag h={10} variant="solid" bgColor="yellow.500">
               <TagLabel ml={1} fontSize={20}>
                 {recipe.score}
               </TagLabel>
