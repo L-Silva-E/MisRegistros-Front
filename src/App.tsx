@@ -12,7 +12,6 @@ import Header from "./components/Header";
 import SideNav from "./components/SideNav";
 import MainContent from "./components/MainContent";
 import RecipeModal from "./components/RecipeModal";
-import RecipeModalCreate from "./components/RecipeModalCreate";
 
 import useAxios from "./hooks/axiosFetch";
 
@@ -48,11 +47,7 @@ function App() {
     onOpen: onOpenRecipeContent,
     onClose: onCloseRecipeContent,
   } = useDisclosure();
-  const {
-    isOpen: isOpenRecipeCreate,
-    onOpen: onOpenRecipeCreate,
-    onClose: onCloseRecipeCreate,
-  } = useDisclosure();
+  const { onOpen: onOpenRecipeCreate } = useDisclosure();
 
   const {
     axiosFetch,
@@ -114,10 +109,6 @@ function App() {
         loading={loadingRecipeDetail}
         isOpen={isOpenRecipeContent}
         onClose={onCloseRecipeContent}
-      />
-      <RecipeModalCreate
-        isOpen={isOpenRecipeCreate}
-        onClose={onCloseRecipeCreate}
       />
     </Fragment>
   );
