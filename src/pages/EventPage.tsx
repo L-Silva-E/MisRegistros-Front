@@ -1,6 +1,6 @@
 import { Heading, useColorModeValue, VStack } from "@chakra-ui/react";
 
-const HomePage = () => {
+const EventPage = () => {
   return (
     <VStack
       spacing={6}
@@ -16,4 +16,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default EventPage;
