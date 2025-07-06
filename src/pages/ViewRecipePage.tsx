@@ -44,6 +44,7 @@ const ViewRecipePage = () => {
   const { id } = useParams();
 
   const borderColor = useColorModeValue("gray.400", "gray.600");
+  const checkboxBorderColor = useColorModeValue("gray.400", "gray.500");
 
   const [recipeData, setRecipeData] = useState({
     name: "",
@@ -180,7 +181,7 @@ const ViewRecipePage = () => {
                     <Td>
                       <Checkbox
                         colorScheme="green"
-                        borderColor={useColorModeValue("gray.400", "gray.500")}
+                        borderColor={checkboxBorderColor}
                         isChecked={checkedIngredients.has(index.toString())}
                         onChange={() => toggleIngredient(index.toString())}
                         size="lg"
@@ -226,7 +227,7 @@ const ViewRecipePage = () => {
                     <Td>
                       <Checkbox
                         colorScheme="green"
-                        borderColor={useColorModeValue("gray.400", "gray.500")}
+                        borderColor={checkboxBorderColor}
                         isChecked={completedSteps.has(step.number)}
                         onChange={() => toggleStep(step.number)}
                         size="lg"

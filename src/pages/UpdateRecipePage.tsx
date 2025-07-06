@@ -40,6 +40,11 @@ const UpdateRecipePage = () => {
   const { id } = useParams();
   const { axiosFetch } = useAxios();
 
+  const unitColor = useColorModeValue("gray.800", "white");
+  const unitBorderColor = useColorModeValue("gray.300", "gray.600");
+  const deleteIngredientButton = useColorModeValue("#1A202C", "white");
+  const addIngredientButton = useColorModeValue("#1A202C", "white")
+
   const { register, handleSubmit, setValue, watch } = useForm();
   const [selectedCategory, setSelectedCategory] =
     useState<Category>(defaultCategory);
@@ -317,11 +322,8 @@ const UpdateRecipePage = () => {
                     <Center
                       h={10}
                       width="10%"
-                      color={useColorModeValue("gray.800", "white")}
-                      backgroundColor={useColorModeValue(
-                        "gray.300",
-                        "gray.600"
-                      )}
+                      color={unitColor}
+                      backgroundColor={unitBorderColor}
                       borderRadius={5}
                     >
                       {ingredients[index].id === "0"
@@ -337,7 +339,7 @@ const UpdateRecipePage = () => {
                       width="10%"
                       onClick={() => removeIngredientRow(index)}
                     >
-                      <FaTrash color={useColorModeValue("#1A202C", "white")} />
+                      <FaTrash color={deleteIngredientButton} />
                     </Button>
                   </HStack>
                 ))}
@@ -349,7 +351,7 @@ const UpdateRecipePage = () => {
                 variant="addRowButton"
                 onClick={addIngredientRow}
               >
-                <FaPlus color={useColorModeValue("#1A202C", "white")} />
+                <FaPlus color={addIngredientButton} />
               </Button>
             </FormControl>
           </GridItem>
