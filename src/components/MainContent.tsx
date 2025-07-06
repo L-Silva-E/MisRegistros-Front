@@ -80,7 +80,6 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
 
   const { register, handleSubmit } = useForm<SearchForm>();
 
-  // ~ States: Recipe, Category, Origin
   const [filterRecipe, setFilterRecipe] =
     useState<SearchForm>(defaultFilterRecipe);
   const [selectedCategory, setSelectedCategory] =
@@ -89,7 +88,6 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
   const [sortBy, setSortBy] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // ~ axiosFetch: Recipe, Category, Origin
   const {
     loading: loadingRecipe,
     data: dataRecipe,

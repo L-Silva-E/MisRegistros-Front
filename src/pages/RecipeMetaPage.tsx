@@ -53,11 +53,9 @@ interface Ingredient {
   unit: string;
 }
 
-// Tipo union para los items
 type MetaDataItem = Category | Origin | Ingredient;
 type MetaDataType = "category" | "origin" | "ingredient";
 
-// Componente optimizado para cada tabla
 const DataTable = React.memo<{
   data: MetaDataItem[];
   type: MetaDataType;
@@ -102,7 +100,6 @@ const DataTable = React.memo<{
       width="100%"
       overflowY="auto"
       maxHeight="100%"
-      // position="relative"
     >
       <Table size="sm">
         <Thead
@@ -142,7 +139,6 @@ const DataTable = React.memo<{
   );
 });
 
-// Componente optimizado para cada fila
 const TableRow = React.memo<{
   item: MetaDataItem;
   type: MetaDataType;
@@ -362,7 +358,6 @@ const RecipeMetaPage: React.FC = () => {
         `${API_BASE_URL}/${endpoint}/${id}`
       );
 
-      // Refrescar datos
       if (type === "category") {
         axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
       } else if (type === "origin") {
