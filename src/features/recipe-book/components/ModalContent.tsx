@@ -1,19 +1,12 @@
-import {
-  Heading,
-  Image,
-  ModalBody,
-  ModalHeader,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Heading, Image, ModalBody, ModalHeader } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
-import { RecipeTags, useRecipeTags } from "../../../shared/components/ui";
+import {
+  RecipeTags,
+  useRecipeTags,
+  IngredientsTable,
+  StepsTable,
+} from "../../../shared/components/ui";
 
 type Props = {
   data: Recipe;
@@ -46,50 +39,16 @@ function RecipeModalContent({ data }: Props) {
         <Heading mt="5" mb="3" size="md">
           Ingredientes
         </Heading>
-        <TableContainer borderRadius="md">
-          <Table size="sm" variant="unstyled">
-            <Thead>
-              <Tr>
-                <Th>Cantidad</Th>
-                <Th>Ingrediente</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.ingredients.map((ingredient, index) => (
-                <Tr key={index}>
-                  <Td width="100px" textAlign="right">
-                    {ingredient.quantity} {ingredient.ingredient.unit}
-                  </Td>
-                  <Td>{ingredient.ingredient.name}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <IngredientsTable
+          ingredients={data.ingredients}
+          size="sm"
+          variant="unstyled"
+        />
 
         <Heading mt="5" mb="3" size="md">
           Pasos de la Receta
         </Heading>
-        <TableContainer borderRadius="md">
-          <Table size="sm">
-            <Thead>
-              <Tr>
-                <Th>Paso</Th>
-                <Th>Instrucción</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.steps.map((step, index) => (
-                <Tr key={index}>
-                  <Td width={"10px"} textAlign="center">
-                    {step.number}
-                  </Td>
-                  <Td whiteSpace="normal">{step.instruction}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <StepsTable steps={data.steps} size="sm" />
       </ModalBody>
     </>
   );

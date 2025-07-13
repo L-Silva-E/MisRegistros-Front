@@ -4,28 +4,23 @@ import {
   Box,
   Button,
   Center,
-  Checkbox,
   Flex,
   Grid,
   GridItem,
   Heading,
-  HStack,
   Image,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { FaCheckSquare } from "react-icons/fa";
 
 import useAxios from "../../../shared/hooks/axiosFetch";
-import { RecipeTags, useRecipeTags } from "../../../shared/components/ui";
+import {
+  RecipeTags,
+  useRecipeTags,
+  IngredientsTable,
+  StepsTable,
+} from "../../../shared/components/ui";
 
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
@@ -99,91 +94,21 @@ const ViewRecipePage = () => {
 
         <GridItem>
           <Heading mb={4}>Ingredientes</Heading>
-          <TableContainer borderRadius="md">
-            <Table size="sm">
-              <Thead>
-                <Tr>
-                  <Th width={12}>
-                    <HStack justify="center">
-                      <FaCheckSquare />
-                    </HStack>
-                  </Th>
-                  <Th width="10%">Cantidad</Th>
-                  <Th>Ingrediente</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {recipe?.ingredients.map((ingredient, index) => (
-                  <Tr
-                    key={index}
-                    color={
-                      checkedIngredients.has(index.toString())
-                        ? "green.500"
-                        : "inherit"
-                    }
-                  >
-                    <Td>
-                      <Checkbox
-                        colorScheme="green"
-                        borderColor={checkboxBorderColor}
-                        isChecked={checkedIngredients.has(index.toString())}
-                        onChange={() => toggleIngredient(index.toString())}
-                        size="lg"
-                      />
-                    </Td>
-                    <Td textAlign="right">
-                      {ingredient.quantity + " "}
-                      {ingredient.ingredient.unit}
-                    </Td>
-                    <Td>{ingredient.ingredient.name}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <IngredientsTable
+            ingredients={recipe?.ingredients || []}
+            interactive={true}
+            checkedItems={checkedIngredients}
+            onToggleItem={toggleIngredient}
+            checkboxColor={checkboxBorderColor}
+          />
           <Heading my={4}>Pasos de la Receta</Heading>
-          <TableContainer borderRadius="md">
-            <Table size="sm">
-              <Thead>
-                <Tr>
-                  <Th width={12}>
-                    <HStack justify="center">
-                      <FaCheckSquare />
-                    </HStack>
-                  </Th>
-                  <Th width={12} textAlign="center">
-                    Paso
-                  </Th>
-                  <Th>Instrucción</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {recipe?.steps.map((step) => (
-                  <Tr
-                    key={step.number}
-                    color={
-                      completedSteps.has(step.number) ? "green.500" : "inherit"
-                    }
-                    textDecoration={
-                      completedSteps.has(step.number) ? "line-through" : "none"
-                    }
-                  >
-                    <Td>
-                      <Checkbox
-                        colorScheme="green"
-                        borderColor={checkboxBorderColor}
-                        isChecked={completedSteps.has(step.number)}
-                        onChange={() => toggleStep(step.number)}
-                        size="lg"
-                      ></Checkbox>
-                    </Td>
-                    <Td textAlign="center">{step.number}</Td>
-                    <Td>{step.instruction}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <StepsTable
+            steps={recipe?.steps || []}
+            interactive={true}
+            completedSteps={completedSteps}
+            onToggleStep={toggleStep}
+            checkboxColor={checkboxBorderColor}
+          />
         </GridItem>
       </Grid>
 
