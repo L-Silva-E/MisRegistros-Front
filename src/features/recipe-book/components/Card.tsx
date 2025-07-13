@@ -7,7 +7,6 @@ import {
   Flex,
   Heading,
   HStack,
-  Image,
   Tag,
   TagLabel,
   TagRightIcon,
@@ -17,6 +16,7 @@ import { FaClock, FaStar, FaUsers } from "react-icons/fa";
 import { FaKitchenSet } from "react-icons/fa6";
 
 import { Recipe } from "../types";
+import { RecipeCardImage } from "../../../shared/components/ui";
 
 import { setTimeText } from "../utils/setTimeText";
 
@@ -30,13 +30,7 @@ function RecipeCard({ recipe }: Props) {
   return (
     <Card p={2} userSelect="none">
       <CardBody>
-        <Image
-          src={recipe.thumbnail}
-          alt={recipe.name}
-          width="100%"
-          height="300px"
-          borderRadius="lg"
-        />
+        <RecipeCardImage src={recipe.thumbnail} alt={recipe.name} />
         <Heading mt="4" size="md">
           {recipe.name}
         </Heading>

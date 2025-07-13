@@ -3,23 +3,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
-  Center,
   Flex,
   Grid,
   GridItem,
   Heading,
-  Image,
   Text,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 
 import useAxios from "../../../shared/hooks/axiosFetch";
+
 import {
   RecipeTags,
   useRecipeTags,
   IngredientsTable,
   StepsTable,
+  RecipeDetailImage,
 } from "../../../shared/components/ui";
 
 import { API_BASE_URL } from "../../../shared/constants/environment";
@@ -76,19 +76,19 @@ const ViewRecipePage = () => {
             <Heading size="lg">{recipe?.name}</Heading>
             <Text>{recipe?.description}</Text>
             <RecipeTags tags={recipeTags} size="lg" spacing={3} my={4} />
-            <Center>
-              <Image
-                src={recipe?.thumbnail}
-                alt={recipe?.name}
-                width="100%"
-                maxHeight="400px"
-                border="3px solid"
-                borderRadius="lg"
+            <Flex justify="center" w="100%">
+              <RecipeDetailImage
+                src={
+                  recipe?.thumbnail ||
+                  "https://via.placeholder.com/400x300?text=Recipe+Image"
+                }
+                alt={recipe?.name || "Recipe image"}
                 borderColor={borderColor}
-                objectFit="contain"
-                maxW="xl"
+                fallbackSrc="https://via.placeholder.com/400x300?text=No+Image"
+                mx="auto"
+                display="block"
               />
-            </Center>
+            </Flex>
           </VStack>
         </GridItem>
 

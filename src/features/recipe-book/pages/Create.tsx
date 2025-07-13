@@ -111,8 +111,6 @@ const CreateRecipePage = () => {
       }),
     };
 
-    console.log(bodyRecipe);
-
     try {
       await axiosFetch(HTTP_METHODS.POST, `${API_BASE_URL}/recipe`, bodyRecipe);
 

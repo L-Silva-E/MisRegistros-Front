@@ -69,8 +69,6 @@ const makeRecipeUrl = (
     url += `?${params.join("&")}`;
   }
 
-  console.log(url);
-
   return url;
 };
 

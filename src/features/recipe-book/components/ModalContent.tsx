@@ -1,11 +1,13 @@
-import { Heading, Image, ModalBody, ModalHeader } from "@chakra-ui/react";
+import { Heading, ModalBody, ModalHeader } from "@chakra-ui/react";
 
 import { Recipe } from "../types";
+
 import {
   RecipeTags,
   useRecipeTags,
   IngredientsTable,
   StepsTable,
+  RecipeModalImage,
 } from "../../../shared/components/ui";
 
 type Props = {
@@ -28,13 +30,7 @@ function RecipeModalContent({ data }: Props) {
 
         <RecipeTags tags={recipeTags} spacing={4} mb={4} />
 
-        <Image
-          alt={data.name}
-          width="100%"
-          height="300px"
-          borderRadius="lg"
-          src={data.thumbnail}
-        ></Image>
+        <RecipeModalImage src={data.thumbnail} alt={data.name} />
 
         <Heading mt="5" mb="3" size="md">
           Ingredientes
