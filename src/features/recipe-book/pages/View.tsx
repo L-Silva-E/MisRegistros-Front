@@ -13,9 +13,6 @@ import {
   Image,
   Table,
   TableContainer,
-  Tag,
-  TagLabel,
-  TagRightIcon,
   Tbody,
   Td,
   Text,
@@ -25,22 +22,14 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import {
-  FaCheckSquare,
-  FaClock,
-  FaGlobeAmericas,
-  FaStar,
-  FaUsers,
-  FaUtensils,
-} from "react-icons/fa";
+import { FaCheckSquare } from "react-icons/fa";
 
 import useAxios from "../../../shared/hooks/axiosFetch";
+import { RecipeTags, useRecipeTags } from "../../../shared/components/ui";
 
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
 import { Recipe } from "../types";
-
-import { setTimeText } from "../utils/setTimeText";
 
 const ViewRecipePage = () => {
   const navigate = useNavigate();
@@ -49,19 +38,8 @@ const ViewRecipePage = () => {
   const borderColor = useColorModeValue("gray.400", "gray.600");
   const checkboxBorderColor = useColorModeValue("gray.400", "gray.500");
 
-  const [recipeData, setRecipeData] = useState({
-    name: "",
-    description: "",
-    thumbnail: "",
-    score: "",
-    time: "",
-    servings: "",
-    steps: "",
-    category: "",
-    origin: "",
-  });
-
   const { data: recipe, axiosFetch: axiosFetchRecipe } = useAxios<Recipe>();
+  const recipeTags = useRecipeTags(recipe!);
 
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
     new Set()
@@ -80,22 +58,6 @@ const ViewRecipePage = () => {
   useEffect(() => {
     axiosFetchRecipe(HTTP_METHODS.GET, `${API_BASE_URL}/recipe/?id=${id}`);
   }, []);
-
-  useEffect(() => {
-    if (recipe) {
-      setRecipeData({
-        name: recipe.name,
-        description: recipe.description,
-        thumbnail: recipe.thumbnail,
-        score: recipe.score.toString(),
-        time: setTimeText(recipe.time),
-        servings: recipe.servings.toString(),
-        steps: recipe.steps.map((step) => step.instruction).join("\n"),
-        category: recipe.category.name,
-        origin: recipe.origin.name,
-      });
-    }
-  }, [recipe]);
 
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
@@ -116,34 +78,13 @@ const ViewRecipePage = () => {
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <GridItem>
           <VStack align="stretch" spacing={4}>
-            <Heading size="lg">{recipeData.name}</Heading>
-            <Text>{recipeData.description}</Text>
-            <HStack my={4} spacing={3}>
-              <Tag colorScheme="yellow" size="lg">
-                <TagLabel>{recipeData.score}</TagLabel>
-                <TagRightIcon mr={1} boxSize="16px" as={FaStar} />
-              </Tag>
-              <Tag colorScheme="gray" size="lg">
-                <TagLabel>{recipeData.category}</TagLabel>
-                <TagRightIcon mr={1} boxSize="16px" as={FaUtensils} />
-              </Tag>
-              <Tag colorScheme="gray" size="lg">
-                <TagLabel>{recipeData.origin}</TagLabel>
-                <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
-              </Tag>
-              <Tag colorScheme="gray" size="lg">
-                <TagLabel>{recipeData.time}</TagLabel>
-                <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
-              </Tag>
-              <Tag colorScheme="gray" size="lg">
-                <TagLabel>{recipeData.servings}</TagLabel>
-                <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
-              </Tag>
-            </HStack>
+            <Heading size="lg">{recipe?.name}</Heading>
+            <Text>{recipe?.description}</Text>
+            <RecipeTags tags={recipeTags} size="lg" spacing={3} my={4} />
             <Center>
               <Image
-                src={recipeData.thumbnail}
-                alt={recipeData.name}
+                src={recipe?.thumbnail}
+                alt={recipe?.name}
                 width="100%"
                 maxHeight="400px"
                 border="3px solid"

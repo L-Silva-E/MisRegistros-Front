@@ -1,37 +1,27 @@
 import {
   Heading,
-  HStack,
   Image,
   ModalBody,
   ModalHeader,
   Table,
   TableContainer,
-  Tag,
-  TagLabel,
-  TagRightIcon,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import {
-  FaClock,
-  FaGlobeAmericas,
-  FaStar,
-  FaUsers,
-  FaUtensils,
-} from "react-icons/fa";
 
 import { Recipe } from "../types";
-
-import { setTimeText } from "../utils/setTimeText";
+import { RecipeTags, useRecipeTags } from "../../../shared/components/ui";
 
 type Props = {
   data: Recipe;
 };
 
 function RecipeModalContent({ data }: Props) {
+  const recipeTags = useRecipeTags(data);
+
   return (
     <>
       <ModalHeader fontSize="3xl" fontWeight="bold">
@@ -43,28 +33,7 @@ function RecipeModalContent({ data }: Props) {
           {data.description}
         </Heading>
 
-        <HStack mb={4}>
-          <Tag colorScheme="yellow">
-            <TagLabel>{data.score}</TagLabel>
-            <TagRightIcon mr={1} boxSize="16px" as={FaStar} />
-          </Tag>
-          <Tag colorScheme="gray">
-            <TagLabel>{data.category?.name}</TagLabel>
-            <TagRightIcon mr={1} boxSize="16px" as={FaUtensils} />
-          </Tag>
-          <Tag colorScheme="gray">
-            <TagLabel>{data.origin?.name}</TagLabel>
-            <TagRightIcon mr={1} boxSize="16px" as={FaGlobeAmericas} />
-          </Tag>
-          <Tag colorScheme="gray">
-            <TagLabel>{setTimeText(data.time)}</TagLabel>
-            <TagRightIcon mr={1} boxSize="16px" as={FaClock} />
-          </Tag>
-          <Tag colorScheme="gray">
-            <TagLabel>{data.servings}</TagLabel>
-            <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
-          </Tag>
-        </HStack>
+        <RecipeTags tags={recipeTags} spacing={4} mb={4} />
 
         <Image
           alt={data.name}
