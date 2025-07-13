@@ -4,8 +4,8 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 
-import customTheme from "./themes/index.ts";
-import router from "./routes";
+import router from "./app/routes/";
+import customTheme from "./shared/themes/";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <ChakraProvider theme={customTheme}>

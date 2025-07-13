@@ -8,16 +8,16 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import Header from "./components/Header";
-import SideNav from "./components/SideNav";
-import MainContent from "./components/MainContent";
-import RecipeModal from "./components/RecipeModal";
+import Header from "./shared/components/layout/Header";
+import SideNav from "./shared/components/layout/SideNav";
+import MainContent from "./features/recipe-book/components/MainContent";
+import RecipeModal from "./features/recipe-book/components/Modal";
 
-import useAxios from "./hooks/axiosFetch";
+import useAxios from "./shared/hooks/axiosFetch";
 
-import { API_BASE_URL } from "./constants/environment";
-import { HTTP_METHODS } from "./constants/httpMethods";
-import { Recipe } from "./types";
+import { API_BASE_URL } from "./shared/constants/environment";
+import { HTTP_METHODS } from "./shared/constants/httpMethods";
+import { Recipe } from "./features/recipe-book/types";
 
 function App() {
   const toast = useToast();
