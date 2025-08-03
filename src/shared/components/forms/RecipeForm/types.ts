@@ -46,7 +46,7 @@ export interface MetadataSectionProps {
 
 export interface RecipeFormProps {
   initialData?: Recipe;
-  onSubmit: (data: RecipeFormData) => Promise<void>;
+  onSubmit: (data: RecipeFormSubmissionData) => Promise<void>;
 }
 
 export interface RecipeFormButtonsProps {
@@ -71,4 +71,10 @@ export interface StepsSectionProps {
 export interface IngredientFormData {
   id: string;
   quantity: string;
+}
+
+export interface RecipeFormSubmissionData extends RecipeFormData {
+  selectedCategory: Category;
+  selectedOrigin: Origin;
+  ingredients: IngredientFormData[];
 }

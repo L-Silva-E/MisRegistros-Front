@@ -117,7 +117,7 @@ const IngredientsSection = ({
               <Select
                 value={ingredient.id}
                 onChange={(e) => updateIngredient(index, "id", e.target.value)}
-                placeholder="Seleccionar ingrediente"
+                placeholder="Seleccione un ingrediente"
                 bg={bgColor}
                 borderColor={
                   isInvalidSelection ? errorBorderColor : borderColor

@@ -78,7 +78,7 @@ export const useRecipeForm = (initialData?: Recipe) => {
       setValue("servings", initialData.servings);
       setValue(
         "steps",
-        initialData.steps.map((step: any) => step.instruction).join("\n")
+        initialData.steps.map((step) => step.instruction).join("\n")
       );
 
       // Cargar categoría y origen seleccionados
@@ -92,7 +92,7 @@ export const useRecipeForm = (initialData?: Recipe) => {
       // Cargar ingredientes
       if (initialData.ingredients && initialData.ingredients.length > 0) {
         const initialIngredients = initialData.ingredients.map(
-          (ingredient: any) => ({
+          (ingredient) => ({
             id: ingredient.ingredient.id.toString(),
             quantity: ingredient.quantity.toString(),
           })

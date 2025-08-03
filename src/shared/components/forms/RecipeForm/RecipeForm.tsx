@@ -5,7 +5,11 @@ import BasicInfoSection from "./sections/BasicInfoSection";
 import MetadataSection from "./sections/MetadataSection";
 import StepsSection from "./sections/StepsSection";
 import IngredientsSection from "./sections/IngredientsSection";
-import { RecipeFormProps, RecipeFormData } from "./types";
+import {
+  RecipeFormProps,
+  RecipeFormData,
+  RecipeFormSubmissionData,
+} from "./types";
 
 const RecipeForm = ({ initialData, onSubmit }: RecipeFormProps) => {
   const {
@@ -29,14 +33,14 @@ const RecipeForm = ({ initialData, onSubmit }: RecipeFormProps) => {
   } = useRecipeForm(initialData);
 
   const handleFormSubmit = async (data: RecipeFormData) => {
-    // Incluir los datos de categoría, origen e ingredientes seleccionados
-    const formDataWithMetadata = {
+    // Construir los datos con metadatos completos
+    const formDataWithMetadata: RecipeFormSubmissionData = {
       ...data,
       selectedCategory,
       selectedOrigin,
       ingredients,
     };
-    await onSubmit(formDataWithMetadata as any);
+    await onSubmit(formDataWithMetadata);
   };
 
   return (

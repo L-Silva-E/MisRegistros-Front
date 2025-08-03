@@ -8,13 +8,17 @@ import {
 import useAxios from "../../../shared/hooks/axiosFetch";
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
+import {
+  RecipeFormSubmissionData,
+  IngredientFormData,
+} from "../../../shared/components/forms/RecipeForm/types";
 
 const CreateRecipePage = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { axiosFetch } = useAxios();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: RecipeFormSubmissionData) => {
     try {
       // Validar que se hayan seleccionado categoría y origen
       if (!data.selectedCategory || data.selectedCategory.id === 0) {
@@ -56,7 +60,7 @@ const CreateRecipePage = () => {
 
       // Validar que todos los ingredientes tengan datos válidos
       const invalidIngredients = data.ingredients.filter(
-        (ingredient: any) =>
+        (ingredient: IngredientFormData) =>
           ingredient.id === "0" || !ingredient.quantity.trim()
       );
 
@@ -81,7 +85,7 @@ const CreateRecipePage = () => {
         time: parseInt(data.time),
         servings: data.servings,
         ...(data.thumbnail?.trim() && { thumbnail: data.thumbnail }),
-        ingredients: data.ingredients.map((ingredient: any) => ({
+        ingredients: data.ingredients.map((ingredient: IngredientFormData) => ({
           id: parseInt(ingredient.id),
           quantity: parseFloat(ingredient.quantity),
         })),
