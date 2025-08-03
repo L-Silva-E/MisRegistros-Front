@@ -24,7 +24,7 @@ const RecipesPage = () => {
   };
 
   return (
-    <Box px={8} py={4}>
+    <Box>
       <MainContent
         openRecipe={handleOpenRecipe}
         openRecipeCreate={handleOpenRecipeCreate}

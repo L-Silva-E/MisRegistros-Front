@@ -8,7 +8,7 @@ const RecipeFormButtons = ({
   formId = "recipe-form",
 }: RecipeFormButtonsProps) => {
   return (
-    <Flex gap={4}>
+    <Flex gap={6}>
       {cancelAction && (
         <Button onClick={cancelAction} variant="redButton">
           Cancelar

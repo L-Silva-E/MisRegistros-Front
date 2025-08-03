@@ -123,9 +123,9 @@ const CreateRecipePage = () => {
   };
 
   return (
-    <Box p={8}>
+    <Box>
       <Flex justify="space-between" align="center" mb={6}>
-        <Heading size="lg">Crear Nueva Receta</Heading>
+        <Heading size="lg">Crear nueva Receta</Heading>
         <RecipeFormButtons
           submitButtonText="Guardar Receta"
           cancelAction={() => navigate("/recipes")}

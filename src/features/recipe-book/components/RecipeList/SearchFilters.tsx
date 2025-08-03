@@ -57,6 +57,7 @@ const SearchFilters = memo(
     return (
       <HStack mt="4" mb="8" gap="25px">
         <form onSubmit={handleSubmit(onSearchSubmit)}>
+          {/* //TODO: Solucionar problema con el fondo cuando tiene texto */}
           <InputGroup
             backgroundColor={filterRecipe.searchText ? "green.800" : "inherit"}
           >
@@ -133,24 +134,30 @@ const SearchFilters = memo(
           ml={-5}
           backgroundColor={
             sortDirection === "asc"
-              ? useColorModeValue("#c0c0c0", "inherit")
-              : useColorModeValue("#c0c0c0", "green.800")
+              ? "inherit"
+              : useColorModeValue("green.50", "green.800")
           }
           borderColor={
             sortDirection === "asc"
-              ? useColorModeValue("#c0c0c0", "#51555e")
-              : useColorModeValue("#c0c0c0", "green.700")
+              ? useColorModeValue("blackAlpha.400", "whiteAlpha.400")
+              : useColorModeValue("green.200", "green.700")
           }
           borderWidth={2}
           icon={
             sortDirection === "asc" ? (
-              <FaSortAlphaDown color="#38A169" size={24} />
+              <FaSortAlphaDown
+                size={24}
+                color={useColorModeValue("#48BB78", "#38A169")}
+              />
             ) : (
-              <FaSortAlphaDownAlt color="#9AE6B4" size={24} />
+              <FaSortAlphaDownAlt
+                size={24}
+                color={useColorModeValue("#2F855A", "#9AE6B4")}
+              />
             )
           }
           _hover={{
-            borderColor: useColorModeValue("#c0c0c0", "green.400"),
+            borderColor: useColorModeValue("green.500", "green.400"),
           }}
           onClick={onSortDirectionToggle}
         />

@@ -10,7 +10,14 @@ const RootLayout = () => {
       <Header />
       <Flex h="calc(100vh - 64px)">
         <SideNav />
-        <Box flex="1" overflowY="auto" p={8}>
+        <Box
+          flex="1"
+          overflowY="auto"
+          p={8}
+          css={{
+            scrollbarGutter: "stable",
+          }}
+        >
           <Outlet />
         </Box>
       </Flex>

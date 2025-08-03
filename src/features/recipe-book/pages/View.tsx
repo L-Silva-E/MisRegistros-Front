@@ -69,7 +69,7 @@ const ViewRecipePage = () => {
   };
 
   return (
-    <Box p={8}>
+    <Box>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <GridItem>
           <VStack align="stretch" spacing={4}>

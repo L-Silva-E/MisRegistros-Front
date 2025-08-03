@@ -110,9 +110,9 @@ const UpdateRecipePage = () => {
   }
 
   return (
-    <Box p={6}>
+    <Box>
       <Flex justify="space-between" align="center" mb={6}>
-        <Heading>Editar Receta</Heading>
+        <Heading size="lg">Editar Receta</Heading>
         <RecipeFormButtons
           submitButtonText="Actualizar Receta"
           cancelAction={handleCancel}

@@ -87,7 +87,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
 
   return (
     <>
-      <HStack align="center" justify="flex-start" gap="10px">
+      <HStack align="center" justify="flex-start">
         <SearchFilters
           filterRecipe={filterRecipe}
           selectedCategory={selectedCategory}

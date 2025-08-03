@@ -10,7 +10,7 @@ interface ActionButtonsProps {
 const ActionButtons = memo(
   ({ onNavigateToMeta, onOpenRecipeCreate }: ActionButtonsProps) => {
     return (
-      <HStack mt="4" mb="8" gap="25px">
+      <HStack mt={4} mb={8} gap={4}>
         <Button
           leftIcon={<FaCog />}
           onClick={onNavigateToMeta}

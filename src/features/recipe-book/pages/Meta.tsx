@@ -460,8 +460,8 @@ const RecipeMetaPage: React.FC = () => {
   }, [isEditing, currentType]);
 
   return (
-    <Box p={5} height="100%">
-      <Heading mb={4} ml={2}>
+    <Box height="100%">
+      <Heading mb={4} size="lg">
         Administrar
       </Heading>
 
