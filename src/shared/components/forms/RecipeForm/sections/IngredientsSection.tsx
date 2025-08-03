@@ -14,7 +14,6 @@ import {
   FormErrorMessage,
   Spinner,
   useColorModeValue,
-  Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -26,13 +25,8 @@ const IngredientsSection = ({
   availableIngredients,
   isLoadingIngredients = false,
 }: IngredientsSectionProps) => {
-  // Colores adaptativos al tema
-  const bgColor = useColorModeValue("white", "gray.700");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-  const cardBg = useColorModeValue("gray.50", "gray.800");
-  const unitBg = useColorModeValue("gray.100", "gray.600");
-  const unitTextColor = useColorModeValue("gray.800", "gray.200");
-  const errorBorderColor = useColorModeValue("red.300", "red.400");
+  const borderColor = useColorModeValue("blackAlpha.400", "whiteAlpha.400");
+  const unitBg = useColorModeValue("gray.200", "gray.600");
 
   const addIngredient = () => {
     setIngredients([...ingredients, { id: "0", quantity: "" }]);
@@ -93,7 +87,6 @@ const IngredientsSection = ({
         const selectedIngredient = getSelectedIngredient(ingredient.id);
         const availableOptions = getAvailableOptions(index);
         const isInvalidSelection = ingredient.id !== "0" && !selectedIngredient;
-        const isQuantityEmpty = !ingredient.quantity.trim();
 
         return (
           <HStack
@@ -103,11 +96,10 @@ const IngredientsSection = ({
             mt={index === 0 ? -4 : 2}
             borderWidth={2}
             borderRadius="md"
-            bg={cardBg}
             borderColor={borderColor}
             align="flex-start"
             _hover={{
-              borderColor: "green.700",
+              borderColor: "green.500",
             }}
           >
             <FormControl flex={4} minH="60px" isRequired>
@@ -118,15 +110,6 @@ const IngredientsSection = ({
                 value={ingredient.id}
                 onChange={(e) => updateIngredient(index, "id", e.target.value)}
                 placeholder="Seleccione un ingrediente"
-                bg={bgColor}
-                borderColor={
-                  isInvalidSelection ? errorBorderColor : borderColor
-                }
-                _hover={{
-                  borderColor: isInvalidSelection
-                    ? errorBorderColor
-                    : "gray.300",
-                }}
               >
                 {availableOptions.map((option) => (
                   <option key={option.id} value={option.id.toString()}>
@@ -147,39 +130,15 @@ const IngredientsSection = ({
               <FormLabel fontSize="xs" fontWeight="medium" mb={1}>
                 Cantidad
               </FormLabel>
-              <Tooltip
-                label="La cantidad es obligatoria"
-                isDisabled={!isQuantityEmpty}
-                hasArrow
+              <NumberInput
+                value={ingredient.quantity}
+                onChange={(value) => updateIngredient(index, "quantity", value)}
+                min={0}
+                step={0.1}
+                precision={1}
               >
-                <NumberInput
-                  value={ingredient.quantity}
-                  onChange={(value) =>
-                    updateIngredient(index, "quantity", value)
-                  }
-                  min={0}
-                  step={0.1}
-                  precision={2}
-                  bg={bgColor}
-                >
-                  <NumberInputField
-                    placeholder="0.00"
-                    borderColor={
-                      isQuantityEmpty ? errorBorderColor : borderColor
-                    }
-                    _hover={{
-                      borderColor: isQuantityEmpty
-                        ? errorBorderColor
-                        : "gray.300",
-                    }}
-                    _focus={{
-                      borderColor: isQuantityEmpty
-                        ? errorBorderColor
-                        : "blue.500",
-                    }}
-                  />
-                </NumberInput>
-              </Tooltip>
+                <NumberInputField placeholder="0.0" />
+              </NumberInput>
             </FormControl>
 
             <Box flex={0.5} minH="60px">
@@ -194,9 +153,12 @@ const IngredientsSection = ({
                 display="flex"
                 alignItems="center"
                 fontSize="sm"
-                color={selectedIngredient ? unitTextColor : "gray.500"}
                 textAlign="center"
                 justifyContent="center"
+                color="black"
+                _dark={{
+                  color: "white",
+                }}
               >
                 {selectedIngredient?.unit || "-"}
               </Text>
@@ -224,9 +186,10 @@ const IngredientsSection = ({
       })}
 
       <Button
+        mt={2}
         leftIcon={<AddIcon />}
         onClick={addIngredient}
-        variant="blueButton"
+        variant="addRowButton"
         alignSelf="flex-start"
       >
         Agregar Ingrediente

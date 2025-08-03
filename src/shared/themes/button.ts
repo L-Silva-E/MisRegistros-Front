@@ -66,10 +66,10 @@ const ButtonTheme = {
       },
     },
     addRowButton: {
-      backgroundColor: "gray.300",
+      backgroundColor: "gray.400",
       color: "white",
       ":hover": {
-        backgroundColor: "gray.400",
+        backgroundColor: "gray.500",
       },
       _dark: {
         backgroundColor: "#3C4658",

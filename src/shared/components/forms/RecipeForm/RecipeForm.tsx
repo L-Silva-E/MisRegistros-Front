@@ -33,7 +33,6 @@ const RecipeForm = ({ initialData, onSubmit }: RecipeFormProps) => {
   } = useRecipeForm(initialData);
 
   const handleFormSubmit = async (data: RecipeFormData) => {
-    // Construir los datos con metadatos completos
     const formDataWithMetadata: RecipeFormSubmissionData = {
       ...data,
       selectedCategory,
