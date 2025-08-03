@@ -24,7 +24,36 @@ const InputTheme = {
     },
   },
   sizes: {},
-  variants: {},
+  variants: {
+    filtered: {
+      field: {
+        backgroundColor: "green.100",
+        borderColor: "green.300",
+        borderWidth: 2,
+        ":focus": {
+          borderColor: "green.500",
+          backgroundColor: "green.100",
+        },
+        ":hover": {
+          borderColor: "green.500",
+          backgroundColor: "green.100",
+        },
+        _dark: {
+          backgroundColor: "green.800",
+          borderColor: "green.600",
+          borderWidth: 2,
+          ":focus": {
+            borderColor: "green.500",
+            backgroundColor: "green.800",
+          },
+          ":hover": {
+            borderColor: "green.500",
+            backgroundColor: "green.800",
+          },
+        },
+      },
+    },
+  },
   defaultProps: {
     variant: null,
   },

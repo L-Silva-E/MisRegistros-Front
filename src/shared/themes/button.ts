@@ -51,6 +51,28 @@ const ButtonTheme = {
         },
       },
     },
+    deleteButtonOutline: {
+      backgroundColor: "inherit",
+      borderWidth: 2,
+      borderColor: "gray.400",
+      color: "gray.600",
+      ":hover": {
+        backgroundColor: "red.100",
+        borderColor: "red.500",
+        color: "gray.600",
+      },
+      _dark: {
+        backgroundColor: "inherit",
+        borderWidth: 2,
+        borderColor: "gray.600",
+        color: "gray.300",
+        ":hover": {
+          backgroundColor: "red.900",
+          borderColor: "red.500",
+          color: "white",
+        },
+      },
+    },
     editButton: {
       backgroundColor: "gray.300",
       color: "white",

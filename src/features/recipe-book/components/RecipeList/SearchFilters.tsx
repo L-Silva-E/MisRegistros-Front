@@ -9,7 +9,12 @@ import {
   IconButton,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaSearch, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
+import {
+  FaSearch,
+  FaSortAlphaDown,
+  FaSortAlphaDownAlt,
+  FaTimes,
+} from "react-icons/fa";
 
 import { Category, Origin } from "../../types";
 import { SearchForm } from "../../../../shared/types/searchForm";
@@ -31,6 +36,7 @@ interface SearchFiltersProps {
   onOriginChange: (origin: Origin) => void;
   onSortChange: (sortBy: string) => void;
   onSortDirectionToggle: () => void;
+  onClearFilters: () => void;
 }
 
 const SearchFilters = memo(
@@ -51,17 +57,64 @@ const SearchFilters = memo(
     onOriginChange,
     onSortChange,
     onSortDirectionToggle,
+    onClearFilters,
   }: SearchFiltersProps) => {
     const { register, handleSubmit } = useForm<SearchForm>();
 
+    const handleSearchSubmit = (data: SearchForm) => {
+      onSearchSubmit(data);
+      const input = document.querySelector(
+        'input[placeholder="Nombre de la Receta"]'
+      ) as HTMLInputElement;
+      input?.blur();
+    };
+
+    const handleIconClick = () => {
+      handleSubmit(handleSearchSubmit)();
+    };
+
+    const hasActiveFilters = !!(
+      filterRecipe.searchText ||
+      selectedCategory.id !== 0 ||
+      selectedOrigin.id !== 0 ||
+      sortBy !== ""
+    );
+
+    const handleClearFilters = () => {
+      // Limpiar el formulario de búsqueda
+      const input = document.querySelector(
+        'input[placeholder="Nombre de la Receta"]'
+      ) as HTMLInputElement;
+      if (input) {
+        input.value = "";
+      }
+
+      onClearFilters();
+    };
+
     return (
       <HStack mt="4" mb="8" gap="25px">
-        <form onSubmit={handleSubmit(onSearchSubmit)}>
-          {/* //TODO: Solucionar problema con el fondo cuando tiene texto */}
+        <form onSubmit={handleSubmit(handleSearchSubmit)}>
           <InputGroup
-            backgroundColor={filterRecipe.searchText ? "green.800" : "inherit"}
+            _hover={{
+              "& .chakra-input": {
+                borderColor: "green.500",
+              },
+              "& .chakra-input__left-element": {
+                color: "green.500",
+              },
+            }}
           >
-            <InputLeftElement pointerEvents="none" color="gray.500">
+            <InputLeftElement
+              pointerEvents="auto"
+              color={
+                filterRecipe.searchText
+                  ? useColorModeValue("#48BB78", "#38A169")
+                  : "gray.500"
+              }
+              cursor="pointer"
+              onClick={handleIconClick}
+            >
               <FaSearch />
             </InputLeftElement>
             <Input
@@ -70,6 +123,7 @@ const SearchFilters = memo(
               placeholder="Nombre de la Receta"
               autoComplete="off"
               {...register("searchText", { required: false })}
+              variant={filterRecipe.searchText ? "filtered" : ""}
             />
           </InputGroup>
         </form>
@@ -161,6 +215,14 @@ const SearchFilters = memo(
           }}
           onClick={onSortDirectionToggle}
         />
+
+        <IconButton
+          aria-label="Limpiar filtros"
+          icon={<FaTimes size={16} />}
+          variant="deleteButtonOutline"
+          isDisabled={!hasActiveFilters}
+          onClick={handleClearFilters}
+        ></IconButton>
       </HStack>
     );
   }

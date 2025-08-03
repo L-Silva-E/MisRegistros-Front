@@ -31,6 +31,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
     updateOrigin,
     updateSort,
     toggleSortDirection,
+    resetFilters,
     buildRecipeUrl,
     defaultCategory,
     defaultOrigin,
@@ -81,6 +82,10 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
     toggleSortDirection();
   };
 
+  const handleClearFilters = () => {
+    resetFilters();
+  };
+
   const navigateToMetaPage = () => {
     navigate("/recipe/meta");
   };
@@ -105,6 +110,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
           onOriginChange={handleOriginChange}
           onSortChange={handleSortChange}
           onSortDirectionToggle={handleSortDirectionToggle}
+          onClearFilters={handleClearFilters}
         />
 
         <Spacer />
