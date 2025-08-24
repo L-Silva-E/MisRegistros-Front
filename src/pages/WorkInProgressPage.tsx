@@ -1,10 +1,10 @@
 import {
   Box,
   Heading,
-  useColorModeValue,
-  VStack,
   HStack,
   keyframes,
+  useColorModeValue,
+  VStack,
 } from "@chakra-ui/react";
 
 const WorkInProgressPage = () => {
