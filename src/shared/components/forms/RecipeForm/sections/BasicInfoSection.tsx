@@ -33,10 +33,6 @@ const BasicInfoSection = ({ register, errors }: BasicInfoSectionProps) => {
         <Textarea
           {...register("description", {
             required: "La descripción es requerida",
-            minLength: {
-              value: 10,
-              message: "La descripción debe tener al menos 10 caracteres",
-            },
           })}
           size="sm"
           resize="none"
@@ -52,8 +48,8 @@ const BasicInfoSection = ({ register, errors }: BasicInfoSectionProps) => {
           {...register("thumbnail", {
             pattern: {
               value:
-                /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-              message: "Ingresa una URL válida",
+                /^https?:\/\/[^\s]+$/,
+              message: "Ingresa una URL válida que comience con http:// o https://",
             },
           })}
           placeholder="https://ejemplo.com/imagen.jpg"
