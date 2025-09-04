@@ -5,6 +5,18 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2025-09-03
+
+### Changed
+
+- Relaxed form validation constraints for better user experience:
+  - Step descriptions are now optional
+  - Removed 10 character minimum requirement from `description` and `steps` fields
+
+### Fixed
+
+- Fixed URL regex validation that was rejecting valid placeholder URLs and URLs with special characters
+
 ## [2.0.0] - 2025-08-24
 
 ### Added
