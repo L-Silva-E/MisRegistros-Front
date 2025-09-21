@@ -102,6 +102,24 @@ export const useRecipeForm = (initialData?: Recipe) => {
     }
   }, [initialData, setValue]);
 
+  useEffect(() => {
+    if (initialData && categories.length > 0 && origins.length > 0) {
+      const foundCategory = categories.find(
+        (category) => category.id === initialData.idCategory
+      );
+      if (foundCategory) {
+        setSelectedCategory(foundCategory);
+      }
+
+      const foundOrigin = origins.find(
+        (origin) => origin.id === initialData.idOrigin
+      );
+      if (foundOrigin) {
+        setSelectedOrigin(foundOrigin);
+      }
+    }
+  }, [initialData, categories, origins]);
+
   // Función para resetear el formulario
   const resetForm = () => {
     reset();
