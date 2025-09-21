@@ -7,18 +7,13 @@ import {
   Flex,
   Heading,
   HStack,
-  Tag,
-  TagLabel,
-  TagRightIcon,
   Text,
 } from "@chakra-ui/react";
-import { FaClock, FaStar, FaUsers } from "react-icons/fa";
 import { FaKitchenSet } from "react-icons/fa6";
 
 import { Recipe } from "../types";
-import { RecipeCardImage } from "../../../shared/components/ui";
-
-import { setTimeText } from "../utils/setTimeText";
+import { RecipeCardImage, RecipeTags } from "../../../shared/components/ui";
+import { useRecipeTags } from "../../../shared/components/ui/RecipeTags/useRecipeTags";
 
 type Props = {
   recipe: Recipe;
@@ -26,6 +21,14 @@ type Props = {
 
 function RecipeCard({ recipe }: Props) {
   const navigate = useNavigate();
+  const allTags = useRecipeTags(recipe);
+
+  // Filtrar solo los tags que queremos mostrar: score, time, servings
+  const cardTags = allTags.filter((_, index) => {
+    // Basado en el orden del hook: [score, category, origin, time, servings]
+    // Queremos: score (0), time (3), servings (4)
+    return index === 0 || index === 3 || index === 4;
+  });
 
   return (
     <Card p={2} userSelect="none">
@@ -50,26 +53,7 @@ function RecipeCard({ recipe }: Props) {
             </HStack>
           </Button>
 
-          <HStack>
-            <Tag h={10} variant="solid" bgColor="gray.500">
-              <TagLabel ml={1} fontSize={16}>
-                {setTimeText(recipe.time)}
-              </TagLabel>
-              <TagRightIcon mr={1} boxSize="18px" as={FaClock} />
-            </Tag>
-            <Tag h={10} variant="solid" bgColor="gray.500">
-              <TagLabel ml={1} fontSize={20}>
-                {recipe.servings}
-              </TagLabel>
-              <TagRightIcon mr={1} boxSize="20px" as={FaUsers} />
-            </Tag>
-            <Tag h={10} variant="solid" bgColor="yellow.500">
-              <TagLabel ml={1} fontSize={20}>
-                {recipe.score}
-              </TagLabel>
-              <TagRightIcon mr={1} boxSize="18px" as={FaStar} />
-            </Tag>
-          </HStack>
+          <RecipeTags tags={cardTags} size="md" />
         </Flex>
       </CardFooter>
     </Card>

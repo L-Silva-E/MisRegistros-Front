@@ -101,6 +101,20 @@ const ButtonTheme = {
         },
       },
     },
+    copyButton: {
+      backgroundColor: "gray.300",
+      color: "white",
+      ":hover": {
+        backgroundColor: "purple.500",
+      },
+      _dark: {
+        backgroundColor: "#3C4658",
+        color: "white",
+        ":hover": {
+          backgroundColor: "purple.500",
+        },
+      },
+    },
   },
 };
 

@@ -10,12 +10,13 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
+import { FaCopy, FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
 
 import RecipeModalSkeleton from "./ModalSkeleton";
 import RecipeModalContent from "./ModalContent";
 import ConfirmationDeleteModal from "./DeleteModal";
 
+import { useRecipeDuplicate } from "../hooks";
 import { Recipe } from "../types";
 
 type Props = {
@@ -27,6 +28,7 @@ type Props = {
 
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   const navigate = useNavigate();
+  const { duplicateRecipe, isLoading: isDuplicating } = useRecipeDuplicate();
 
   const {
     isOpen: isOpenDeleteConfirmation,
@@ -35,6 +37,13 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   } = useDisclosure();
 
   const [isUnlocked, setIsUnlocked] = useState(true);
+
+  const handleDuplicate = async () => {
+    if (data) {
+      await duplicateRecipe(data.id, data.name);
+      onClose();
+    }
+  };
 
   const handleEdit = () => {
     navigate(`/recipes/update/${data?.id}`);
@@ -69,6 +78,16 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
             <Spacer />
 
             <Button
+              isDisabled={!isUnlocked || isDuplicating}
+              variant="copyButton"
+              onClick={handleDuplicate}
+              isLoading={isDuplicating}
+            >
+              <FaCopy color={useColorModeValue("#1A202C", "white")} />
+            </Button>
+
+            <Button
+              ml={4}
               isDisabled={!isUnlocked}
               variant="editButton"
               onClick={handleEdit}

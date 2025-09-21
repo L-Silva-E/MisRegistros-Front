@@ -14,7 +14,10 @@ export const useRecipeTags = (recipe: Recipe): TagData[] => {
 
   return [
     {
-      label: recipe.score.toString(),
+      label:
+        recipe.score.toString() === "0"
+          ? "Sin calificar"
+          : recipe.score.toString(),
       icon: FaStar,
       colorScheme: "yellow",
       iconSize: "16px",

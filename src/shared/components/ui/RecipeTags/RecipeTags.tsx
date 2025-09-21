@@ -2,7 +2,7 @@ import {
   HStack,
   Tag,
   TagLabel,
-  TagRightIcon,
+  TagLeftIcon,
   Wrap,
   WrapItem,
   BoxProps,
@@ -18,8 +18,10 @@ const RecipeTags = ({
 }: RecipeTagsProps & BoxProps) => {
   const renderTag = (tag: TagData, index: number) => (
     <Tag key={index} colorScheme={tag.colorScheme || "gray"} size={size}>
-      <TagLabel>{tag.label}</TagLabel>
-      <TagRightIcon mr={1} boxSize={tag.iconSize || "16px"} as={tag.icon} />
+      <TagLeftIcon boxSize={tag.iconSize || "16px"} as={tag.icon} />
+      <TagLabel mr="2px" my="5px">
+        {tag.label}
+      </TagLabel>
     </Tag>
   );
 
