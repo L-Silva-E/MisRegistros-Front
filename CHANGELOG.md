@@ -5,6 +5,28 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-09-21
+
+### Added
+
+- **Usage counters display**: Visualization of metadata usage statistics
+  - Total count of items in section headers (ingredients, categories, origins)
+  - Individual usage count of how many times each specific item is used in recipes, displayed next to the name
+- **Enhanced error messaging system**: Comprehensive error handling with user-friendly messages
+  - Specific error messages for backend validation failures (e.g., invalid ingredient units)
+  - Clear messaging for foreign key constraint violations when deleting referenced items
+  - Contextual error titles based on operation type (creation, update, deletion)
+- **Unified metadata endpoint**: Integration with `/metadata/usage-count` for optimized data fetching
+- **Custom hook architecture**: `useMetadataOperations` hook for better code organization
+- **Centralized message constants**: `MESSAGES` object for consistent UI text management
+
+### Fixed
+
+- **Duplicate error messages**: Resolved issue where both error and success toasts appeared simultaneously
+- **Message timing conflicts**: Eliminated race conditions in toast notifications
+- **Form validation feedback**: Improved error display for invalid ingredient units and empty name fields
+- **Foreign key constraint handling**: Better user messaging when attempting to delete items with dependencies
+
 ## [2.0.1] - 2025-09-03
 
 ### Changed
