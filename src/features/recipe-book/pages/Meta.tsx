@@ -20,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spacer,
   Table,
   TableContainer,
   Tbody,
@@ -233,6 +234,8 @@ const RecipeMetaPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentItem, setCurrentItem] = useState<MetaDataItem | null>(null);
   const [currentType, setCurrentType] = useState<MetaDataType>("category");
+
+  const countTextColor = useColorModeValue("gray.500", "gray.400");
 
   const [itemUnit, setItemUnit] = useState("kg");
   const availableUnits = [
@@ -544,9 +547,19 @@ const RecipeMetaPage: React.FC = () => {
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
               <Flex justify="space-between" align="center">
-                <Heading size="md" ml={2}>
+                <Heading size="md" mx={2}>
                   Ingredientes
                 </Heading>
+                <Text
+                  as="sub"
+                  sx={{
+                    color: countTextColor + " !important",
+                    fontSize: "sm",
+                  }}
+                >
+                  ({ingredients.length})
+                </Text>
+                <Spacer />
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("ingredient")}
@@ -574,9 +587,19 @@ const RecipeMetaPage: React.FC = () => {
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
               <Flex justify="space-between" align="center">
-                <Heading size="md" ml={2}>
+                <Heading size="md" mx={2}>
                   Categorías
                 </Heading>
+                <Text
+                  as="sub"
+                  sx={{
+                    color: countTextColor + " !important",
+                    fontSize: "sm",
+                  }}
+                >
+                  ({categories.length})
+                </Text>
+                <Spacer />
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("category")}
@@ -604,9 +627,19 @@ const RecipeMetaPage: React.FC = () => {
           <Card height="100%" display="flex" flexDirection="column">
             <CardHeader mb={-4}>
               <Flex justify="space-between" align="center">
-                <Heading size="md" ml={2}>
+                <Heading size="md" mx={2}>
                   Orígen
                 </Heading>
+                <Text
+                  as="sub"
+                  sx={{
+                    color: countTextColor + " !important",
+                    fontSize: "sm",
+                  }}
+                >
+                  ({origins.length})
+                </Text>
+                <Spacer />
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("origin")}
