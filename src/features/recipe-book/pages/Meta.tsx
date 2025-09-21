@@ -80,17 +80,26 @@ const getErrorMessage = (error: any): string => {
 interface Category {
   id: number;
   name: string;
+  usageCount?: number;
 }
 
 interface Origin {
   id: number;
   name: string;
+  usageCount?: number;
 }
 
 interface Ingredient {
   id: number;
   name: string;
   unit: string;
+  usageCount?: number;
+}
+
+interface MetadataWithUsage {
+  categories: Category[];
+  origins: Origin[];
+  ingredients: Ingredient[];
 }
 
 type MetaDataItem = Category | Origin | Ingredient;
@@ -187,6 +196,8 @@ const TableRow = React.memo<{
   loadingCrud: boolean;
   iconColor: string;
 }>(({ item, type, onEdit, onDelete, loadingCrud, iconColor }) => {
+  const countTextColor = useColorModeValue("gray.500", "gray.400");
+
   const handleEdit = useCallback(() => {
     onEdit(item, type);
   }, [item, type, onEdit]);
@@ -195,9 +206,23 @@ const TableRow = React.memo<{
     onDelete(item.id, type);
   }, [item.id, type, onDelete]);
 
+  const usageCount = "usageCount" in item ? item.usageCount || 0 : 0;
+
   return (
     <Tr>
-      <Td>{item.name}</Td>
+      <Td>
+        {item.name}{" "}
+        <Text
+          as="sub"
+          sx={{
+            color: countTextColor + " !important",
+            fontSize: "xs",
+          }}
+          fontWeight="normal"
+        >
+          ({usageCount})
+        </Text>
+      </Td>
       {type === "ingredient" && "unit" in item && (
         <Td textAlign="center">{item.unit}</Td>
       )}
@@ -237,7 +262,7 @@ const RecipeMetaPage: React.FC = () => {
 
   const countTextColor = useColorModeValue("gray.500", "gray.400");
 
-  const [itemUnit, setItemUnit] = useState("kg");
+  const [itemUnit, setItemUnit] = useState("");
   const availableUnits = [
     "mg",
     "g",
@@ -259,25 +284,11 @@ const RecipeMetaPage: React.FC = () => {
   const toast = useToast();
 
   const {
-    loading: loadingCategories,
-    data: categoriesData,
-    error: categoriesError,
-    axiosFetch: axiosFetchCategories,
-  } = useAxios<Category[]>();
-
-  const {
-    loading: loadingOrigins,
-    data: originsData,
-    error: originsError,
-    axiosFetch: axiosFetchOrigins,
-  } = useAxios<Origin[]>();
-
-  const {
-    loading: loadingIngredients,
-    data: ingredientsData,
-    error: ingredientsError,
-    axiosFetch: axiosFetchIngredients,
-  } = useAxios<Ingredient[]>();
+    loading: loadingMetadata,
+    data: metadataData,
+    error: metadataError,
+    axiosFetch: axiosFetchMetadata,
+  } = useAxios<MetadataWithUsage>();
 
   const {
     loading: loadingCrud,
@@ -293,64 +304,31 @@ const RecipeMetaPage: React.FC = () => {
   } = useAxios<any>();
 
   useEffect(() => {
-    axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
-    axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-    axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
+    axiosFetchMetadata(
+      HTTP_METHODS.GET,
+      `${API_BASE_URL}/metadata/usage-count`
+    );
   }, []);
 
   useEffect(() => {
-    if (categoriesData) {
-      setCategories(categoriesData);
+    if (metadataData) {
+      setCategories(metadataData.categories || []);
+      setOrigins(metadataData.origins || []);
+      setIngredients(metadataData.ingredients || []);
     }
-  }, [categoriesData]);
+  }, [metadataData]);
 
   useEffect(() => {
-    if (originsData) {
-      setOrigins(originsData);
-    }
-  }, [originsData]);
-
-  useEffect(() => {
-    if (ingredientsData) {
-      setIngredients(ingredientsData);
-    }
-  }, [ingredientsData]);
-
-  useEffect(() => {
-    if (categoriesError) {
+    if (metadataError) {
       toast({
-        title: "Error al cargar categorías",
-        description: getErrorMessage(categoriesError),
+        title: "Error al cargar metadatos",
+        description: getErrorMessage(metadataError),
         status: "error",
         duration: 5000,
         isClosable: true,
       });
     }
-  }, [categoriesError, toast]);
-
-  useEffect(() => {
-    if (originsError) {
-      toast({
-        title: "Error al cargar orígenes",
-        description: getErrorMessage(originsError),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [originsError, toast]);
-
-  useEffect(() => {
-    if (ingredientsError) {
-      toast({
-        title: "Error al cargar ingredientes",
-        description: getErrorMessage(ingredientsError),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [ingredientsError, toast]);
+  }, [metadataError, toast]);
 
   useEffect(() => {
     if (crudError) {
@@ -378,13 +356,10 @@ const RecipeMetaPage: React.FC = () => {
 
   useEffect(() => {
     if (saveData !== undefined && !saveError) {
-      if (currentType === "category") {
-        axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
-      } else if (currentType === "origin") {
-        axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-      } else {
-        axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
-      }
+      axiosFetchMetadata(
+        HTTP_METHODS.GET,
+        `${API_BASE_URL}/metadata/usage-count`
+      );
 
       toast({
         title: "Éxito",
@@ -407,9 +382,7 @@ const RecipeMetaPage: React.FC = () => {
     saveError,
     currentType,
     isEditing,
-    axiosFetchCategories,
-    axiosFetchOrigins,
-    axiosFetchIngredients,
+    axiosFetchMetadata,
     toast,
     onClose,
   ]);
@@ -460,13 +433,10 @@ const RecipeMetaPage: React.FC = () => {
         `${API_BASE_URL}/${endpoint}/${id}`
       );
 
-      if (type === "category") {
-        axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
-      } else if (type === "origin") {
-        axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-      } else {
-        axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
-      }
+      axiosFetchMetadata(
+        HTTP_METHODS.GET,
+        `${API_BASE_URL}/metadata/usage-count`
+      );
 
       toast({
         title: "Éxito",
@@ -482,13 +452,7 @@ const RecipeMetaPage: React.FC = () => {
         isClosable: true,
       });
     },
-    [
-      performCrudOperation,
-      axiosFetchCategories,
-      axiosFetchOrigins,
-      axiosFetchIngredients,
-      toast,
-    ]
+    [performCrudOperation, axiosFetchMetadata, toast]
   );
 
   const handleSave = async () => {
@@ -563,7 +527,7 @@ const RecipeMetaPage: React.FC = () => {
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("ingredient")}
-                  isLoading={loadingIngredients}
+                  isLoading={loadingMetadata}
                 >
                   Agregar
                 </Button>
@@ -573,7 +537,7 @@ const RecipeMetaPage: React.FC = () => {
               <DataTable
                 data={ingredients}
                 type="ingredient"
-                loading={loadingIngredients}
+                loading={loadingMetadata}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 loadingCrud={loadingCrud}
@@ -603,7 +567,7 @@ const RecipeMetaPage: React.FC = () => {
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("category")}
-                  isLoading={loadingCategories}
+                  isLoading={loadingMetadata}
                 >
                   Agregar
                 </Button>
@@ -613,7 +577,7 @@ const RecipeMetaPage: React.FC = () => {
               <DataTable
                 data={categories}
                 type="category"
-                loading={loadingCategories}
+                loading={loadingMetadata}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 loadingCrud={loadingCrud}
@@ -643,7 +607,7 @@ const RecipeMetaPage: React.FC = () => {
                 <Button
                   variant="greenButton"
                   onClick={() => handleAddNew("origin")}
-                  isLoading={loadingOrigins}
+                  isLoading={loadingMetadata}
                 >
                   Agregar
                 </Button>
@@ -653,7 +617,7 @@ const RecipeMetaPage: React.FC = () => {
               <DataTable
                 data={origins}
                 type="origin"
-                loading={loadingOrigins}
+                loading={loadingMetadata}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 loadingCrud={loadingCrud}
