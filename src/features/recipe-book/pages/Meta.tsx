@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Button,
@@ -40,41 +46,77 @@ import useAxios from "../../../shared/hooks/axiosFetch";
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
 
+const MESSAGES = {
+  ERROR: {
+    LOAD_METADATA: "Error al cargar metadatos",
+    CRUD_OPERATION: "Error al realizar la operación",
+    SAVE: "Error al guardar",
+    DELETE_CONFLICT: "No se puede eliminar",
+    EMPTY_NAME: "El nombre no puede estar vacío",
+    CONFLICT_DETAIL: "Está siendo usado en al menos una receta.",
+    UNKNOWN: "Error desconocido",
+  },
+  SUCCESS: {
+    DELETED: "eliminado correctamente",
+    CREATED: "creado correctamente",
+    UPDATED: "actualizado correctamente",
+  },
+  LOADING: {
+    INGREDIENTS: "Cargando ingredientes...",
+    CATEGORIES: "Cargando categorías...",
+    ORIGINS: "Cargando orígenes...",
+  },
+  NOT_FOUND: {
+    INGREDIENTS: "No se encontraron ingredientes",
+    CATEGORIES: "No se encontraron categorías",
+    ORIGINS: "No se encontraron orígenes",
+  },
+};
+
+const getEntityName = (type: MetaDataType) => {
+  switch (type) {
+    case "category":
+      return "Categoría";
+    case "origin":
+      return "Origen";
+    case "ingredient":
+      return "Ingrediente";
+    default:
+      return "";
+  }
+};
+
+const isAxiosError = (error: any): error is { response?: { data?: any } } => {
+  return error && typeof error === "object" && "response" in error;
+};
+
 const getErrorMessage = (error: any): string => {
-  if (error?.response?.data) {
+  if (isAxiosError(error) && error.response?.data) {
     const responseData = error.response.data;
 
-    if (
-      responseData.data?.validations &&
-      responseData.data.validations.length > 0
-    ) {
-      if (responseData.data.validations.length === 1) {
-        return responseData.data.validations[0].message;
-      } else {
-        return responseData.data.validations
-          .map((validation: any) => validation.message)
-          .join(". ");
-      }
+    if (responseData.error === "Conflict" && responseData.details) {
+      return MESSAGES.ERROR.CONFLICT_DETAIL;
     }
 
-    if (responseData.validations && responseData.validations.length > 0) {
-      if (responseData.validations.length === 1) {
-        return responseData.validations[0].message;
-      } else {
-        return responseData.validations
-          .map((validation: any) => validation.message)
-          .join(". ");
-      }
+    const validations =
+      responseData.data?.validations || responseData.validations;
+    if (validations && validations.length > 0) {
+      return validations.length === 1
+        ? validations[0].message
+        : validations.map((v: any) => v.message).join(". ");
     }
 
-    if (responseData.data?.details) return responseData.data.details;
-    if (responseData.details) return responseData.details;
-    if (responseData.data?.error) return responseData.data.error;
-    if (responseData.message) return responseData.message;
-    if (responseData.error) return responseData.error;
+    return (
+      responseData.data?.details ||
+      responseData.details ||
+      responseData.data?.error ||
+      responseData.message ||
+      responseData.error ||
+      MESSAGES.ERROR.UNKNOWN
+    );
   }
 
-  return error?.message || "Error desconocido";
+  return error?.message || MESSAGES.ERROR.UNKNOWN;
 };
 
 interface Category {
@@ -105,6 +147,117 @@ interface MetadataWithUsage {
 type MetaDataItem = Category | Origin | Ingredient;
 type MetaDataType = "category" | "origin" | "ingredient";
 
+const useMetadataOperations = () => {
+  const toast = useToast();
+  const deleteContextRef = useRef<{
+    type: MetaDataType;
+    itemName: string;
+  } | null>(null);
+
+  const {
+    loading: loadingMetadata,
+    data: metadataData,
+    error: metadataError,
+    axiosFetch: fetchMetadata,
+  } = useAxios<MetadataWithUsage>();
+
+  const {
+    loading: loadingCrud,
+    data: crudData,
+    error: crudError,
+    axiosFetch: performCrudOperation,
+  } = useAxios<any>();
+
+  const {
+    loading: loadingSave,
+    data: saveData,
+    error: saveError,
+    axiosFetch: performSaveOperation,
+  } = useAxios<any>();
+
+  const refreshMetadata = useCallback(() => {
+    fetchMetadata(HTTP_METHODS.GET, `${API_BASE_URL}/metadata/usage-count`);
+  }, [fetchMetadata]);
+
+  useEffect(() => {
+    if (crudError) {
+      const errorMessage = getErrorMessage(crudError);
+      const isConflictError =
+        isAxiosError(crudError) &&
+        crudError?.response?.data?.error === "Conflict";
+
+      toast({
+        title: isConflictError
+          ? MESSAGES.ERROR.DELETE_CONFLICT
+          : MESSAGES.ERROR.CRUD_OPERATION,
+        description: errorMessage,
+        status: "error",
+        duration: isConflictError ? 6000 : 5000,
+        isClosable: true,
+      });
+
+      deleteContextRef.current = null;
+    }
+  }, [crudError, toast]);
+
+  useEffect(() => {
+    if (deleteContextRef.current && crudData !== undefined && !crudError) {
+      refreshMetadata();
+
+      toast({
+        title: "Éxito",
+        description: `${getEntityName(deleteContextRef.current.type)} ${
+          MESSAGES.SUCCESS.DELETED
+        }`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      deleteContextRef.current = null;
+    }
+  }, [crudData, crudError, refreshMetadata, toast]);
+
+  useEffect(() => {
+    if (saveError) {
+      toast({
+        title: MESSAGES.ERROR.SAVE,
+        description: getErrorMessage(saveError),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [saveError, toast]);
+
+  useEffect(() => {
+    if (metadataError) {
+      toast({
+        title: MESSAGES.ERROR.LOAD_METADATA,
+        description: getErrorMessage(metadataError),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [metadataError, toast]);
+
+  return {
+    // Estados
+    loadingMetadata,
+    loadingCrud,
+    loadingSave,
+    metadataData,
+    saveData,
+    saveError,
+    // Funciones
+    refreshMetadata,
+    performCrudOperation,
+    performSaveOperation,
+    deleteContextRef,
+  };
+};
+
 const DataTable = React.memo<{
   data: MetaDataItem[];
   type: MetaDataType;
@@ -119,13 +272,11 @@ const DataTable = React.memo<{
   if (loading) {
     return (
       <Text>
-        Cargando{" "}
         {type === "ingredient"
-          ? "ingredientes"
+          ? MESSAGES.LOADING.INGREDIENTS
           : type === "category"
-          ? "categorías"
-          : "orígenes"}
-        ...
+          ? MESSAGES.LOADING.CATEGORIES
+          : MESSAGES.LOADING.ORIGINS}
       </Text>
     );
   }
@@ -133,12 +284,11 @@ const DataTable = React.memo<{
   if (data.length === 0) {
     return (
       <Text>
-        No se encontraron{" "}
         {type === "ingredient"
-          ? "ingredientes"
+          ? MESSAGES.NOT_FOUND.INGREDIENTS
           : type === "category"
-          ? "categorías"
-          : "orígenes"}
+          ? MESSAGES.NOT_FOUND.CATEGORIES
+          : MESSAGES.NOT_FOUND.ORIGINS}
       </Text>
     );
   }
@@ -278,37 +428,25 @@ const RecipeMetaPage: React.FC = () => {
   ];
 
   const [itemName, setItemName] = useState("");
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const toast = useToast();
 
   const {
-    loading: loadingMetadata,
-    data: metadataData,
-    error: metadataError,
-    axiosFetch: axiosFetchMetadata,
-  } = useAxios<MetadataWithUsage>();
-
-  const {
-    loading: loadingCrud,
-    error: crudError,
-    axiosFetch: performCrudOperation,
-  } = useAxios<any>();
-
-  const {
-    loading: loadingSave,
-    data: saveData,
-    error: saveError,
-    axiosFetch: performSaveOperation,
-  } = useAxios<any>();
+    loadingMetadata,
+    loadingCrud,
+    loadingSave,
+    metadataData,
+    saveData,
+    saveError,
+    refreshMetadata,
+    performCrudOperation,
+    performSaveOperation,
+    deleteContextRef,
+  } = useMetadataOperations();
 
   useEffect(() => {
-    axiosFetchMetadata(
-      HTTP_METHODS.GET,
-      `${API_BASE_URL}/metadata/usage-count`
-    );
-  }, []);
+    refreshMetadata();
+  }, [refreshMetadata]);
 
   useEffect(() => {
     if (metadataData) {
@@ -319,57 +457,14 @@ const RecipeMetaPage: React.FC = () => {
   }, [metadataData]);
 
   useEffect(() => {
-    if (metadataError) {
-      toast({
-        title: "Error al cargar metadatos",
-        description: getErrorMessage(metadataError),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [metadataError, toast]);
-
-  useEffect(() => {
-    if (crudError) {
-      toast({
-        title: "Error al realizar la operación",
-        description: getErrorMessage(crudError),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [crudError, toast]);
-
-  useEffect(() => {
-    if (saveError) {
-      toast({
-        title: "Error al guardar",
-        description: getErrorMessage(saveError),
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [saveError, toast]);
-
-  useEffect(() => {
     if (saveData !== undefined && !saveError) {
-      axiosFetchMetadata(
-        HTTP_METHODS.GET,
-        `${API_BASE_URL}/metadata/usage-count`
-      );
+      refreshMetadata();
 
       toast({
         title: "Éxito",
-        description: `${
-          currentType === "category"
-            ? "Categoría"
-            : currentType === "origin"
-            ? "Origen"
-            : "Ingrediente"
-        } ${isEditing ? "actualizado" : "creado"} correctamente`,
+        description: `${getEntityName(currentType)} ${
+          isEditing ? MESSAGES.SUCCESS.UPDATED : MESSAGES.SUCCESS.CREATED
+        }`,
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -382,7 +477,7 @@ const RecipeMetaPage: React.FC = () => {
     saveError,
     currentType,
     isEditing,
-    axiosFetchMetadata,
+    refreshMetadata,
     toast,
     onClose,
   ]);
@@ -428,38 +523,30 @@ const RecipeMetaPage: React.FC = () => {
           ? "origin"
           : "ingredient";
 
+      let itemName = "";
+      if (type === "category") {
+        itemName = categories.find((c) => c.id === id)?.name || "";
+      } else if (type === "origin") {
+        itemName = origins.find((o) => o.id === id)?.name || "";
+      } else {
+        itemName = ingredients.find((i) => i.id === id)?.name || "";
+      }
+
+      deleteContextRef.current = { type, itemName };
+
       await performCrudOperation(
         HTTP_METHODS.DELETE,
         `${API_BASE_URL}/${endpoint}/${id}`
       );
-
-      axiosFetchMetadata(
-        HTTP_METHODS.GET,
-        `${API_BASE_URL}/metadata/usage-count`
-      );
-
-      toast({
-        title: "Éxito",
-        description: `${
-          type === "category"
-            ? "Categoría"
-            : type === "origin"
-            ? "Origen"
-            : "Ingrediente"
-        } eliminado correctamente`,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
     },
-    [performCrudOperation, axiosFetchMetadata, toast]
+    [performCrudOperation, categories, origins, ingredients]
   );
 
   const handleSave = async () => {
     if (!itemName.trim()) {
       toast({
         title: "Error",
-        description: "El nombre no puede estar vacío",
+        description: MESSAGES.ERROR.EMPTY_NAME,
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -473,13 +560,10 @@ const RecipeMetaPage: React.FC = () => {
         : currentType === "origin"
         ? "origin"
         : "ingredient";
-
     const method = isEditing ? HTTP_METHODS.PATCH : HTTP_METHODS.POST;
-
     const url = isEditing
       ? `${API_BASE_URL}/${endpoint}/${currentItem?.id}`
       : `${API_BASE_URL}/${endpoint}`;
-
     const data =
       currentType === "ingredient"
         ? { name: itemName, unit: itemUnit }
@@ -490,13 +574,7 @@ const RecipeMetaPage: React.FC = () => {
 
   const modalTitle = useMemo(() => {
     const action = isEditing ? "Editar" : "Crear";
-    const entityType =
-      currentType === "category"
-        ? "Categoría"
-        : currentType === "origin"
-        ? "Origen"
-        : "Ingrediente";
-    return `${action} ${entityType}`;
+    return `${action} ${getEntityName(currentType)}`;
   }, [isEditing, currentType]);
 
   return (
