@@ -39,6 +39,43 @@ import useAxios from "../../../shared/hooks/axiosFetch";
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
 
+const getErrorMessage = (error: any): string => {
+  if (error?.response?.data) {
+    const responseData = error.response.data;
+
+    if (
+      responseData.data?.validations &&
+      responseData.data.validations.length > 0
+    ) {
+      if (responseData.data.validations.length === 1) {
+        return responseData.data.validations[0].message;
+      } else {
+        return responseData.data.validations
+          .map((validation: any) => validation.message)
+          .join(". ");
+      }
+    }
+
+    if (responseData.validations && responseData.validations.length > 0) {
+      if (responseData.validations.length === 1) {
+        return responseData.validations[0].message;
+      } else {
+        return responseData.validations
+          .map((validation: any) => validation.message)
+          .join(". ");
+      }
+    }
+
+    if (responseData.data?.details) return responseData.data.details;
+    if (responseData.details) return responseData.details;
+    if (responseData.data?.error) return responseData.data.error;
+    if (responseData.message) return responseData.message;
+    if (responseData.error) return responseData.error;
+  }
+
+  return error?.message || "Error desconocido";
+};
+
 interface Category {
   id: number;
   name: string;
@@ -199,14 +236,17 @@ const RecipeMetaPage: React.FC = () => {
 
   const [itemUnit, setItemUnit] = useState("kg");
   const availableUnits = [
-    "kg",
+    "mg",
     "g",
-    "l",
+    "kg",
     "ml",
-    "unidad",
-    "cucharada",
-    "cucharadita",
-    "taza",
+    "cl",
+    "l",
+    "u",
+    "tsp",
+    "tbsp",
+    "cup",
+    "pinch",
   ];
 
   const [itemName, setItemName] = useState("");
@@ -242,6 +282,13 @@ const RecipeMetaPage: React.FC = () => {
     axiosFetch: performCrudOperation,
   } = useAxios<any>();
 
+  const {
+    loading: loadingSave,
+    data: saveData,
+    error: saveError,
+    axiosFetch: performSaveOperation,
+  } = useAxios<any>();
+
   useEffect(() => {
     axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
     axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
@@ -270,7 +317,7 @@ const RecipeMetaPage: React.FC = () => {
     if (categoriesError) {
       toast({
         title: "Error al cargar categorías",
-        description: categoriesError.message,
+        description: getErrorMessage(categoriesError),
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -282,7 +329,7 @@ const RecipeMetaPage: React.FC = () => {
     if (originsError) {
       toast({
         title: "Error al cargar orígenes",
-        description: originsError.message,
+        description: getErrorMessage(originsError),
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -294,7 +341,7 @@ const RecipeMetaPage: React.FC = () => {
     if (ingredientsError) {
       toast({
         title: "Error al cargar ingredientes",
-        description: ingredientsError.message,
+        description: getErrorMessage(ingredientsError),
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -306,13 +353,63 @@ const RecipeMetaPage: React.FC = () => {
     if (crudError) {
       toast({
         title: "Error al realizar la operación",
-        description: crudError.message,
+        description: getErrorMessage(crudError),
         status: "error",
         duration: 5000,
         isClosable: true,
       });
     }
   }, [crudError, toast]);
+
+  useEffect(() => {
+    if (saveError) {
+      toast({
+        title: "Error al guardar",
+        description: getErrorMessage(saveError),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [saveError, toast]);
+
+  useEffect(() => {
+    if (saveData !== undefined && !saveError) {
+      if (currentType === "category") {
+        axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
+      } else if (currentType === "origin") {
+        axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
+      } else {
+        axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
+      }
+
+      toast({
+        title: "Éxito",
+        description: `${
+          currentType === "category"
+            ? "Categoría"
+            : currentType === "origin"
+            ? "Origen"
+            : "Ingrediente"
+        } ${isEditing ? "actualizado" : "creado"} correctamente`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      onClose();
+    }
+  }, [
+    saveData,
+    saveError,
+    currentType,
+    isEditing,
+    axiosFetchCategories,
+    axiosFetchOrigins,
+    axiosFetchIngredients,
+    toast,
+    onClose,
+  ]);
 
   const handleAddNew = useCallback(
     (type: MetaDataType) => {
@@ -322,7 +419,7 @@ const RecipeMetaPage: React.FC = () => {
       setItemName("");
 
       if (type === "ingredient") {
-        setItemUnit("kg");
+        setItemUnit("u");
       }
 
       onOpen();
@@ -421,31 +518,7 @@ const RecipeMetaPage: React.FC = () => {
         ? { name: itemName, unit: itemUnit }
         : { name: itemName };
 
-    await performCrudOperation(method, url, data);
-
-    if (currentType === "category") {
-      axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
-    } else if (currentType === "origin") {
-      axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-    } else {
-      axiosFetchIngredients(HTTP_METHODS.GET, `${API_BASE_URL}/ingredient`);
-    }
-
-    toast({
-      title: "Éxito",
-      description: `${
-        currentType === "category"
-          ? "Categoría"
-          : currentType === "origin"
-          ? "Origen"
-          : "Ingrediente"
-      } ${isEditing ? "actualizado" : "creado"} correctamente`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-
-    onClose();
+    await performSaveOperation(method, url, data);
   };
 
   const modalTitle = useMemo(() => {
@@ -596,7 +669,7 @@ const RecipeMetaPage: React.FC = () => {
             <Button
               variant="greenButton"
               onClick={handleSave}
-              isLoading={loadingCrud}
+              isLoading={loadingSave}
             >
               Guardar
             </Button>
