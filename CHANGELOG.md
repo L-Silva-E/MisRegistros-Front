@@ -5,6 +5,36 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] - 2025-09-28
+
+### Changed
+
+- **BREAKING**: Updated Vite from 5.3.1 to 6.3.6 (major version upgrade for security)
+- Updated esbuild from 0.21.5 to 0.25.10 (security patch)
+- Updated axios from 1.8.4 to 1.12.2 (security patch)
+- Updated rollup from 4.18.0 to 4.52.3 (security patch)
+- Updated multiple indirect dependencies to secure versions
+
+### Fixed
+
+- **Critical security update**: Fixed 11 vulnerabilities in project dependencies
+  - **CRITICAL**: form-data unsafe random function vulnerability (GHSA-fjxv-7rqg-78g4)
+  - **HIGH**: axios DoS vulnerability through data size check bypass (1.8.4 to 1.12.2) (GHSA-4hjh-wcwx-xvwj)
+  - **HIGH**: cross-spawn Regular Expression Denial of Service (GHSA-3xgq-45jj-v275)
+  - **HIGH**: rollup DOM Clobbering leading to XSS vulnerability (4.18.0 to 4.52.3) (GHSA-gcx4-mw62-g8wm)
+  - **MODERATE**: esbuild development server vulnerability (GHSA-67mh-4wv8-2f99)
+  - **MODERATE**: vite dependency on vulnerable esbuild versions
+  - **MODERATE**: babel helpers RegExp complexity issues (GHSA-968p-4wvh-cqc8)
+  - **MODERATE**: micromatch ReDoS vulnerability (GHSA-952p-6rrq-rcjv)
+  - **MODERATE**: nanoid predictable generation vulnerability (GHSA-mwcw-c2x4-8c55)
+  - **LOW**: brace-expansion ReDoS vulnerability (GHSA-v6h2-p8h4-qcjw)
+- Resolved 8 out of 11 security vulnerabilities through `npm audit fix`
+- Improved overall application security posture
+
+- Resolved all remaining security vulnerabilities through `npm audit fix --force`
+- Maintained full compatibility with existing React + TypeScript + Chakra UI stack
+- Build performance and development server functionality preserved
+
 ## [2.1.0] - 2025-09-21
 
 ### Added
