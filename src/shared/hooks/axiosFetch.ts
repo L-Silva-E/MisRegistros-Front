@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { API_KEY } from "../constants/environment";
 import { HTTP_METHODS } from "../constants/httpMethods";
+import { AUTH_TOKEN_KEY } from "../constants/authStorage";
 
 const useAxios = <T>() => {
   const [loading, setLoading] = useState(false);
@@ -30,10 +31,14 @@ const useAxios = <T>() => {
       setError(null);
 
       try {
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
         const responseAxios = await axios({
           method,
           url,
-          headers: { "api-key": API_KEY },
+          headers: {
+            "api-key": API_KEY,
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
           data: body,
           signal: abortControllerRef.current.signal,
         });
@@ -59,7 +64,7 @@ const useAxios = <T>() => {
         requestInProgressRef.current[requestKey] = false;
       }
     },
-    []
+    [],
   );
 
   return { loading, data, error, axiosFetch };
