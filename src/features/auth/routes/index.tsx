@@ -5,6 +5,7 @@ import { Center, Spinner } from "@chakra-ui/react";
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("../pages/ResetPasswordPage"));
 
 const PageLoader = () => (
   <Center h="100vh">
@@ -30,5 +31,9 @@ export const routes: RouteObject[] = [
   {
     path: "/forgot-password",
     element: withSuspense(ForgotPasswordPage),
+  },
+  {
+    path: "/reset-password",
+    element: withSuspense(ResetPasswordPage),
   },
 ];
