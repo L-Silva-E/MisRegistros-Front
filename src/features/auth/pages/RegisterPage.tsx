@@ -52,17 +52,14 @@ const RegisterPage = () => {
         throw new Error(description);
       }
 
-      localStorage.setItem(
-        "toast",
-        JSON.stringify({
-          title: "Registro exitoso",
-          description: "Tu cuenta fue creada. Puedes iniciar sesión.",
-          status: "success",
-          duration: 4000,
-          isClosable: true,
-        }),
-      );
-      navigate("/login");
+      navigate("/login", {
+        state: {
+          successToast: {
+            title: "Registro exitoso",
+            description: "Tu cuenta fue creada ya puedes iniciar sesión.",
+          },
+        },
+      });
     } catch (err) {
       showToast({
         title: "Error al registrar",

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
 import {
@@ -29,8 +30,24 @@ const LoginPage = () => {
   const { showToast } = useToastContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const from =
-    (location.state as { from?: { pathname: string } })?.from?.pathname ?? "/";
+  const state = location.state as {
+    from?: { pathname: string };
+    successToast?: { title: string; description: string };
+  } | null;
+  const from = state?.from?.pathname ?? "/";
+  const toastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (state?.successToast && !toastShownRef.current) {
+      toastShownRef.current = true;
+      showToast({
+        title: state.successToast.title,
+        description: state.successToast.description,
+        status: "success",
+      });
+      navigate(location.pathname, { replace: true, state: { from: state.from } });
+    }
+  }, []);
 
   const {
     register,

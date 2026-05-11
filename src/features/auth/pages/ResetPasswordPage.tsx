@@ -75,17 +75,15 @@ const ResetPasswordPage = () => {
         throw new Error(detail || "Error al restablecer la contraseña");
       }
 
-      localStorage.setItem(
-        "toast",
-        JSON.stringify({
-          title: "Contraseña actualizada",
-          description: "Tu contraseña fue restablecida. Ya puedes iniciar sesión.",
-          status: "success",
-          duration: 4000,
-          isClosable: true,
-        }),
-      );
-      navigate("/login");
+      navigate("/login", {
+        state: {
+          successToast: {
+            title: "Contraseña actualizada",
+            description: "Tu contraseña fue restablecida correctamente.",
+          },
+        },
+        replace: true,
+      });
     } catch (err) {
       showToast({
         title: "Error",
