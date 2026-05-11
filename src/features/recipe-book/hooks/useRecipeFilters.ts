@@ -12,11 +12,15 @@ const makeRecipeUrl = (
   selectedCategory: Category,
   selectedOrigin: Origin,
   sortBy: string,
-  sortDirection: string
+  sortDirection: string,
+  onlyMine: boolean,
 ) => {
   let url = `${API_BASE_URL}/recipe`;
   let params = [];
 
+  if (onlyMine) {
+    params.push("idUser=me");
+  }
   if (filterRecipe.searchText !== "") {
     params.push(`name=${filterRecipe.searchText}`);
   }
@@ -46,6 +50,7 @@ export const useRecipeFilters = () => {
   const [selectedOrigin, setSelectedOrigin] = useState<Origin>(defaultOrigin);
   const [sortBy, setSortBy] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [onlyMine, setOnlyMine] = useState(false);
 
   const buildRecipeUrl = useCallback(() => {
     return makeRecipeUrl(
@@ -53,9 +58,17 @@ export const useRecipeFilters = () => {
       selectedCategory,
       selectedOrigin,
       sortBy,
-      sortDirection
+      sortDirection,
+      onlyMine,
     );
-  }, [filterRecipe, selectedCategory, selectedOrigin, sortBy, sortDirection]);
+  }, [
+    filterRecipe,
+    selectedCategory,
+    selectedOrigin,
+    sortBy,
+    sortDirection,
+    onlyMine,
+  ]);
 
   const updateSearch = useCallback((data: SearchForm) => {
     setFilterRecipe(data);
@@ -77,12 +90,17 @@ export const useRecipeFilters = () => {
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
   }, []);
 
+  const toggleOnlyMine = useCallback(() => {
+    setOnlyMine((prev) => !prev);
+  }, []);
+
   const resetFilters = useCallback(() => {
     setFilterRecipe(defaultFilterRecipe);
     setSelectedCategory(defaultCategory);
     setSelectedOrigin(defaultOrigin);
     setSortBy("");
     setSortDirection("asc");
+    setOnlyMine(false);
   }, []);
 
   return {
@@ -92,6 +110,7 @@ export const useRecipeFilters = () => {
     selectedOrigin,
     sortBy,
     sortDirection,
+    onlyMine,
 
     // Actions
     updateSearch,
@@ -99,6 +118,7 @@ export const useRecipeFilters = () => {
     updateOrigin,
     updateSort,
     toggleSortDirection,
+    toggleOnlyMine,
     resetFilters,
     buildRecipeUrl,
 

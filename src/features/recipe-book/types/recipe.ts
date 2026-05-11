@@ -4,6 +4,7 @@ import { Step } from "./step";
 
 export type Recipe = {
   id: number;
+  idUser: number;
   idCategory: number;
   idOrigin: number;
   name: string;

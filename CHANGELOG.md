@@ -5,6 +5,35 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-05-09
+
+### Added
+
+- **User authentication system**: Full JWT-based authentication flow
+  - Login page with email/password form and post-login redirect to the original route
+  - Registration page with username, email and password with frontend validation (length constraints)
+  - `AuthContext` and `useAuth` hook for global auth state management
+  - Session persistence across page reloads via `localStorage`
+  - Public routes: `/login`, `/register`, `/forgot-password`, `/reset-password`
+- **Password recovery flow**: Complete forgot/reset password cycle
+  - Forgot password page calls `POST /v1/user/forgot-password` and transitions to a generic confirmation state (prevents user enumeration)
+  - Reset password page reads token from `?token=` query param, validates password match client-side, and handles expired and invalid token error states with a link to re-request
+- **Protected routes**: `PrivateRoute` component redirects unauthenticated users to `/login` preserving the intended destination for post-login redirect
+- **User menu in Header**: Dynamic avatar replacing the hardcoded placeholder
+  - Displays user initials derived from the authenticated context
+  - "Mi perfil" option opens a modal fetching fresh data from `GET /v1/user/me` (username, role badge, email, last login, member since date)
+  - "Cerrar sesión" option clears the session and redirects to `/login`
+- **Recipe RBAC**: Role-based access control on recipe actions
+  - Edit, delete and lock controls hidden for recipes not owned by the current user (visible to owner and ADMIN only)
+  - "Mis recetas" filter in the recipe list using `GET /v1/recipe?idUser=me`, consistent with the existing filter button visual style
+
+### Changed
+
+- `useAxios`: Now automatically injects `Authorization: Bearer <token>` header on all requests when a session is active, using the token stored in `localStorage`
+- Recipe `Modal`: Edit, delete and lock actions are now conditionally rendered — copy remains available to all authenticated users; edit, delete and lock are restricted to the recipe owner or ADMIN
+- `SearchFilters`: Added "Mis recetas" icon button following the existing sort-direction button visual style (background, border and icon color react to active state)
+- `Recipe` type: Added `idUser: number` field to support client-side ownership checks
+
 ## [2.1.1] - 2025-09-28
 
 ### Changed

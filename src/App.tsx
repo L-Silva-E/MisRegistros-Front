@@ -5,14 +5,17 @@ import { RouterProvider } from "react-router-dom";
 import router from "./app/routes/";
 import customTheme from "./shared/themes/";
 import { ToastProvider } from "./shared/providers";
+import { AuthProvider } from "./features/auth/context/AuthContext";
 
 const App = () => {
   return (
     <ChakraProvider theme={customTheme}>
       <ColorModeScript initialColorMode={customTheme.config.initialColorMode} />
-      <ToastProvider>
-        <RouterProvider router={router} />
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </AuthProvider>
     </ChakraProvider>
   );
 };
