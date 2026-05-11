@@ -26,11 +26,13 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
     selectedOrigin,
     sortBy,
     sortDirection,
+    onlyMine,
     updateSearch,
     updateCategory,
     updateOrigin,
     updateSort,
     toggleSortDirection,
+    toggleOnlyMine,
     resetFilters,
     buildRecipeUrl,
     defaultCategory,
@@ -60,7 +62,14 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
     axiosFetchRecipe(HTTP_METHODS.GET, url);
     axiosFetchCategories(HTTP_METHODS.GET, `${API_BASE_URL}/category`);
     axiosFetchOrigins(HTTP_METHODS.GET, `${API_BASE_URL}/origin`);
-  }, [filterRecipe, selectedCategory, selectedOrigin, sortBy, sortDirection]);
+  }, [
+    filterRecipe,
+    selectedCategory,
+    selectedOrigin,
+    sortBy,
+    sortDirection,
+    onlyMine,
+  ]);
 
   const handleSearchSubmit = (data: SearchForm) => {
     updateSearch(data);
@@ -99,6 +108,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
           selectedOrigin={selectedOrigin}
           sortBy={sortBy}
           sortDirection={sortDirection}
+          onlyMine={onlyMine}
           categories={dataCategories || []}
           origins={dataOrigins || []}
           loadingCategories={loadingCategories}
@@ -110,6 +120,7 @@ function MainContent({ openRecipe, openRecipeCreate }: Props) {
           onOriginChange={handleOriginChange}
           onSortChange={handleSortChange}
           onSortDirectionToggle={handleSortDirectionToggle}
+          onToggleOnlyMine={toggleOnlyMine}
           onClearFilters={handleClearFilters}
         />
 

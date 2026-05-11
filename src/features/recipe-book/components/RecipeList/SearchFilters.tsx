@@ -7,6 +7,7 @@ import {
   InputLeftElement,
   Select,
   IconButton,
+  Tooltip,
   useColorModeValue,
 } from "@chakra-ui/react";
 import {
@@ -14,6 +15,7 @@ import {
   FaSortAlphaDown,
   FaSortAlphaDownAlt,
   FaTimes,
+  FaUser,
 } from "react-icons/fa";
 
 import { Category, Origin } from "../../types";
@@ -25,6 +27,7 @@ interface SearchFiltersProps {
   selectedOrigin: Origin;
   sortBy: string;
   sortDirection: "asc" | "desc";
+  onlyMine: boolean;
   categories: Category[];
   origins: Origin[];
   loadingCategories: boolean;
@@ -36,6 +39,7 @@ interface SearchFiltersProps {
   onOriginChange: (origin: Origin) => void;
   onSortChange: (sortBy: string) => void;
   onSortDirectionToggle: () => void;
+  onToggleOnlyMine: () => void;
   onClearFilters: () => void;
 }
 
@@ -46,6 +50,7 @@ const SearchFilters = memo(
     selectedOrigin,
     sortBy,
     sortDirection,
+    onlyMine,
     categories,
     origins,
     loadingCategories,
@@ -57,6 +62,7 @@ const SearchFilters = memo(
     onOriginChange,
     onSortChange,
     onSortDirectionToggle,
+    onToggleOnlyMine,
     onClearFilters,
   }: SearchFiltersProps) => {
     const { register, handleSubmit } = useForm<SearchForm>();
@@ -64,7 +70,7 @@ const SearchFilters = memo(
     const handleSearchSubmit = (data: SearchForm) => {
       onSearchSubmit(data);
       const input = document.querySelector(
-        'input[placeholder="Nombre de la Receta"]'
+        'input[placeholder="Nombre de la Receta"]',
       ) as HTMLInputElement;
       input?.blur();
     };
@@ -77,13 +83,13 @@ const SearchFilters = memo(
       filterRecipe.searchText ||
       selectedCategory.id !== 0 ||
       selectedOrigin.id !== 0 ||
-      sortBy !== ""
+      sortBy !== "" ||
+      onlyMine
     );
 
     const handleClearFilters = () => {
-      // Limpiar el formulario de búsqueda
       const input = document.querySelector(
-        'input[placeholder="Nombre de la Receta"]'
+        'input[placeholder="Nombre de la Receta"]',
       ) as HTMLInputElement;
       if (input) {
         input.value = "";
@@ -134,8 +140,8 @@ const SearchFilters = memo(
           onChange={(e) =>
             onCategoryChange(
               categories?.find(
-                (category) => category.name === e.target.value
-              ) || defaultCategory
+                (category) => category.name === e.target.value,
+              ) || defaultCategory,
             )
           }
           variant={selectedCategory.id === 0 ? "" : "selected"}
@@ -157,7 +163,7 @@ const SearchFilters = memo(
           onChange={(e) =>
             onOriginChange(
               origins?.find((origin) => origin.name === e.target.value) ||
-                defaultOrigin
+                defaultOrigin,
             )
           }
           variant={selectedOrigin.id === 0 ? "" : "selected"}
@@ -183,49 +189,97 @@ const SearchFilters = memo(
           <option value="createdAt">Fecha Creación</option>
         </Select>
 
-        <IconButton
-          aria-label="Toggle sort direction"
-          ml={-5}
-          backgroundColor={
-            sortDirection === "asc"
-              ? "inherit"
-              : useColorModeValue("green.50", "green.800")
-          }
-          borderColor={
-            sortDirection === "asc"
-              ? useColorModeValue("blackAlpha.400", "whiteAlpha.400")
-              : useColorModeValue("green.200", "green.700")
-          }
-          borderWidth={2}
-          icon={
-            sortDirection === "asc" ? (
-              <FaSortAlphaDown
-                size={24}
-                color={useColorModeValue("#48BB78", "#38A169")}
-              />
-            ) : (
-              <FaSortAlphaDownAlt
-                size={24}
-                color={useColorModeValue("#2F855A", "#9AE6B4")}
-              />
-            )
-          }
-          _hover={{
-            borderColor: useColorModeValue("green.500", "green.400"),
-          }}
-          onClick={onSortDirectionToggle}
-        />
+        <Tooltip
+          hasArrow
+          placement="top"
+          label={sortDirection === "asc" ? "Ascendente" : "Descendente"}
+          aria-label="My recipes tooltip"
+        >
+          <IconButton
+            aria-label="Toggle sort direction"
+            ml={-5}
+            backgroundColor={
+              sortDirection === "asc"
+                ? "inherit"
+                : useColorModeValue("green.50", "green.800")
+            }
+            borderColor={
+              sortDirection === "asc"
+                ? useColorModeValue("blackAlpha.400", "whiteAlpha.400")
+                : useColorModeValue("green.200", "green.700")
+            }
+            borderWidth={2}
+            icon={
+              sortDirection === "asc" ? (
+                <FaSortAlphaDown
+                  size={24}
+                  color={useColorModeValue("#48BB78", "#38A169")}
+                />
+              ) : (
+                <FaSortAlphaDownAlt
+                  size={24}
+                  color={useColorModeValue("#2F855A", "#9AE6B4")}
+                />
+              )
+            }
+            _hover={{
+              borderColor: useColorModeValue("green.500", "green.400"),
+            }}
+            onClick={onSortDirectionToggle}
+          />
+        </Tooltip>
 
-        <IconButton
-          aria-label="Limpiar filtros"
-          icon={<FaTimes size={16} />}
-          variant="deleteButtonOutline"
-          isDisabled={!hasActiveFilters}
-          onClick={handleClearFilters}
-        ></IconButton>
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Mostrar solo mis recetas"
+          aria-label="My recipes tooltip"
+        >
+          <IconButton
+            aria-label="My recipes"
+            backgroundColor={
+              onlyMine ? useColorModeValue("green.50", "green.800") : "inherit"
+            }
+            borderColor={
+              onlyMine
+                ? useColorModeValue("green.200", "green.700")
+                : useColorModeValue("blackAlpha.400", "whiteAlpha.400")
+            }
+            borderWidth={2}
+            icon={
+              <FaUser
+                size={16}
+                color={
+                  onlyMine
+                    ? useColorModeValue("#2F855A", "#9AE6B4")
+                    : useColorModeValue("#48BB78", "#38A169")
+                }
+              />
+            }
+            _hover={{
+              borderColor: useColorModeValue("green.500", "green.400"),
+            }}
+            onClick={onToggleOnlyMine}
+          />
+        </Tooltip>
+
+        <Tooltip
+          hasArrow
+          placement="top"
+          label="Limpiar filtros"
+          aria-label="Clear filters tooltip"
+        >
+          <IconButton
+            aria-label="Clean filters"
+            icon={<FaTimes size={16} />}
+            variant="deleteButtonOutline"
+            isDisabled={!hasActiveFilters}
+            onClick={handleClearFilters}
+          />
+        </Tooltip>
       </HStack>
     );
-  }
+  },
 );
 
 SearchFilters.displayName = "SearchFilters";

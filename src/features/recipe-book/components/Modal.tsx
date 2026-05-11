@@ -18,6 +18,7 @@ import ConfirmationDeleteModal from "./DeleteModal";
 
 import { useRecipeDuplicate } from "../hooks";
 import { Recipe } from "../types";
+import { useAuth } from "../../../features/auth/hooks/useAuth";
 
 type Props = {
   isOpen: boolean;
@@ -28,6 +29,7 @@ type Props = {
 
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { duplicateRecipe, isLoading: isDuplicating } = useRecipeDuplicate();
 
   const {
@@ -37,6 +39,17 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   } = useDisclosure();
 
   const [isUnlocked, setIsUnlocked] = useState(true);
+
+  const iconColor = useColorModeValue("#1A202C", "white");
+  const pinUnlockedBg = useColorModeValue("gray.300", "#3C4658");
+  const pinLockedBg = "yellow.500";
+  const pinUnlockedHover = { backgroundColor: "yellow.500" };
+  const pinLockedHover = {
+    backgroundColor: useColorModeValue("gray.300", "#3C4658"),
+  };
+
+  const canManage =
+    !!user && !!data && (user.role === "ADMIN" || user.id === data.idUser);
 
   const handleDuplicate = async () => {
     if (data) {
@@ -67,55 +80,48 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
             data && <RecipeModalContent data={data} />
           )}
           <ModalFooter mt={4}>
-            <Button
-              isDisabled={!isUnlocked}
-              variant="deleteButton"
-              onClick={onOpenDeleteConfirmation}
-            >
-              <FaTrash color={useColorModeValue("#1A202C", "white")} />
-            </Button>
+            {canManage && (
+              <Button
+                isDisabled={!isUnlocked}
+                variant="deleteButton"
+                onClick={onOpenDeleteConfirmation}
+              >
+                <FaTrash color={iconColor} />
+              </Button>
+            )}
 
             <Spacer />
 
             <Button
-              isDisabled={!isUnlocked || isDuplicating}
+              isDisabled={isDuplicating}
               variant="copyButton"
               onClick={handleDuplicate}
               isLoading={isDuplicating}
             >
-              <FaCopy color={useColorModeValue("#1A202C", "white")} />
+              <FaCopy color={iconColor} />
             </Button>
 
-            <Button
-              ml={4}
-              isDisabled={!isUnlocked}
-              variant="editButton"
-              onClick={handleEdit}
-            >
-              <FaPencilAlt color={useColorModeValue("#1A202C", "white")} />
-            </Button>
+            {canManage && (
+              <Button
+                ml={4}
+                isDisabled={!isUnlocked}
+                variant="editButton"
+                onClick={handleEdit}
+              >
+                <FaPencilAlt color={iconColor} />
+              </Button>
+            )}
 
-            <Button
-              mx={4}
-              backgroundColor={
-                isUnlocked
-                  ? useColorModeValue("gray.300", "#3C4658")
-                  : "yellow.500"
-              }
-              _hover={
-                isUnlocked
-                  ? { backgroundColor: "yellow.500" }
-                  : {
-                      backgroundColor: useColorModeValue("gray.300", "#3C4658"),
-                    }
-              }
-              onClick={() => setIsUnlocked(!isUnlocked)}
-            >
-              <FaThumbtack
-                size={16}
-                color={useColorModeValue("#1A202C", "white")}
-              />
-            </Button>
+            {canManage && (
+              <Button
+                mx={4}
+                backgroundColor={isUnlocked ? pinUnlockedBg : pinLockedBg}
+                _hover={isUnlocked ? pinUnlockedHover : pinLockedHover}
+                onClick={() => setIsUnlocked(!isUnlocked)}
+              >
+                <FaThumbtack size={16} color={iconColor} />
+              </Button>
+            )}
 
             <Button
               isDisabled={!isUnlocked}

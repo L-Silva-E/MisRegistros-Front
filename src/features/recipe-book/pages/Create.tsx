@@ -31,6 +31,7 @@ const CreateRecipePage = () => {
       // Convertir 'DuplicateRecipeResponse' a Recipe format
       const recipeData: Recipe = {
         id: 0, // Temporal, será asignado al guardar
+        idUser: 0, // Temporal, será asignado al guardar
         idCategory: duplicatedData.idCategory,
         idOrigin: duplicatedData.idOrigin,
         name: duplicatedData.name,
@@ -91,7 +92,7 @@ const CreateRecipePage = () => {
       } else if (
         data.ingredients.some(
           (ingredient: IngredientFormData) =>
-            ingredient.id === "0" || !ingredient.quantity.trim()
+            ingredient.id === "0" || !ingredient.quantity.trim(),
         )
       ) {
         messageError = "Por favor completa todos los ingredientes";
