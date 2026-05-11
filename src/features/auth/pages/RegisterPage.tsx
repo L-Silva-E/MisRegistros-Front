@@ -22,6 +22,7 @@ import {
 import { useToastContext } from "../../../shared/providers";
 import { RegisterPayload } from "../types";
 import { API_BASE_URL, API_KEY } from "../../../shared/constants/environment";
+import ColorModeToggle from "../../../shared/components/ui/ColorModeToggle/ColorModeToggle";
 
 const RegisterPage = () => {
   const { showToast } = useToastContext();
@@ -47,7 +48,7 @@ const RegisterPage = () => {
       if (!response.ok) {
         const err = await response.json();
         const description = err.validations
-          ? err.validations.join(", ")
+          ? err.validations.map((v: { message: string }) => v.message).join(", ")
           : (err.details ?? "Error al registrar usuario");
         throw new Error(description);
       }
@@ -73,6 +74,7 @@ const RegisterPage = () => {
 
   return (
     <Flex minH="100vh" align="center" justify="center" bg={bg}>
+      <ColorModeToggle position="fixed" top={4} right={4} />
       <Card maxW="md" w="full" mx={4}>
         <CardBody>
           <VStack spacing={6}>

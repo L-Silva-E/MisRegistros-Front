@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Flex,
   HStack,
   Heading,
@@ -14,19 +13,17 @@ import {
   Spacer,
   Text,
   VStack,
-  useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaMoon, FaSun } from "react-icons/fa";
 import { FiLogOut, FiUser } from "react-icons/fi";
+import ColorModeToggle from "../ui/ColorModeToggle/ColorModeToggle";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../features/auth/hooks/useAuth";
 import ProfileModal from "../../../features/auth/components/ProfileModal";
 
 function Header() {
-  const { colorMode, toggleColorMode } = useColorMode();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -67,9 +64,7 @@ function Header() {
         </Box>
         <Spacer />
         <HStack align="center" gap="16px" mr="4">
-          <Button onClick={toggleColorMode} variant="themeToggle">
-            {colorMode === "light" ? <FaMoon /> : <FaSun />}
-          </Button>
+          <ColorModeToggle />
           {isAuthenticated && user && (
             <Menu>
               <MenuButton>

@@ -24,6 +24,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { useToastContext } from "../../../shared/providers";
 import { ForgotPasswordPayload } from "../types";
 import { API_BASE_URL, API_KEY } from "../../../shared/constants/environment";
+import ColorModeToggle from "../../../shared/components/ui/ColorModeToggle/ColorModeToggle";
 
 const ForgotPasswordPage = () => {
   const { showToast } = useToastContext();
@@ -69,6 +70,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <Flex minH="100vh" align="center" justify="center" bg={bg}>
+      <ColorModeToggle position="fixed" top={4} right={4} />
       <Card maxW="md" w="full" mx={4}>
         <CardBody>
           <VStack spacing={6}>
