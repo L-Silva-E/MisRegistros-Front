@@ -31,13 +31,11 @@ type Props = {
 
 const formatDate = (dateStr: string | null) => {
   if (!dateStr) return "Nunca";
-  return new Date(dateStr).toLocaleString("es", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const date = new Date(dateStr);
+  const day = date.getDate();
+  const month = date.toLocaleString("es", { month: "long" });
+  const year = date.getFullYear();
+  return `${String(day).padStart(2, "0")} / ${month.charAt(0).toUpperCase() + month.slice(1)} / ${year}`;
 };
 
 function ProfileModal({ isOpen, onClose }: Props) {
