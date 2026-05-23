@@ -14,7 +14,10 @@ const useAxios = <T>() => {
 
   const axiosFetch = useCallback(
     async (method: keyof typeof HTTP_METHODS, url: string, body?: any) => {
-      const requestKey = `${method}-${url}-${JSON.stringify(body || {})}`;
+      const isFormData = body instanceof FormData;
+      const requestKey = isFormData
+        ? `${method}-${url}`
+        : `${method}-${url}-${JSON.stringify(body || {})}`;
 
       if (requestInProgressRef.current[requestKey]) {
         return;
