@@ -12,7 +12,7 @@ import {
 import useAxios from "../../../shared/hooks/axiosFetch";
 import {
   RecipeForm,
-  RecipeFormData,
+  RecipeFormSubmissionData,
   RecipeFormButtons,
 } from "../../../shared/components/forms";
 import { API_BASE_URL } from "../../../shared/constants/environment";
@@ -38,32 +38,46 @@ const UpdateRecipePage = () => {
     }
   }, [id, fetchRecipe]);
 
-  const handleSubmit = async (formData: RecipeFormData) => {
-    const bodyRecipe = {
-      idCategory: formData.selectedCategory?.id,
-      idOrigin: formData.selectedOrigin?.id,
-      name: formData.name,
-      description: formData.description,
-      score: parseInt(formData.score),
-      time: parseInt(formData.time),
-      servings: formData.servings,
-      ...(formData.thumbnail?.trim() && { thumbnail: formData.thumbnail }),
-      ingredients:
-        formData.ingredients?.map((ingredient) => ({
+  const handleSubmit = async (formData: RecipeFormSubmissionData) => {
+    const body = new FormData();
+    body.append("name", formData.name);
+    body.append("description", formData.description);
+    body.append("idCategory", String(formData.selectedCategory?.id));
+    body.append("idOrigin", String(formData.selectedOrigin?.id));
+    body.append("score", String(parseInt(formData.score)));
+    body.append("time", String(parseInt(formData.time)));
+    body.append("servings", String(formData.servings));
+    body.append(
+      "ingredients",
+      JSON.stringify(
+        (formData.ingredients ?? []).map((ingredient) => ({
           id: parseInt(ingredient.id),
           quantity: parseFloat(ingredient.quantity),
-        })) || [],
-      steps: formData.steps.split("\n").map((step: string, index: number) => ({
-        number: index + 1,
-        instruction: step,
-      })),
-    };
+        }))
+      )
+    );
+    body.append(
+      "steps",
+      JSON.stringify(
+        formData.steps
+          .split("\n")
+          .filter((s: string) => s.trim())
+          .map((step: string, index: number) => ({
+            number: index + 1,
+            instruction: step,
+          }))
+      )
+    );
+
+    if (formData.thumbnailFile) {
+      body.append("thumbnail", formData.thumbnailFile);
+    }
 
     try {
       await updateRecipe(
         HTTP_METHODS.PATCH,
         `${API_BASE_URL}/recipe/${id}`,
-        bodyRecipe
+        body
       );
 
       toast({
@@ -76,12 +90,12 @@ const UpdateRecipePage = () => {
       });
 
       navigate("/recipes");
-    } catch (error) {
+    } catch (error: any) {
+      const apiMessage = error?.response?.data?.details;
       toast({
         position: "top",
         title: "Error",
-        description:
-          "Hubo un error al actualizar la receta. Inténtalo de nuevo.",
+        description: apiMessage ?? "Hubo un error al actualizar la receta. Inténtalo de nuevo.",
         status: "error",
         duration: 3000,
         isClosable: true,

@@ -14,7 +14,6 @@ import {
 export interface RecipeFormData {
   name: string;
   description: string;
-  thumbnail?: string;
   score: string;
   time: string;
   servings: number;
@@ -27,6 +26,9 @@ export interface RecipeFormData {
 export interface BasicInfoSectionProps {
   register: UseFormRegister<RecipeFormData>;
   errors?: FieldErrors<RecipeFormData>;
+  thumbnailFile: File | null;
+  setThumbnailFile: (file: File | null) => void;
+  existingThumbnailUrl?: string;
 }
 
 export interface MetadataSectionProps {
@@ -77,4 +79,5 @@ export interface RecipeFormSubmissionData extends RecipeFormData {
   selectedCategory: Category;
   selectedOrigin: Origin;
   ingredients: IngredientFormData[];
+  thumbnailFile?: File | null;
 }

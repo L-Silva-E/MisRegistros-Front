@@ -4,6 +4,7 @@ export { useRecipeForm } from "./useRecipeForm";
 export type {
   RecipeFormProps,
   RecipeFormData,
+  RecipeFormSubmissionData,
   RecipeFormButtonsProps,
   BasicInfoSectionProps,
   MetadataSectionProps,

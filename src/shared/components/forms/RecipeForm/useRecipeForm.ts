@@ -25,7 +25,6 @@ export const useRecipeForm = (initialData?: Recipe) => {
     defaultValues: {
       name: "",
       description: "",
-      thumbnail: "",
       score: "",
       time: "",
       servings: 1,
@@ -34,6 +33,9 @@ export const useRecipeForm = (initialData?: Recipe) => {
   });
 
   const { setValue, reset, watch } = form;
+
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [existingThumbnailUrl, setExistingThumbnailUrl] = useState<string | undefined>(undefined);
 
   // Estados para categorías, orígenes e ingredientes
   const [selectedCategory, setSelectedCategory] =
@@ -72,7 +74,7 @@ export const useRecipeForm = (initialData?: Recipe) => {
     if (initialData) {
       setValue("name", initialData.name);
       setValue("description", initialData.description);
-      setValue("thumbnail", initialData.thumbnail || "");
+      setExistingThumbnailUrl(initialData.thumbnail || undefined);
       setValue("score", initialData.score.toString());
       setValue("time", initialData.time.toString());
       setValue("servings", initialData.servings);
@@ -123,6 +125,8 @@ export const useRecipeForm = (initialData?: Recipe) => {
   // Función para resetear el formulario
   const resetForm = () => {
     reset();
+    setThumbnailFile(null);
+    setExistingThumbnailUrl(undefined);
     setSelectedCategory(defaultCategory);
     setSelectedOrigin(defaultOrigin);
     setIngredients([{ id: "0", quantity: "" }]);
@@ -132,6 +136,9 @@ export const useRecipeForm = (initialData?: Recipe) => {
     ...form,
     watch,
     resetForm,
+    thumbnailFile,
+    setThumbnailFile,
+    existingThumbnailUrl,
     selectedCategory,
     setSelectedCategory,
     selectedOrigin,

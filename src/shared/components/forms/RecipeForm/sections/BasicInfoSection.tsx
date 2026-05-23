@@ -7,9 +7,16 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+import { ImageUpload } from "../../../ui/ImageUpload";
 import { BasicInfoSectionProps } from "../types";
 
-const BasicInfoSection = ({ register, errors }: BasicInfoSectionProps) => {
+const BasicInfoSection = ({
+  register,
+  errors,
+  thumbnailFile,
+  setThumbnailFile,
+  existingThumbnailUrl,
+}: BasicInfoSectionProps) => {
   return (
     <VStack align="stretch" spacing={4}>
       <FormControl isRequired isInvalid={!!errors?.name}>
@@ -42,19 +49,13 @@ const BasicInfoSection = ({ register, errors }: BasicInfoSectionProps) => {
         <FormErrorMessage>{errors?.description?.message}</FormErrorMessage>
       </FormControl>
 
-      <FormControl isInvalid={!!errors?.thumbnail}>
-        <FormLabel>Imagen (URL)</FormLabel>
-        <Input
-          {...register("thumbnail", {
-            pattern: {
-              value:
-                /^https?:\/\/[^\s]+$/,
-              message: "Ingresa una URL válida que comience con http:// o https://",
-            },
-          })}
-          placeholder="https://ejemplo.com/imagen.jpg"
+      <FormControl>
+        <FormLabel>Imagen</FormLabel>
+        <ImageUpload
+          value={thumbnailFile}
+          onChange={setThumbnailFile}
+          existingUrl={existingThumbnailUrl}
         />
-        <FormErrorMessage>{errors?.thumbnail?.message}</FormErrorMessage>
       </FormControl>
     </VStack>
   );

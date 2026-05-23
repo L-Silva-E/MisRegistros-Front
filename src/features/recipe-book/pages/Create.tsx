@@ -110,26 +110,41 @@ const CreateRecipePage = () => {
         return;
       }
 
-      const bodyRecipe = {
-        idCategory: data.selectedCategory.id,
-        idOrigin: data.selectedOrigin.id,
-        name: data.name,
-        description: data.description,
-        score: parseInt(data.score),
-        time: parseInt(data.time),
-        servings: data.servings,
-        ...(data.thumbnail?.trim() && { thumbnail: data.thumbnail }),
-        ingredients: data.ingredients.map((ingredient: IngredientFormData) => ({
-          id: parseInt(ingredient.id),
-          quantity: parseFloat(ingredient.quantity),
-        })),
-        steps: data.steps.split("\n").map((step: string, index: number) => ({
-          number: index + 1,
-          instruction: step,
-        })),
-      };
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("idCategory", String(data.selectedCategory.id));
+      formData.append("idOrigin", String(data.selectedOrigin.id));
+      formData.append("score", String(parseInt(data.score)));
+      formData.append("time", String(parseInt(data.time)));
+      formData.append("servings", String(data.servings));
+      formData.append(
+        "ingredients",
+        JSON.stringify(
+          data.ingredients.map((ingredient: IngredientFormData) => ({
+            id: parseInt(ingredient.id),
+            quantity: parseFloat(ingredient.quantity),
+          }))
+        )
+      );
+      formData.append(
+        "steps",
+        JSON.stringify(
+          data.steps
+            .split("\n")
+            .filter((s: string) => s.trim())
+            .map((step: string, index: number) => ({
+              number: index + 1,
+              instruction: step,
+            }))
+        )
+      );
 
-      await axiosFetch(HTTP_METHODS.POST, `${API_BASE_URL}/recipe`, bodyRecipe);
+      if (data.thumbnailFile) {
+        formData.append("thumbnail", data.thumbnailFile);
+      }
+
+      await axiosFetch(HTTP_METHODS.POST, `${API_BASE_URL}/recipe`, formData);
 
       toast({
         position: "top",
@@ -145,11 +160,12 @@ const CreateRecipePage = () => {
       });
 
       navigate("/recipes");
-    } catch (error) {
+    } catch (error: any) {
+      const apiMessage = error?.response?.data?.details;
       toast({
         position: "top",
         title: "Error al crear receta",
-        description: "Por favor intente nuevamente.",
+        description: apiMessage ?? "Por favor intente nuevamente.",
         status: "error",
         duration: 3000,
         isClosable: true,
