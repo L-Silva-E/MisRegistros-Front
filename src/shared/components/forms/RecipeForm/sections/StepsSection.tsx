@@ -9,10 +9,14 @@ import { StepsSectionProps } from "../types";
 
 const StepsSection = ({ register, errors }: StepsSectionProps) => {
   return (
-    <FormControl isInvalid={!!errors?.steps}>
+    <FormControl isRequired isInvalid={!!errors?.steps}>
       <FormLabel>Pasos</FormLabel>
       <Textarea
-        {...register("steps")}
+        {...register("steps", {
+          validate: (value) =>
+            value.split("\n").some((s) => s.trim()) ||
+            "Debe agregar al menos un paso",
+        })}
         rows={7}
         size="sm"
         resize="none"
