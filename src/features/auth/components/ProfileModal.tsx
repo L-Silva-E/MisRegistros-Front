@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import {
-  Avatar,
   Badge,
   Divider,
   Flex,
@@ -23,6 +22,7 @@ import useAxios from "../../../shared/hooks/axiosFetch";
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
 import { User } from "../types";
+import AvatarUpload from "./AvatarUpload";
 
 type Props = {
   isOpen: boolean;
@@ -71,12 +71,7 @@ function ProfileModal({ isOpen, onClose }: Props) {
           ) : (
             <VStack spacing={5} align="stretch">
               <Flex justify="center">
-                <Avatar
-                  name={profile.username}
-                  size="xl"
-                  backgroundColor="green.800"
-                  color="green.50"
-                />
+                <AvatarUpload />
               </Flex>
 
               <VStack spacing={1} align="center">
