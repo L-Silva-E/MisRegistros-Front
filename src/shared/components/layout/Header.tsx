@@ -69,6 +69,7 @@ function Header() {
             <Menu>
               <MenuButton>
                 <Avatar
+                  src={user.avatar ?? undefined}
                   name={user.username}
                   backgroundColor="green.800"
                   color="green.50"

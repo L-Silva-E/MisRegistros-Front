@@ -6,6 +6,7 @@ export interface User {
   isActive: boolean;
   lastLoginAt: string | null;
   createdAt: string;
+  avatar: string | null;
 }
 
 export interface LoginPayload {

@@ -11,6 +11,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -40,9 +41,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(AUTH_USER_KEY);
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updatedUser));
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, token, isAuthenticated: !!token && !!user, login, logout }}
+      value={{ user, token, isAuthenticated: !!token && !!user, login, logout, updateUser }}
     >
       {children}
     </AuthContext.Provider>

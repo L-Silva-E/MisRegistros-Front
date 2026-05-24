@@ -5,6 +5,18 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-05-23
+
+### Added
+
+- **User profile picture management**: Full avatar upload and deletion flow for authenticated users
+  - `AvatarUpload` component embedded in the profile modal: circular avatar with an overlay camera button to select a new image and a "Eliminar foto" link when a photo exists
+  - Client-side validation before upload: accepted formats (JPG, PNG, WebP) and 5 MB size limit, with toast feedback on error
+  - `useAvatarManagement` hook encapsulating `PATCH /v1/user/me/avatar` (multipart/form-data) and `DELETE /v1/user/me/avatar` calls; updates auth context on success
+  - `updateUser` function added to `AuthContext` and exposed via `useAuth`, allowing any component to update the persisted user state without re-login
+  - `avatar: string | null` field added to the `User` type, aligned with the updated backend model (`null` for users without a photo)
+- **Live avatar in Header**: The user menu avatar now renders the profile picture URL when available, falling back to name-based initials
+
 ## [2.2.0] - 2026-05-09
 
 ### Added
