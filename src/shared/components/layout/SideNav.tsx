@@ -27,7 +27,7 @@ function SideNav({}: Props) {
   const [selectedFeature, setSelectedFeature] = useState<Feature>(() => {
     const currentPath = location.pathname;
     const matchingRoute = parseRoutes.find((route) =>
-      currentPath.startsWith(`/${route.route}`)
+      currentPath.startsWith(`/${route.route}`),
     );
     return matchingRoute ? { id: 1, name: matchingRoute.name } : defaultFeature;
   });
@@ -60,7 +60,7 @@ function SideNav({}: Props) {
       </Heading>
       <Divider
         my={4}
-        borderColor={useColorModeValue("green.600", "green.600")}
+        borderColor={useColorModeValue("green.700", "green.400")}
       />
 
       {loadingFeatures ? (
