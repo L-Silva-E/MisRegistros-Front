@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -17,6 +18,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -29,22 +31,26 @@ import {
   Spacer,
   Table,
   TableContainer,
+  Tag,
   Tbody,
   Td,
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { FaPencilAlt, FaTrash } from "react-icons/fa";
+
+import { FaPenToSquare, FaTrash } from "react-icons/fa6";
 
 import useAxios from "../../../shared/hooks/axiosFetch";
 
 import { API_BASE_URL } from "../../../shared/constants/environment";
 import { HTTP_METHODS } from "../../../shared/constants/httpMethods";
+import { FaArrowLeft, FaPlus } from "react-icons/fa6";
 
 const MESSAGES = {
   ERROR: {
@@ -275,8 +281,8 @@ const DataTable = React.memo<{
         {type === "ingredient"
           ? MESSAGES.LOADING.INGREDIENTS
           : type === "category"
-          ? MESSAGES.LOADING.CATEGORIES
-          : MESSAGES.LOADING.ORIGINS}
+            ? MESSAGES.LOADING.CATEGORIES
+            : MESSAGES.LOADING.ORIGINS}
       </Text>
     );
   }
@@ -287,8 +293,8 @@ const DataTable = React.memo<{
         {type === "ingredient"
           ? MESSAGES.NOT_FOUND.INGREDIENTS
           : type === "category"
-          ? MESSAGES.NOT_FOUND.CATEGORIES
-          : MESSAGES.NOT_FOUND.ORIGINS}
+            ? MESSAGES.NOT_FOUND.CATEGORIES
+            : MESSAGES.NOT_FOUND.ORIGINS}
       </Text>
     );
   }
@@ -311,11 +317,14 @@ const DataTable = React.memo<{
           <Tr>
             <Th>Nombre</Th>
             {type === "ingredient" && (
-              <Th width="100px" textAlign="center">
+              <Th width="50px" fontSize={10} textAlign="center">
                 Unidad
               </Th>
             )}
-            <Th width="100px" textAlign="center">
+            <Th width="50px" textAlign="center">
+              Usos
+            </Th>
+            <Th width="50px" textAlign="center">
               Acción
             </Th>
           </Tr>
@@ -346,8 +355,6 @@ const TableRow = React.memo<{
   loadingCrud: boolean;
   iconColor: string;
 }>(({ item, type, onEdit, onDelete, loadingCrud, iconColor }) => {
-  const countTextColor = useColorModeValue("gray.500", "gray.400");
-
   const handleEdit = useCallback(() => {
     onEdit(item, type);
   }, [item, type, onEdit]);
@@ -360,31 +367,20 @@ const TableRow = React.memo<{
 
   return (
     <Tr>
-      <Td>
-        {item.name}{" "}
-        <Text
-          as="sub"
-          sx={{
-            color: countTextColor + " !important",
-            fontSize: "xs",
-          }}
-          fontWeight="normal"
-        >
-          ({usageCount})
-        </Text>
-      </Td>
+      <Td>{item.name}</Td>
       {type === "ingredient" && "unit" in item && (
         <Td textAlign="center">{item.unit}</Td>
       )}
+      <Td textAlign="center">{usageCount}</Td>
       <Td>
-        <Flex gap={2} justifyContent="right">
+        <Flex gap={2} justifyContent="center">
           <Button
             variant="editButton"
             size="sm"
             height="25px"
             onClick={handleEdit}
           >
-            <FaPencilAlt color={iconColor} />
+            <FaPenToSquare color={iconColor} />
           </Button>
           <Button
             variant="deleteButton"
@@ -402,6 +398,8 @@ const TableRow = React.memo<{
 });
 
 const RecipeMetaPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [origins, setOrigins] = useState<Origin[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -409,8 +407,6 @@ const RecipeMetaPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentItem, setCurrentItem] = useState<MetaDataItem | null>(null);
   const [currentType, setCurrentType] = useState<MetaDataType>("category");
-
-  const countTextColor = useColorModeValue("gray.500", "gray.400");
 
   const [itemUnit, setItemUnit] = useState("");
   const availableUnits = [
@@ -495,7 +491,7 @@ const RecipeMetaPage: React.FC = () => {
 
       onOpen();
     },
-    [onOpen]
+    [onOpen],
   );
 
   const handleEdit = useCallback(
@@ -511,7 +507,7 @@ const RecipeMetaPage: React.FC = () => {
 
       onOpen();
     },
-    [onOpen]
+    [onOpen],
   );
 
   const handleDelete = useCallback(
@@ -520,8 +516,8 @@ const RecipeMetaPage: React.FC = () => {
         type === "category"
           ? "category"
           : type === "origin"
-          ? "origin"
-          : "ingredient";
+            ? "origin"
+            : "ingredient";
 
       let itemName = "";
       if (type === "category") {
@@ -536,10 +532,10 @@ const RecipeMetaPage: React.FC = () => {
 
       await performCrudOperation(
         HTTP_METHODS.DELETE,
-        `${API_BASE_URL}/${endpoint}/${id}`
+        `${API_BASE_URL}/${endpoint}/${id}`,
       );
     },
-    [performCrudOperation, categories, origins, ingredients]
+    [performCrudOperation, categories, origins, ingredients],
   );
 
   const handleSave = async () => {
@@ -558,8 +554,8 @@ const RecipeMetaPage: React.FC = () => {
       currentType === "category"
         ? "category"
         : currentType === "origin"
-        ? "origin"
-        : "ingredient";
+          ? "origin"
+          : "ingredient";
     const method = isEditing ? HTTP_METHODS.PATCH : HTTP_METHODS.POST;
     const url = isEditing
       ? `${API_BASE_URL}/${endpoint}/${currentItem?.id}`
@@ -579,9 +575,20 @@ const RecipeMetaPage: React.FC = () => {
 
   return (
     <Box height="100%">
-      <Heading mb={4} size="lg">
-        Administrar
-      </Heading>
+      <Flex mb={4} justify="space-between" align="center">
+        <Heading size="lg">Administrar listas</Heading>
+
+        <Tooltip
+          openDelay={500}
+          label="Volver al recetario"
+          hasArrow
+          placement="top"
+        >
+          <Button onClick={() => navigate("/recipes")} variant="redButton">
+            <FaArrowLeft />
+          </Button>
+        </Tooltip>
+      </Flex>
 
       <Grid templateColumns="repeat(3, 1fr)" gap={6} height="calc(100% - 60px)">
         {/* Ingredientes */}
@@ -592,23 +599,24 @@ const RecipeMetaPage: React.FC = () => {
                 <Heading size="md" mx={2}>
                   Ingredientes
                 </Heading>
-                <Text
-                  as="sub"
-                  sx={{
-                    color: countTextColor + " !important",
-                    fontSize: "sm",
-                  }}
-                >
-                  ({ingredients.length})
-                </Text>
+                <Tag>{ingredients.length}</Tag>
                 <Spacer />
-                <Button
-                  variant="greenButton"
-                  onClick={() => handleAddNew("ingredient")}
-                  isLoading={loadingMetadata}
+                <Tooltip
+                  openDelay={500}
+                  hasArrow
+                  placement="top"
+                  label="Crear ingrediente"
+                  aria-label="Create Ingredient"
                 >
-                  Agregar
-                </Button>
+                  <IconButton
+                    px={4}
+                    aria-label="Create Ingredient"
+                    icon={<FaPlus />}
+                    variant="greenButton"
+                    onClick={() => handleAddNew("ingredient")}
+                    isLoading={loadingMetadata}
+                  />
+                </Tooltip>
               </Flex>
             </CardHeader>
             <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
@@ -632,23 +640,24 @@ const RecipeMetaPage: React.FC = () => {
                 <Heading size="md" mx={2}>
                   Categorías
                 </Heading>
-                <Text
-                  as="sub"
-                  sx={{
-                    color: countTextColor + " !important",
-                    fontSize: "sm",
-                  }}
-                >
-                  ({categories.length})
-                </Text>
+                <Tag>{categories.length}</Tag>
                 <Spacer />
-                <Button
-                  variant="greenButton"
-                  onClick={() => handleAddNew("category")}
-                  isLoading={loadingMetadata}
+                <Tooltip
+                  openDelay={500}
+                  hasArrow
+                  placement="top"
+                  label="Crear categoría"
+                  aria-label="Create Category"
                 >
-                  Agregar
-                </Button>
+                  <IconButton
+                    px={4}
+                    aria-label="Create Category"
+                    icon={<FaPlus />}
+                    variant="greenButton"
+                    onClick={() => handleAddNew("category")}
+                    isLoading={loadingMetadata}
+                  />
+                </Tooltip>
               </Flex>
             </CardHeader>
             <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
@@ -672,23 +681,24 @@ const RecipeMetaPage: React.FC = () => {
                 <Heading size="md" mx={2}>
                   Orígen
                 </Heading>
-                <Text
-                  as="sub"
-                  sx={{
-                    color: countTextColor + " !important",
-                    fontSize: "sm",
-                  }}
-                >
-                  ({origins.length})
-                </Text>
+                <Tag>{origins.length}</Tag>
                 <Spacer />
-                <Button
-                  variant="greenButton"
-                  onClick={() => handleAddNew("origin")}
-                  isLoading={loadingMetadata}
+                <Tooltip
+                  openDelay={500}
+                  hasArrow
+                  placement="top"
+                  label="Crear origen"
+                  aria-label="Create Origin"
                 >
-                  Agregar
-                </Button>
+                  <IconButton
+                    px={4}
+                    aria-label="Create Origin"
+                    icon={<FaPlus />}
+                    variant="greenButton"
+                    onClick={() => handleAddNew("origin")}
+                    isLoading={loadingMetadata}
+                  />
+                </Tooltip>
               </Flex>
             </CardHeader>
             <CardBody overflowY="auto" height="calc(100% - 60px)" px={2}>
@@ -738,15 +748,16 @@ const RecipeMetaPage: React.FC = () => {
             )}
           </ModalBody>
           <ModalFooter>
-            <Button variant="redButton" mr={3} onClick={onClose}>
-              Cancelar
-            </Button>
             <Button
+              mr={3}
               variant="greenButton"
               onClick={handleSave}
               isLoading={loadingSave}
             >
               Guardar
+            </Button>
+            <Button variant="redButton" onClick={onClose}>
+              Cancelar
             </Button>
           </ModalFooter>
         </ModalContent>
