@@ -8,7 +8,7 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
-import { FaImage, FaExclamationTriangle } from "react-icons/fa";
+import { FaImage, FaTriangleExclamation } from "react-icons/fa6";
 
 import { RecipeImageProps } from "./types";
 
@@ -70,7 +70,7 @@ const RecipeImage = ({
     >
       <VStack spacing={2}>
         <Icon
-          as={hasError ? FaExclamationTriangle : FaImage}
+          as={hasError ? FaTriangleExclamation : FaImage}
           boxSize={8}
           color={hasError ? "red.400" : fallbackColor}
         />

@@ -9,7 +9,7 @@ import {
   Checkbox,
   HStack,
 } from "@chakra-ui/react";
-import { FaCheckSquare } from "react-icons/fa";
+import { FaSquareCheck } from "react-icons/fa6";
 
 import { IngredientsTableProps } from "./types";
 
@@ -31,7 +31,7 @@ const IngredientsTable = ({
             {interactive && (
               <Th width={12}>
                 <HStack justify="center">
-                  <FaCheckSquare />
+                  <FaSquareCheck />
                 </HStack>
               </Th>
             )}

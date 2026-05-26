@@ -10,7 +10,7 @@ import {
   VStack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaImage, FaTrash, FaUndo, FaUpload } from "react-icons/fa";
+import { FaImage, FaTrash, FaRotateLeft, FaUpload } from "react-icons/fa6";
 
 import { ImageUploadProps } from "./types";
 
@@ -121,7 +121,7 @@ const ImageUpload = ({
             {showUndo && (
               <Button
                 size="sm"
-                leftIcon={<Icon as={FaUndo} />}
+                leftIcon={<Icon as={FaRotateLeft} />}
                 onClick={handleUndo}
                 colorScheme="red"
                 variant="solid"
@@ -169,7 +169,7 @@ const ImageUpload = ({
           {isCleared && existingUrl && (
             <Button
               size="sm"
-              leftIcon={<Icon as={FaUndo} />}
+              leftIcon={<Icon as={FaRotateLeft} />}
               onClick={() => setIsCleared(false)}
               colorScheme="gray"
               variant="outline"
