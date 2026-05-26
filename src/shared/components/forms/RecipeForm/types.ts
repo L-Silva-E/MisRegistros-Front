@@ -1,3 +1,4 @@
+import React from "react";
 import {
   UseFormRegister,
   FieldErrors,
@@ -52,7 +53,8 @@ export interface RecipeFormProps {
 }
 
 export interface RecipeFormButtonsProps {
-  submitButtonText?: string;
+  submitIcon?: React.ReactNode;
+  submitTooltip?: string;
   cancelAction?: () => void;
   isLoading?: boolean;
   formId?: string;

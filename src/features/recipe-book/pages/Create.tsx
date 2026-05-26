@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Box, Heading, Flex, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { FaFloppyDisk } from "react-icons/fa6";
 
 import {
   RecipeForm,
@@ -180,9 +181,8 @@ const CreateRecipePage = () => {
       <Flex justify="space-between" align="center" mb={6}>
         <Heading size="lg">{pageTitle}</Heading>
         <RecipeFormButtons
-          submitButtonText={
-            location.state?.isDuplicate ? "Guardar Copia" : "Guardar Receta"
-          }
+          submitIcon={<FaFloppyDisk />}
+          submitTooltip={location.state?.isDuplicate ? "Guardar copia" : "Guardar receta"}
           cancelAction={() => navigate("/recipes")}
         />
       </Flex>
