@@ -193,7 +193,6 @@ const SearchFilters = memo(
           variant={sortBy === "" ? "" : "selected"}
           onChange={(e) => onSortChange(e.target.value)}
         >
-          <option value="id">Id</option>
           <option value="name">Nombre</option>
           <option value="score">Mejor Valoradas</option>
           <option value="createdAt">Fecha Creación</option>
