@@ -15,6 +15,7 @@ import {
   SkeletonCircle,
   Text,
   VStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FiCalendar, FiClock, FiMail } from "react-icons/fi";
 
@@ -63,7 +64,9 @@ function ProfileModal({ isOpen, onClose }: Props) {
               </Flex>
               <Skeleton height="24px" mx="auto" w="40%" />
               <Skeleton height="16px" mx="auto" w="20%" />
-              <Divider />
+              <Divider
+                borderColor={useColorModeValue("green.700", "green.400")}
+              />
               <Skeleton height="16px" />
               <Skeleton height="16px" />
               <Skeleton height="16px" />
@@ -87,7 +90,9 @@ function ProfileModal({ isOpen, onClose }: Props) {
                 </Badge>
               </VStack>
 
-              <Divider />
+              <Divider
+                borderColor={useColorModeValue("green.700", "green.400")}
+              />
 
               <VStack spacing={3} align="stretch">
                 <HStack spacing={3}>
