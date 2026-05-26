@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { useForm } from "react-hook-form";
 import {
+  Box,
   HStack,
   Input,
   InputGroup,
@@ -11,12 +12,12 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import {
-  FaSearch,
-  FaSortAlphaDown,
-  FaSortAlphaDownAlt,
-  FaTimes,
+  FaMagnifyingGlass,
+  FaArrowDownAZ,
+  FaArrowDownZA,
+  FaXmark,
   FaUser,
-} from "react-icons/fa";
+} from "react-icons/fa6";
 
 import { Category, Origin } from "../../types";
 import { SearchForm } from "../../../../shared/types/searchForm";
@@ -99,7 +100,7 @@ const SearchFilters = memo(
     };
 
     return (
-      <HStack mt="4" mb="8" gap="25px">
+      <HStack mb={8} gap={6}>
         <form onSubmit={handleSubmit(handleSearchSubmit)}>
           <InputGroup
             _hover={{
@@ -121,7 +122,16 @@ const SearchFilters = memo(
               cursor="pointer"
               onClick={handleIconClick}
             >
-              <FaSearch />
+              <Tooltip
+                openDelay={500}
+                label="Buscar receta"
+                hasArrow
+                placement="top"
+              >
+                <Box display="flex">
+                  <FaMagnifyingGlass />
+                </Box>
+              </Tooltip>
             </InputLeftElement>
             <Input
               type="text"
@@ -190,6 +200,7 @@ const SearchFilters = memo(
         </Select>
 
         <Tooltip
+          openDelay={500}
           hasArrow
           placement="top"
           label={sortDirection === "asc" ? "Ascendente" : "Descendente"}
@@ -211,12 +222,12 @@ const SearchFilters = memo(
             borderWidth={2}
             icon={
               sortDirection === "asc" ? (
-                <FaSortAlphaDown
+                <FaArrowDownAZ
                   size={24}
                   color={useColorModeValue("#48BB78", "#38A169")}
                 />
               ) : (
-                <FaSortAlphaDownAlt
+                <FaArrowDownZA
                   size={24}
                   color={useColorModeValue("#2F855A", "#9AE6B4")}
                 />
@@ -230,9 +241,12 @@ const SearchFilters = memo(
         </Tooltip>
 
         <Tooltip
+          openDelay={500}
           hasArrow
           placement="top"
-          label="Mostrar solo mis recetas"
+          label={
+            onlyMine ? "Mostrar todas las recetas" : "Mostrar solo mis recetas"
+          }
           aria-label="My recipes tooltip"
         >
           <IconButton
@@ -264,6 +278,7 @@ const SearchFilters = memo(
         </Tooltip>
 
         <Tooltip
+          openDelay={500}
           hasArrow
           placement="top"
           label="Limpiar filtros"
@@ -271,7 +286,7 @@ const SearchFilters = memo(
         >
           <IconButton
             aria-label="Clean filters"
-            icon={<FaTimes size={16} />}
+            icon={<FaXmark size={16} />}
             variant="deleteButtonOutline"
             isDisabled={!hasActiveFilters}
             onClick={handleClearFilters}

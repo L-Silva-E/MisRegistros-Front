@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { HStack, Button } from "@chakra-ui/react";
-import { FaCog, FaPlusSquare } from "react-icons/fa";
+import { HStack, IconButton, Tooltip } from "@chakra-ui/react";
+import { FaGear, FaPlus } from "react-icons/fa6";
 
 interface ActionButtonsProps {
   onNavigateToMeta: () => void;
@@ -10,26 +10,41 @@ interface ActionButtonsProps {
 const ActionButtons = memo(
   ({ onNavigateToMeta, onOpenRecipeCreate }: ActionButtonsProps) => {
     return (
-      <HStack mt={4} mb={8} gap={4}>
-        <Button
-          leftIcon={<FaCog />}
-          onClick={onNavigateToMeta}
-          variant="greenButton"
+      <HStack mb={8} gap={4}>
+        <Tooltip
+          openDelay={500}
+          hasArrow
+          placement="top"
+          label="Crear receta"
+          aria-label="Create Recipe"
         >
-          Administrar
-        </Button>
+          <IconButton
+            px={4}
+            aria-label="Create Recipe"
+            icon={<FaPlus />}
+            variant="greenButton"
+            onClick={onOpenRecipeCreate}
+          />
+        </Tooltip>
 
-        <Button
-          leftIcon={<FaPlusSquare />}
-          variant="greenButton"
-          ml="2"
-          onClick={onOpenRecipeCreate}
+        <Tooltip
+          openDelay={500}
+          hasArrow
+          placement="top"
+          label="Administrar listas"
+          aria-label="Manage Lists"
         >
-          Crear Receta
-        </Button>
+          <IconButton
+            px={4}
+            aria-label="Manage Lists"
+            icon={<FaGear />}
+            onClick={onNavigateToMeta}
+            variant="greenButton"
+          />
+        </Tooltip>
       </HStack>
     );
-  }
+  },
 );
 
 ActionButtons.displayName = "ActionButtons";

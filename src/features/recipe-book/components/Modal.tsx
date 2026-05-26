@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -7,10 +7,17 @@ import {
   ModalFooter,
   ModalOverlay,
   Spacer,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaCopy, FaPencilAlt, FaThumbtack, FaTrash } from "react-icons/fa";
+import {
+  FaCopy,
+  FaPenToSquare,
+  FaThumbtack,
+  FaXmark,
+  FaTrash,
+} from "react-icons/fa6";
 
 import RecipeModalSkeleton from "./ModalSkeleton";
 import RecipeModalContent from "./ModalContent";
@@ -39,6 +46,7 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   } = useDisclosure();
 
   const [isUnlocked, setIsUnlocked] = useState(true);
+  const initialFocusRef = useRef<HTMLSpanElement>(null);
 
   const iconColor = useColorModeValue("#1A202C", "white");
   const pinUnlockedBg = useColorModeValue("gray.300", "#3C4658");
@@ -71,6 +79,7 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
         closeOnOverlayClick={isUnlocked}
         isOpen={isOpen}
         onClose={onClose}
+        initialFocusRef={initialFocusRef}
       >
         <ModalOverlay />
         <ModalContent>
@@ -79,57 +88,95 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
           ) : (
             data && <RecipeModalContent data={data} />
           )}
-          <ModalFooter mt={4}>
+          <span
+            ref={initialFocusRef}
+            tabIndex={-1}
+            style={{ outline: "none" }}
+          />
+          <ModalFooter
+            backgroundColor={useColorModeValue("gray.200", "#232B3A")}
+          >
             {canManage && (
-              <Button
-                isDisabled={!isUnlocked}
-                variant="deleteButton"
-                onClick={onOpenDeleteConfirmation}
+              <Tooltip
+                openDelay={500}
+                label="Eliminar receta"
+                hasArrow
+                placement="top"
               >
-                <FaTrash color={iconColor} />
-              </Button>
+                <Button
+                  isDisabled={!isUnlocked}
+                  variant="deleteButton"
+                  onClick={onOpenDeleteConfirmation}
+                >
+                  <FaTrash color={iconColor} />
+                </Button>
+              </Tooltip>
             )}
 
             <Spacer />
 
-            <Button
-              isDisabled={isDuplicating}
-              variant="copyButton"
-              onClick={handleDuplicate}
-              isLoading={isDuplicating}
+            <Tooltip
+              openDelay={500}
+              label="Duplicar receta"
+              hasArrow
+              placement="top"
             >
-              <FaCopy color={iconColor} />
-            </Button>
+              <Button
+                // isDisabled={!isUnlocked} // TODO: Enable with fix
+                isDisabled={true}
+                variant="copyButton"
+                onClick={handleDuplicate}
+                isLoading={isDuplicating}
+              >
+                <FaCopy color={iconColor} />
+              </Button>
+            </Tooltip>
 
             {canManage && (
+              <Tooltip
+                openDelay={500}
+                label="Editar receta"
+                hasArrow
+                placement="top"
+              >
+                <Button
+                  ml={4}
+                  isDisabled={!isUnlocked}
+                  variant="editButton"
+                  onClick={handleEdit}
+                >
+                  <FaPenToSquare color={iconColor} />
+                </Button>
+              </Tooltip>
+            )}
+
+            {canManage && (
+              <Tooltip
+                openDelay={500}
+                label={isUnlocked ? "Fijar tarjeta" : "Liberar tarjeta"}
+                hasArrow
+                placement="top"
+              >
+                <Button
+                  mx={4}
+                  backgroundColor={isUnlocked ? pinUnlockedBg : pinLockedBg}
+                  _hover={isUnlocked ? pinUnlockedHover : pinLockedHover}
+                  onClick={() => setIsUnlocked(!isUnlocked)}
+                >
+                  <FaThumbtack size={16} color={iconColor} />
+                </Button>
+              </Tooltip>
+            )}
+
+            <Tooltip openDelay={500} label="Cerrar" hasArrow placement="top">
               <Button
-                ml={4}
                 isDisabled={!isUnlocked}
-                variant="editButton"
-                onClick={handleEdit}
+                onClick={onClose}
+                variant="redButton"
               >
-                <FaPencilAlt color={iconColor} />
+                <FaXmark size={16} color={iconColor} />
               </Button>
-            )}
-
-            {canManage && (
-              <Button
-                mx={4}
-                backgroundColor={isUnlocked ? pinUnlockedBg : pinLockedBg}
-                _hover={isUnlocked ? pinUnlockedHover : pinLockedHover}
-                onClick={() => setIsUnlocked(!isUnlocked)}
-              >
-                <FaThumbtack size={16} color={iconColor} />
-              </Button>
-            )}
-
-            <Button
-              isDisabled={!isUnlocked}
-              onClick={onClose}
-              variant="greenButton"
-            >
-              Cerrar
-            </Button>
+            </Tooltip>
           </ModalFooter>
         </ModalContent>
       </Modal>

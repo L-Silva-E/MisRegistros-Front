@@ -8,9 +8,12 @@ import {
   GridItem,
   Heading,
   Text,
+  Tooltip,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
+
+import { FaArrowLeft } from "react-icons/fa6";
 
 import useAxios from "../../../shared/hooks/axiosFetch";
 
@@ -37,7 +40,7 @@ const ViewRecipePage = () => {
   const recipeTags = useRecipeTags(recipe!);
 
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const toggleIngredient = (ingredientId: string) => {
@@ -70,6 +73,22 @@ const ViewRecipePage = () => {
 
   return (
     <Box>
+      <Flex justify="flex-end">
+        <Tooltip
+          openDelay={500}
+          label="Volver al recetario"
+          hasArrow
+          placement="top"
+        >
+          <Button
+            px={4}
+            onClick={() => navigate("/recipes")}
+            variant="redButton"
+          >
+            <FaArrowLeft />
+          </Button>
+        </Tooltip>
+      </Flex>
       <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <GridItem>
           <VStack align="stretch" spacing={4}>
@@ -111,16 +130,6 @@ const ViewRecipePage = () => {
           />
         </GridItem>
       </Grid>
-
-      <Flex justify="flex-end">
-        <Button
-          mt={6}
-          onClick={() => navigate("/recipes")}
-          variant="greenButton"
-        >
-          Volver
-        </Button>
-      </Flex>
     </Box>
   );
 };
