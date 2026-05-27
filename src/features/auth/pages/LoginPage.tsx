@@ -46,7 +46,10 @@ const LoginPage = () => {
         description: state.successToast.description,
         status: "success",
       });
-      navigate(location.pathname, { replace: true, state: { from: state.from } });
+      navigate(location.pathname, {
+        replace: true,
+        state: { from: state.from },
+      });
     }
   }, []);
 
@@ -128,7 +131,7 @@ const LoginPage = () => {
                 <Button
                   type="submit"
                   w="full"
-                  colorScheme="green"
+                  variant="greenButton"
                   isLoading={isSubmitting}
                 >
                   Iniciar sesión
@@ -138,16 +141,11 @@ const LoginPage = () => {
             <VStack spacing={1}>
               <Text fontSize="sm">
                 ¿No tienes cuenta?{" "}
-                <Link as={RouterLink} to="/register" color="green.400">
+                <Link as={RouterLink} to="/register" variant="loginFlow">
                   Regístrate
                 </Link>
               </Text>
-              <Link
-                as={RouterLink}
-                to="/forgot-password"
-                color="gray.400"
-                fontSize="sm"
-              >
+              <Link as={RouterLink} to="/forgot-password" variant="loginFlow">
                 ¿Olvidaste tu contraseña?
               </Link>
             </VStack>

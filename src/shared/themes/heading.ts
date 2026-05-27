@@ -1,8 +1,8 @@
 const HeadingTheme = {
   baseStyle: {
-    color: "green.900",
+    color: "gray.800",
     _dark: {
-      color: "green.100",
+      color: "gray.200",
     },
   },
 };

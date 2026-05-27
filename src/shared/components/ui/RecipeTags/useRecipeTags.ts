@@ -1,10 +1,10 @@
 import {
   FaStar,
   FaUtensils,
-  FaGlobeAmericas,
+  FaEarthAmericas,
   FaClock,
   FaUsers,
-} from "react-icons/fa";
+} from "react-icons/fa6";
 import { TagData } from "./types";
 import { Recipe } from "../../../../features/recipe-book/types";
 import { setTimeText } from "../../../../features/recipe-book/utils/setTimeText";
@@ -30,7 +30,7 @@ export const useRecipeTags = (recipe: Recipe): TagData[] => {
     },
     {
       label: recipe.origin?.name || "Sin origen",
-      icon: FaGlobeAmericas,
+      icon: FaEarthAmericas,
       colorScheme: "gray",
       iconSize: "16px",
     },

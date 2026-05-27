@@ -1,11 +1,11 @@
 const LinkTheme = {
   baseStyle: {
-    color: "green.700",
+    color: "gray.800",
     _hover: {
       textDecoration: "none",
     },
     _dark: {
-      color: "green.200",
+      color: "gray.200",
       _hover: {
         textDecoration: "none",
       },
@@ -20,6 +20,22 @@ const LinkTheme = {
         backgroundColor: "green.600",
         color: "green.50",
         fontWeight: "bold",
+      },
+    },
+    loginFlow: {
+      color: "green.400",
+      fontSize: "sm",
+      fontWeight: "bold",
+      _hover: {
+        textDecoration: "underline",
+      },
+      _dark: {
+        color: "green.400",
+        fontSize: "sm",
+        fontWeight: "bold",
+        _hover: {
+          textDecoration: "underline",
+        },
       },
     },
   },

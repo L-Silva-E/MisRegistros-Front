@@ -50,8 +50,10 @@ const ForgotPasswordPage = () => {
       if (!response.ok) {
         const err = await response.json();
         const description = err.validations
-          ? err.validations.map((v: { message: string }) => v.message).join(", ")
-          : err.details ?? "Error al procesar la solicitud";
+          ? err.validations
+              .map((v: { message: string }) => v.message)
+              .join(", ")
+          : (err.details ?? "Error al procesar la solicitud");
         throw new Error(description);
       }
 
@@ -89,18 +91,22 @@ const ForgotPasswordPage = () => {
                   Si existe una cuenta con ese email, recibirás un link para
                   restablecer tu contraseña en los próximos minutos.
                 </Text>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSubmitted(false)}
-                >
-                  ¿No recibiste el correo? Intentar de nuevo
-                </Button>
+                <Text fontSize="sm">
+                  ¿No recibiste el correo?{" "}
+                  <Link
+                    as={RouterLink}
+                    to="/login"
+                    variant="loginFlow"
+                    onClick={() => setSubmitted(false)}
+                  >
+                    Intentar de nuevo
+                  </Link>
+                </Text>
               </>
             ) : (
               <>
                 <Heading size="lg">Recuperar contraseña</Heading>
-                <Text fontSize="sm" color="gray.400" textAlign="center">
+                <Text fontSize="sm" color="gray.600" textAlign="center">
                   Ingresa tu email y te enviaremos un link para recuperar tu
                   contraseña.
                 </Text>
@@ -122,7 +128,7 @@ const ForgotPasswordPage = () => {
                     <Button
                       type="submit"
                       w="full"
-                      colorScheme="green"
+                      variant={"greenButton"}
                       isLoading={isSubmitting}
                     >
                       Enviar link de recuperación
@@ -132,7 +138,7 @@ const ForgotPasswordPage = () => {
               </>
             )}
 
-            <Link as={RouterLink} to="/login" color="green.400" fontSize="sm">
+            <Link as={RouterLink} to="/login" variant="loginFlow">
               Volver al inicio de sesión
             </Link>
           </VStack>

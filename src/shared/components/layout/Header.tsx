@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Divider,
   Flex,
   HStack,
   Heading,
@@ -16,12 +17,12 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FiLogOut, FiUser } from "react-icons/fi";
 import ColorModeToggle from "../ui/ColorModeToggle/ColorModeToggle";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../features/auth/hooks/useAuth";
 import ProfileModal from "../../../features/auth/components/ProfileModal";
+import { FaArrowRightFromBracket, FaUser } from "react-icons/fa6";
 
 function Header() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -66,44 +67,53 @@ function Header() {
         <HStack align="center" gap="16px" mr="4">
           <ColorModeToggle />
           {isAuthenticated && user && (
-            <Menu>
-              <MenuButton>
-                <Avatar
-                  src={user.avatar ?? undefined}
-                  name={user.username}
-                  backgroundColor="green.800"
-                  color="green.50"
-                  size="sm"
-                  cursor="pointer"
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  isDisabled
-                  _disabled={{ opacity: 1, cursor: "default" }}
-                >
-                  <VStack align="start" spacing={0}>
-                    <Text fontWeight="semibold" fontSize="sm">
-                      {user.username}
-                    </Text>
-                    <Text fontSize="xs" color="gray.400">
-                      {user.email}
-                    </Text>
-                  </VStack>
-                </MenuItem>
-                <MenuDivider />
-                <MenuItem icon={<FiUser />} onClick={onOpen}>
-                  Mi perfil
-                </MenuItem>
-                <MenuItem
-                  icon={<FiLogOut />}
-                  onClick={handleLogout}
-                  color="red.400"
-                >
-                  Cerrar sesión
-                </MenuItem>
-              </MenuList>
-            </Menu>
+            <>
+              <Divider
+                borderColor={useColorModeValue("green.700", "green.400")}
+                orientation="vertical"
+                height="32px"
+              />
+              <Menu>
+                <MenuButton>
+                  <Avatar
+                    src={user.avatar ?? undefined}
+                    name={user.username}
+                    backgroundColor="green.800"
+                    color="green.50"
+                    size="md"
+                    cursor="pointer"
+                  />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    isDisabled
+                    _disabled={{ opacity: 1, cursor: "default" }}
+                  >
+                    <VStack align="start" spacing={0}>
+                      <Text fontWeight="semibold" fontSize="sm">
+                        {user.username}
+                      </Text>
+                      <Text fontSize="xs" color="gray.400">
+                        {user.email}
+                      </Text>
+                    </VStack>
+                  </MenuItem>
+                  <MenuDivider
+                    borderColor={useColorModeValue("gray.300", "gray.500")}
+                  />
+                  <MenuItem icon={<FaUser />} onClick={onOpen}>
+                    Mi perfil
+                  </MenuItem>
+                  <MenuItem
+                    icon={<FaArrowRightFromBracket />}
+                    onClick={handleLogout}
+                    color="red.400"
+                  >
+                    Cerrar sesión
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </>
           )}
         </HStack>
       </Flex>

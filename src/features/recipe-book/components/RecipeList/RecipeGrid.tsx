@@ -22,7 +22,7 @@ const RecipeGrid = memo(
           recipes?.map((recipe) => (
             <Box
               key={recipe.id}
-              onDoubleClick={() => onRecipeClick(recipe)}
+              onClick={() => onRecipeClick(recipe)}
               cursor="pointer"
               transition="transform 0.2s"
               _hover={{ transform: "scale(1.02)" }}

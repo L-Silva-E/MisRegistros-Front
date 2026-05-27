@@ -6,8 +6,8 @@ import {
   CardFooter,
   Flex,
   Heading,
-  HStack,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { FaKitchenSet } from "react-icons/fa6";
 
@@ -43,15 +43,19 @@ function RecipeCard({ recipe }: Props) {
       </CardBody>
       <CardFooter pt="0">
         <Flex width="100%" justifyContent="space-between" alignItems="center">
-          <Button
-            variant="greenButton"
-            onClick={() => navigate(`/recipes/${recipe.id}`)}
+          <Tooltip
+            openDelay={500}
+            label="Preparar receta"
+            hasArrow
+            placement="top"
           >
-            <HStack spacing={2}>
+            <Button
+              variant="greenButton"
+              onClick={() => navigate(`/recipes/${recipe.id}`)}
+            >
               <FaKitchenSet size={20} />
-              <Text variant="buttonText">Preparar</Text>
-            </HStack>
-          </Button>
+            </Button>
+          </Tooltip>
 
           <RecipeTags tags={cardTags} size="md" />
         </Flex>

@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { FaArrowsRotate } from "react-icons/fa6";
 import { useEffect } from "react";
 import {
   Box,
@@ -53,8 +54,8 @@ const UpdateRecipePage = () => {
         (formData.ingredients ?? []).map((ingredient) => ({
           id: parseInt(ingredient.id),
           quantity: parseFloat(ingredient.quantity),
-        }))
-      )
+        })),
+      ),
     );
     body.append(
       "steps",
@@ -65,8 +66,8 @@ const UpdateRecipePage = () => {
           .map((step: string, index: number) => ({
             number: index + 1,
             instruction: step,
-          }))
-      )
+          })),
+      ),
     );
 
     if (formData.thumbnailFile) {
@@ -77,7 +78,7 @@ const UpdateRecipePage = () => {
       await updateRecipe(
         HTTP_METHODS.PATCH,
         `${API_BASE_URL}/recipe/${id}`,
-        body
+        body,
       );
 
       toast({
@@ -95,7 +96,9 @@ const UpdateRecipePage = () => {
       toast({
         position: "top",
         title: "Error",
-        description: apiMessage ?? "Hubo un error al actualizar la receta. Inténtalo de nuevo.",
+        description:
+          apiMessage ??
+          "Hubo un error al actualizar la receta. Inténtalo de nuevo.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -128,7 +131,8 @@ const UpdateRecipePage = () => {
       <Flex justify="space-between" align="center" mb={6}>
         <Heading size="lg">Editar Receta</Heading>
         <RecipeFormButtons
-          submitButtonText="Actualizar Receta"
+          submitIcon={<FaArrowsRotate />}
+          submitTooltip="Actualizar receta"
           cancelAction={handleCancel}
           isLoading={isUpdating}
         />

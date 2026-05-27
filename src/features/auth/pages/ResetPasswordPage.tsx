@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSearchParams, useNavigate, Link as RouterLink } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  Link as RouterLink,
+} from "react-router-dom";
 import {
   Box,
   Button,
@@ -101,7 +105,12 @@ const ResetPasswordPage = () => {
       <Text fontSize="sm" color="red.400" textAlign="center">
         {message}
       </Text>
-      <Link as={RouterLink} to="/forgot-password" color="green.400" fontSize="sm">
+      <Link
+        as={RouterLink}
+        to="/forgot-password"
+        color="green.400"
+        fontSize="sm"
+      >
         Solicitar un nuevo correo
       </Link>
     </VStack>
@@ -167,7 +176,7 @@ const ResetPasswordPage = () => {
                     <Button
                       type="submit"
                       w="full"
-                      colorScheme="green"
+                      variant="greenButton"
                       isLoading={isSubmitting}
                     >
                       Restablecer contraseña
@@ -177,7 +186,7 @@ const ResetPasswordPage = () => {
               </>
             )}
 
-            <Link as={RouterLink} to="/login" color="green.400" fontSize="sm">
+            <Link as={RouterLink} to="/login" variant="loginFlow">
               Volver al inicio de sesión
             </Link>
           </VStack>

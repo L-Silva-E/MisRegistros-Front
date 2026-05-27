@@ -1,8 +1,8 @@
 const TextTheme = {
   baseStyle: {
-    color: "green.800",
+    color: "gray.800",
     _dark: {
-      color: "green.200",
+      color: "gray.200",
     },
   },
   variants: {
