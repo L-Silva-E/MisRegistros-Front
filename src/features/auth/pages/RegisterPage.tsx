@@ -48,7 +48,9 @@ const RegisterPage = () => {
       if (!response.ok) {
         const err = await response.json();
         const description = err.validations
-          ? err.validations.map((v: { message: string }) => v.message).join(", ")
+          ? err.validations
+              .map((v: { message: string }) => v.message)
+              .join(", ")
           : (err.details ?? "Error al registrar usuario");
         throw new Error(description);
       }
@@ -127,7 +129,7 @@ const RegisterPage = () => {
                 <Button
                   type="submit"
                   w="full"
-                  colorScheme="green"
+                  variant="greenButton"
                   isLoading={isSubmitting}
                 >
                   Crear cuenta
@@ -136,7 +138,7 @@ const RegisterPage = () => {
             </Box>
             <Text fontSize="sm">
               ¿Ya tienes cuenta?{" "}
-              <Link as={RouterLink} to="/login" color="green.400">
+              <Link as={RouterLink} to="/login" variant="loginFlow">
                 Iniciar sesión
               </Link>
             </Text>

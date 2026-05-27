@@ -22,6 +22,22 @@ const LinkTheme = {
         fontWeight: "bold",
       },
     },
+    loginFlow: {
+      color: "green.400",
+      fontSize: "sm",
+      fontWeight: "bold",
+      _hover: {
+        textDecoration: "underline",
+      },
+      _dark: {
+        color: "green.400",
+        fontSize: "sm",
+        fontWeight: "bold",
+        _hover: {
+          textDecoration: "underline",
+        },
+      },
+    },
   },
 };
 
