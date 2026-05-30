@@ -43,7 +43,7 @@ const ImageUpload = ({
   }, [existingUrl]);
 
   const borderColor = useColorModeValue("gray.300", "gray.600");
-  const hoverBorderColor = useColorModeValue("teal.400", "teal.300");
+  const hoverBorderColor = useColorModeValue("green.500", "green.500");
   const bgColor = useColorModeValue("gray.50", "gray.700");
   const textColor = useColorModeValue("gray.500", "gray.400");
 
@@ -99,21 +99,26 @@ const ImageUpload = ({
       />
 
       {displayUrl ? (
-        <Box position="relative" borderRadius="md" overflow="hidden">
+        <Box
+          position="relative"
+          border="2px"
+          borderColor={borderColor}
+          borderRadius="md"
+          overflow="hidden"
+        >
           <Image
             src={displayUrl}
             alt="Vista previa"
             w="100%"
             maxH="220px"
             objectFit="cover"
-            borderRadius="md"
           />
           <Box position="absolute" bottom={2} right={2} display="flex" gap={2}>
             <Button
               size="sm"
               leftIcon={<Icon as={FaUpload} />}
               onClick={() => inputRef.current?.click()}
-              colorScheme="teal"
+              colorScheme="green"
               variant="solid"
             >
               Cambiar
@@ -143,7 +148,7 @@ const ImageUpload = ({
       ) : (
         <VStack align="stretch" spacing={2}>
           <Box
-            border="2px dashed"
+            border="2px"
             borderColor={combinedError ? "red.400" : borderColor}
             borderRadius="md"
             bg={bgColor}
@@ -172,7 +177,6 @@ const ImageUpload = ({
               leftIcon={<Icon as={FaRotateLeft} />}
               onClick={() => setIsCleared(false)}
               colorScheme="gray"
-              variant="outline"
               alignSelf="flex-end"
             >
               Restaurar imagen
