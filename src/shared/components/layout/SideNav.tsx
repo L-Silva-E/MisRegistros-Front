@@ -6,6 +6,7 @@ import {
   Heading,
   Link,
   SkeletonText,
+  Tooltip,
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
@@ -80,18 +81,27 @@ function SideNav({}: Props) {
             Inicio
           </Link>
           {dataFeatures?.map((feature) => (
-            <Link
-              px={2}
-              py={1}
-              borderRadius={5}
-              as={RouterLink}
-              to={getRouteForFeature(feature.name)}
-              onClick={() => setSelectedFeature(feature)}
-              variant={selectedFeature.name === feature.name ? "selected" : ""}
-              key={feature.id}
+            <Tooltip
+              openDelay={500}
+              label={feature.description ?? feature.name}
+              hasArrow
+              placement="right"
             >
-              {feature.name}
-            </Link>
+              <Link
+                px={2}
+                py={1}
+                borderRadius={5}
+                as={RouterLink}
+                to={getRouteForFeature(feature.name)}
+                onClick={() => setSelectedFeature(feature)}
+                variant={
+                  selectedFeature.name === feature.name ? "selected" : ""
+                }
+                key={feature.id}
+              >
+                {feature.name}
+              </Link>
+            </Tooltip>
           ))}
         </VStack>
       )}
