@@ -27,54 +27,15 @@ const CreateRecipePage = () => {
 
   useEffect(() => {
     if (location.state?.duplicatedData && location.state?.isDuplicate) {
-      const { duplicatedData, originalName } = location.state;
-
-      // Convertir 'DuplicateRecipeResponse' a Recipe format
-      const recipeData: Recipe = {
-        id: 0, // Temporal, será asignado al guardar
-        idUser: 0, // Temporal, será asignado al guardar
-        idCategory: duplicatedData.idCategory,
-        idOrigin: duplicatedData.idOrigin,
-        name: duplicatedData.name,
-        description: duplicatedData.description,
-        thumbnail: duplicatedData.thumbnail || "",
-        score: duplicatedData.score,
-        time: duplicatedData.time,
-        servings: duplicatedData.servings,
-        createdAt: "",
-        updatedAt: "",
-        category: {
-          id: duplicatedData.idCategory,
-          name: "",
-          createdAt: "",
-          updatedAt: "",
-        },
-        origin: {
-          id: duplicatedData.idOrigin,
-          name: "",
-          createdAt: "",
-          updatedAt: "",
-        },
-        ingredients: duplicatedData.ingredients.map((ing: any) => ({
-          quantity: ing.quantity,
-          ingredient: {
-            id: ing.id.toString(),
-            name: ing.name,
-            unit: ing.unit,
-          },
-          id: 0,
-          idRecipe: 0,
-        })),
-        steps: duplicatedData.steps.map((step: any) => ({
-          id: 0,
-          number: step.number,
-          instruction: step.instruction,
-          idRecipe: 0,
-        })),
-      };
-
-      setInitialData(recipeData);
-      setPageTitle(`Editando copia de "${originalName}"`);
+      const duplicatedData: Recipe = location.state.duplicatedData;
+      setInitialData({
+        ...duplicatedData,
+        id: 0,
+        idUser: 0,
+        name: `${duplicatedData.name} (copia)`,
+        thumbnail: "",
+      });
+      setPageTitle(`Editando copia de "${duplicatedData.name}"`);
     }
   }, [location.state]);
 
@@ -153,7 +114,7 @@ const CreateRecipePage = () => {
           ? "Receta duplicada guardada"
           : "Receta creada",
         description: location.state?.isDuplicate
-          ? `La copia de "${location.state.originalName}" ha sido guardada exitosamente como "${data.name}"`
+          ? `La copia de "${location.state.duplicatedData?.name}" ha sido guardada exitosamente como "${data.name}"`
           : `La receta "${data.name}" ha sido creada exitosamente`,
         status: "success",
         duration: location.state?.isDuplicate ? 5000 : 3000,

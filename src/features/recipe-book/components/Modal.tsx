@@ -23,7 +23,6 @@ import RecipeModalSkeleton from "./ModalSkeleton";
 import RecipeModalContent from "./ModalContent";
 import ConfirmationDeleteModal from "./DeleteModal";
 
-import { useRecipeDuplicate } from "../hooks";
 import { Recipe } from "../types";
 import { useAuth } from "../../../features/auth/hooks/useAuth";
 
@@ -37,8 +36,6 @@ type Props = {
 function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { duplicateRecipe, isLoading: isDuplicating } = useRecipeDuplicate();
-
   const {
     isOpen: isOpenDeleteConfirmation,
     onOpen: onOpenDeleteConfirmation,
@@ -59,9 +56,11 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
   const canManage =
     !!user && !!data && (user.role === "ADMIN" || user.id === data.idUser);
 
-  const handleDuplicate = async () => {
+  const handleDuplicate = () => {
     if (data) {
-      await duplicateRecipe(data.id, data.name);
+      navigate("/recipes/create", {
+        state: { duplicatedData: data, isDuplicate: true },
+      });
       onClose();
     }
   };
@@ -122,11 +121,9 @@ function RecipeModal({ isOpen, onClose, loading, data }: Props) {
               placement="top"
             >
               <Button
-                // isDisabled={!isUnlocked} // TODO: Enable with fix
-                isDisabled={true}
+                isDisabled={!isUnlocked}
                 variant="copyButton"
                 onClick={handleDuplicate}
-                isLoading={isDuplicating}
               >
                 <FaCopy color={iconColor} />
               </Button>
