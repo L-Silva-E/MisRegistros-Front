@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { MetadataSectionProps } from "../types";
+import { StarRating } from "../../../ui/StarRating";
 
 const MetadataSection = ({
   register,
@@ -34,18 +35,14 @@ const MetadataSection = ({
     <Flex gap={4}>
       <FormControl isRequired isInvalid={!!errors?.score}>
         <FormLabel>Puntuación</FormLabel>
-        <Select
-          placeholder="-"
-          {...register("score", {
-            required: "La puntuación es requerida",
-          })}
-        >
-          <option value="5">5 - ★★★★★</option>
-          <option value="4">4 - ★★★★</option>
-          <option value="3">3 - ★★★</option>
-          <option value="2">2 - ★★</option>
-          <option value="1">1 - ★</option>
-        </Select>
+        <input
+          type="hidden"
+          {...register("score", { required: "La puntuación es requerida" })}
+        />
+        <StarRating
+          value={Number(watch("score") || 0)}
+          onChange={(v) => setValue("score", String(v), { shouldValidate: true })}
+        />
         <FormErrorMessage>{errors?.score?.message}</FormErrorMessage>
       </FormControl>
 

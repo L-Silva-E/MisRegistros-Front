@@ -1,7 +1,6 @@
 import {
   VStack,
   HStack,
-  Button,
   IconButton,
   Text,
   Box,
@@ -14,6 +13,7 @@ import {
   FormErrorMessage,
   Spinner,
   useColorModeValue,
+  Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -42,29 +42,29 @@ const IngredientsSection = ({
   const updateIngredient = (
     index: number,
     field: keyof IngredientFormData,
-    value: string
+    value: string,
   ) => {
     const newIngredients = ingredients.map((ingredient, i) =>
-      i === index ? { ...ingredient, [field]: value } : ingredient
+      i === index ? { ...ingredient, [field]: value } : ingredient,
     );
     setIngredients(newIngredients);
   };
 
   const getSelectedIngredient = (id: string) => {
     return availableIngredients.find(
-      (ingredient) => ingredient.id.toString() === id
+      (ingredient) => ingredient.id.toString() === id,
     );
   };
 
   const getAvailableOptions = (currentIndex: number) => {
     const selectedIds = ingredients
       .map((ingredient, index) =>
-        index !== currentIndex ? ingredient.id : null
+        index !== currentIndex ? ingredient.id : null,
       )
       .filter((id) => id !== null && id !== "0");
 
     return availableIngredients.filter(
-      (ingredient) => !selectedIds.includes(ingredient.id.toString())
+      (ingredient) => !selectedIds.includes(ingredient.id.toString()),
     );
   };
 
@@ -173,27 +173,40 @@ const IngredientsSection = ({
               >
                 Acción
               </FormLabel>
-              <IconButton
-                aria-label="Eliminar ingrediente"
-                icon={<DeleteIcon />}
-                variant="redButton"
-                isDisabled={ingredients.length === 1}
-                onClick={() => removeIngredient(index)}
-              />
+              <Tooltip
+                openDelay={500}
+                label="Eliminar ingrediente"
+                hasArrow
+                placement="top"
+              >
+                <IconButton
+                  aria-label="Eliminar ingrediente"
+                  icon={<DeleteIcon />}
+                  variant="redButton"
+                  isDisabled={ingredients.length === 1}
+                  onClick={() => removeIngredient(index)}
+                />
+              </Tooltip>
             </Box>
           </HStack>
         );
       })}
 
-      <Button
-        mt={2}
-        leftIcon={<AddIcon />}
-        onClick={addIngredient}
-        variant="addRowButton"
-        alignSelf="flex-start"
+      <Tooltip
+        openDelay={500}
+        label="Agregar ingrediente"
+        hasArrow
+        placement="top"
       >
-        Agregar Ingrediente
-      </Button>
+        <IconButton
+          px={4}
+          aria-label="Add ingredient"
+          icon={<AddIcon />}
+          onClick={addIngredient}
+          variant="addRowButton"
+          alignSelf="flex-end"
+        />
+      </Tooltip>
     </VStack>
   );
 };

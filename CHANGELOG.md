@@ -5,6 +5,43 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-05-29
+
+### Added
+
+- **`StarRating` component**: New interactive star picker replacing the score dropdown in the recipe form; 5 clickable stars with hover highlighting, light/dark mode support, and continuous hitbox (hover handled at container level) to prevent flickering when moving between stars
+
+### Changed
+
+- **Duplicate recipe flow**: Removed `useRecipeDuplicate` hook and the intermediate `/recipe/:id/duplicate` endpoint call; clicking "Duplicar" now navigates directly to the create form with the original recipe's data pre-loaded — name appended with _(copia)_, thumbnail cleared so the user uploads their own
+
+### Fixed
+
+- **False success toast in Meta page**: Switching from editing one entity type to another (e.g., ingredient → category) was re-triggering the previous save's success toast due to stale `saveData` in `useAxios`; fixed by adopting the `saveContextRef` pattern (consistent with `deleteContextRef`) so the effect only fires when a save operation is actually in flight
+- **`ImageUpload` border**: `borderColor` was declared on the `<Image>` element where it has no visual effect without `border`; border is now correctly applied to the wrapping `<Box>` container
+
+## [2.4.0] - 2026-05-26
+
+### Added
+
+- **Tooltips on all icon buttons**: Added with `openDelay={500}`, `hasArrow` and `placement="top"` across the recipe modal (delete, duplicate, edit, pin, close), search/filters, action buttons (create recipe, manage lists), theme toggle, back button, and recipe form buttons
+- **"Usage" column in Meta table**: New column displaying `usageCount` for ingredients, categories and origins; "Unit", "Usage" and "Action" columns right-aligned
+- **Vertical divider in Header**: `Divider` between the theme toggle and the authenticated user's avatar
+
+### Changed
+
+- **react-icons fa → fa6 migration**: All icons updated to `react-icons/fa6` with v6 names (`FaGear`, `FaPenToSquare`, `FaSquareCheck`, `FaEarthAmericas`, `FaTriangleExclamation`, `FaRotateLeft`, `FaArrowDownAZ`, `FaArrowDownZA`, `FaMagnifyingGlass`, `FaArrowLeft`, `FaXmark`, `FaFloppyDisk`, `FaArrowsRotate`)
+- **Icon-only buttons**: `ActionButtons` converted from text buttons to `IconButton`; `RecipeFormButtons` replaces `submitButtonText` with `submitIcon` and `submitTooltip` props to support dynamic icons per view (floppy disk on create, arrows on update)
+- **Single-click card opening**: Changed `onDoubleClick` → `onClick` in `RecipeGrid`
+- **Back button in recipe view**: Replaced text with `FaArrowLeft` icon and tooltip, repositioned to the top of the page
+- **Ingredients table**: Applied `tableLayout: fixed` to prevent horizontal scroll; name truncated with ellipsis when it exceeds the available width
+
+### Fixed
+
+- **`ModalHeader` color**: Fixed in `modal.ts` theme file; inline `color` prop was being overridden by the component's `baseStyle`
+- **Search tooltip in `SearchFilters`**: Wrapped the icon in `<Box display="flex">` so Chakra can correctly anchor the tooltip (SVG elements do not support `ref` forwarding)
+- **Tooltip on recipe modal open**: Modal auto-focus was triggering the first button's tooltip on open; fixed with a hidden `<span>` as `initialFocusRef`
+
 ## [2.3.0] - 2026-05-23
 
 ### Added
