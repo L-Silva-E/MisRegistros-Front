@@ -160,6 +160,11 @@ const useMetadataOperations = () => {
     itemName: string;
   } | null>(null);
 
+  const saveContextRef = useRef<{
+    type: MetaDataType;
+    isEditing: boolean;
+  } | null>(null);
+
   const {
     loading: loadingMetadata,
     data: metadataData,
@@ -261,6 +266,7 @@ const useMetadataOperations = () => {
     performCrudOperation,
     performSaveOperation,
     deleteContextRef,
+    saveContextRef,
   };
 };
 
@@ -438,6 +444,7 @@ const RecipeMetaPage: React.FC = () => {
     performCrudOperation,
     performSaveOperation,
     deleteContextRef,
+    saveContextRef,
   } = useMetadataOperations();
 
   useEffect(() => {
@@ -453,13 +460,15 @@ const RecipeMetaPage: React.FC = () => {
   }, [metadataData]);
 
   useEffect(() => {
-    if (saveData !== undefined && !saveError) {
+    if (saveContextRef.current && saveData !== undefined && !saveError) {
+      const { type, isEditing: wasEditing } = saveContextRef.current;
+      saveContextRef.current = null;
       refreshMetadata();
 
       toast({
         title: "Éxito",
-        description: `${getEntityName(currentType)} ${
-          isEditing ? MESSAGES.SUCCESS.UPDATED : MESSAGES.SUCCESS.CREATED
+        description: `${getEntityName(type)} ${
+          wasEditing ? MESSAGES.SUCCESS.UPDATED : MESSAGES.SUCCESS.CREATED
         }`,
         status: "success",
         duration: 3000,
@@ -468,15 +477,7 @@ const RecipeMetaPage: React.FC = () => {
 
       onClose();
     }
-  }, [
-    saveData,
-    saveError,
-    currentType,
-    isEditing,
-    refreshMetadata,
-    toast,
-    onClose,
-  ]);
+  }, [saveData, saveError, refreshMetadata, toast, onClose]);
 
   const handleAddNew = useCallback(
     (type: MetaDataType) => {
@@ -565,6 +566,7 @@ const RecipeMetaPage: React.FC = () => {
         ? { name: itemName, unit: itemUnit }
         : { name: itemName };
 
+    saveContextRef.current = { type: currentType, isEditing };
     await performSaveOperation(method, url, data);
   };
 
