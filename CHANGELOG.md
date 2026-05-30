@@ -5,6 +5,21 @@ All notable changes to the `MisRegistros-Front` project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-05-29
+
+### Added
+
+- **`StarRating` component**: New interactive star picker replacing the score dropdown in the recipe form; 5 clickable stars with hover highlighting, light/dark mode support, and continuous hitbox (hover handled at container level) to prevent flickering when moving between stars
+
+### Changed
+
+- **Duplicate recipe flow**: Removed `useRecipeDuplicate` hook and the intermediate `/recipe/:id/duplicate` endpoint call; clicking "Duplicar" now navigates directly to the create form with the original recipe's data pre-loaded — name appended with _(copia)_, thumbnail cleared so the user uploads their own
+
+### Fixed
+
+- **False success toast in Meta page**: Switching from editing one entity type to another (e.g., ingredient → category) was re-triggering the previous save's success toast due to stale `saveData` in `useAxios`; fixed by adopting the `saveContextRef` pattern (consistent with `deleteContextRef`) so the effect only fires when a save operation is actually in flight
+- **`ImageUpload` border**: `borderColor` was declared on the `<Image>` element where it has no visual effect without `border`; border is now correctly applied to the wrapping `<Box>` container
+
 ## [2.4.0] - 2026-05-26
 
 ### Added
